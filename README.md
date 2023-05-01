@@ -5,7 +5,7 @@ pip install --upgrade openai
 
 pip install python-dotenv
 
-
+pip install colored
 
 # other
 
