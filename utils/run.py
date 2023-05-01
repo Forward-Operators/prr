@@ -1,25 +1,21 @@
 #!/usr/bin/env python3
 
 import sys
-
 sys.path.append('/opt/conda/lib/python3.10/site-packages')
+sys.path.append('.')
 
 from dotenv import load_dotenv
-
 load_dotenv()
 
-import openai
+from lib.runner import Runner
+from lib.prompt.library import Library
 
-# openai.api_key = "sk-..."
+library = Library("prompts")
+prompt = library.get("common/highest-peak")
 
-# list models
-models = openai.Model.list()
+runner = Runner(prompt, "openai/gpt-3.5-turbo")
 
-# print the first model's id
-print(models.data[0].id)
+result = runner.run()
 
-# create a completion
-completion = openai.Completion.create(model="ada", prompt="Hello world")
-
-# print the completion
-print(completion.choices[0].text)
+print ("--------result")
+print (result)
