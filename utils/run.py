@@ -16,13 +16,17 @@ from lib.runner import Runner
 library = Library("prompts")
 prompt = library.get("concept-maps/subconcepts-of-buddhism.txt")
 
-# runner = Runner(prompt, "openai/gpt-3.5-turbo")
-runner = Runner(prompt, "anthropic/claude-v1")
+runner = Runner(prompt, "openai/gpt-3.5-turbo")
+# runner = Runner(prompt, "anthropic/claude-v1")
 
-result = runner.run()
+runner.run()
+
+result = runner.get_result()
 stats = runner.get_stats()
 
-print (fg("green"))
-print (result)
-print (fg("red"))
-print (stats)
+# print ("=====================")
+
+# print (fg("green"))
+# print (result)
+# print (fg("red"))
+# print (stats)
