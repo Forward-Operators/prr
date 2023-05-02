@@ -7,6 +7,8 @@ pip install python-dotenv
 
 pip install colored
 
+pip install anthropic
+
 # other
 
 ## provider - model
