@@ -25,21 +25,18 @@ parser.add_argument("-tp", "--top_p", help="top_p")
 # parser.add_argument("-v", "--verbose", action="store_true", help="increase verbosity")
 parser.add_argument("prompt_path", help="Path to prompt to run")
 args = parser.parse_args()
-config = vars(args)
+parsed_args = vars(args)
 
 library = Library("prompts")
-prompt = library.get_prompt(config["prompt_path"])
+prompt = library.get_prompt(parsed_args["prompt_path"])
 
-model = config["model"] or DEFAULT_MODEL
-# model = "anthropic/claude-v1"
-
-runner = Runner(prompt, model)
+runner = Runner(prompt)
 
 runner.run({
-  "max_tokens": int(config["max_tokens"]),
-  "temperature": float(config["temperature"]),
-  "top_k": config["top_k"],
-  "top_p": config["top_p"]
+  "max_tokens": int(parsed_args["max_tokens"]),
+  "temperature": float(parsed_args["temperature"]),
+  "top_k": parsed_args["top_k"],
+  "top_p": parsed_args["top_p"]
 })
 
 result = runner.get_result()
