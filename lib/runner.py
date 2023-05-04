@@ -59,8 +59,13 @@ class PromptRun:
     return " ".join(parts)
 
   def run(self, options):
-    eprint ('🧠 {model_id}: {options_description} prompt_size={template_bytes}.'.format(
-      model_id=self.model_id(),
+    if options.get('config_name'):
+      model_description = options['config_name'] + " (" + self.model_id() + ")"
+    else:
+      model_description = self.model_id()
+
+    eprint ('🧠 {model_description}: {options_description} prompt_size={template_bytes}'.format(
+      model_description=model_description,
       template_bytes=self.prompt_template_len(),
       options_description=self.describe_options(options)))
     
@@ -71,8 +76,8 @@ class PromptRun:
     _stats = self.stats.get_stats()
     elapsed_time = round(_stats['elapsed_time'], 2)
 
-    eprint ('✅ {model_id}: received {response_bytes} bytes in {response_elapsed_time}s.'.format(
-      model_id=self.model_id(),
+    eprint ('✅ {model_description}: received {response_bytes} bytes in {response_elapsed_time}s'.format(
+      model_description=model_description,
       response_elapsed_time=elapsed_time,
       response_bytes=self.response_completion_len()))
 

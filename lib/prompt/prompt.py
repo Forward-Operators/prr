@@ -79,6 +79,7 @@ class PromptConfig:
 
         # now let's override values from 'all' with specific model options
         merged_config.update(model_config)
+        merged_config.update({ 'config_name': model_name })
 
         return merged_config
 
