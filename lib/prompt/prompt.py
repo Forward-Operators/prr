@@ -14,7 +14,10 @@ class PromptConfig:
     if isinstance(_models, list):
       return _models
     elif isinstance(_models, dict):
-      return list(filter(lambda key: key != 'all', _models.keys()))
+      if 'models' in _models:
+        return _models['models']
+      else:
+        return list(filter(lambda key: key != 'all', _models.keys()))
 
   def model(self, model_name):
     """Get the configuration for a specific model.
@@ -33,7 +36,7 @@ class PromptConfig:
       #  models:
       #    - 'openai/gpt-3.5-turbo'
       #    - 'anthropic/claude-v1'
-      return {}
+      return { 'model': model_name }
     elif isinstance(models_config, dict):
       model_names = models_config.get('models', {})
       if model_names:

@@ -27,6 +27,13 @@ parser.add_argument("prompt_path", help="Path to prompt to run")
 args = parser.parse_args()
 parsed_args = vars(args)
 
+model_overrides = {
+  "max_tokens": int(parsed_args["max_tokens"]),
+  "temperature": float(parsed_args["temperature"]),
+  "top_k": parsed_args["top_k"],
+  "top_p": parsed_args["top_p"]
+}
+
 library = Library("prompts")
 prompt = library.get_prompt(parsed_args["prompt_path"])
 
@@ -44,18 +51,20 @@ for model in models_defined:
 
 # print (prompt.config.get_model_config('claudev1smart'))
 
-exit(-1)
+print (f'----- cmdline overrides -----')
+print (model_overrides)
+
+# exit(-1)
 
 runner = Runner(prompt)
 
-runner.run({
-  "max_tokens": int(parsed_args["max_tokens"]),
-  "temperature": float(parsed_args["temperature"]),
-  "top_k": parsed_args["top_k"],
-  "top_p": parsed_args["top_p"]
-})
+# runner.run({
+#   "max_tokens": int(parsed_args["max_tokens"]),
+#   "temperature": float(parsed_args["temperature"]),
+#   "top_k": parsed_args["top_k"],
+#   "top_p": parsed_args["top_p"]
+# })
 
-result = runner.get_result()
-stats = runner.get_stats()
+results = runner.run_all_configured_models()
 
-print(result.completion)
+print(results)

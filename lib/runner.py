@@ -81,9 +81,30 @@ class Runner:
     self.prompt = prompt
 
   def run_all_configured_models(self, option_overrides={}):
+    print ("\n\n\n")
+    print ("-*- run_all_configured_models -*-")
+
+    models_defined = self.prompt.config.models()
+
+    print ('models: ', models_defined)
+
     results = {}
-    for model in self.prompt.config.get('models', {}).keys():
-      prompt_run = PromptRun(self.prompt, model)
-      prompt_run.run(option_overrides)
-      results[model] = prompt_run.get_result()
-    return results  
+
+    for model in models_defined:
+      model_config = self.prompt.config.model(model)
+      print ('\n')
+      print (f'----- running model [{model}] -----')
+      print (model_config)
+      print ('\n')
+
+      results[model] = {
+        'config': model_config        
+      }
+
+      prompt_run = PromptRun(self.prompt, model_config['model'])
+      prompt_run.run(model_config)
+
+      results[model]['results'] = prompt_run.get_result()
+      results[model]['stats'] = prompt_run.get_stats()
+
+    return results

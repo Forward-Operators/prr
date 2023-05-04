@@ -1,0 +1,11 @@
+version: 1
+models:
+  - 'anthropic/claude-v1'
+expect:
+  max_elapsed_time: 3.3
+  min_response_length: 100
+  max_response_length: 200
+  match:
+    - /independent/i
+    - /smart/i
+  
