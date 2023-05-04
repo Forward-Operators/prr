@@ -30,6 +30,22 @@ parsed_args = vars(args)
 library = Library("prompts")
 prompt = library.get_prompt(parsed_args["prompt_path"])
 
+print (f'----- config for [{parsed_args["prompt_path"]}] -----')
+print (prompt.config)
+print (f'----- models for [{parsed_args["prompt_path"]}] -----')
+models_defined = prompt.config.models()
+print (models_defined)
+
+# iterate over models
+for model in models_defined:
+  print ('\n')
+  print (f'----- model [{model}] -----')
+  print (prompt.config.model(model))
+
+# print (prompt.config.get_model_config('claudev1smart'))
+
+exit(-1)
+
 runner = Runner(prompt)
 
 runner.run({

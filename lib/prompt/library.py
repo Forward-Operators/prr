@@ -58,8 +58,10 @@ class Library:
       Returns:
           str: The full path to the prompt configuration file.
       """
-      dirname = os.path.dirname(full_prompt_path)
-      return os.path.join(dirname, "config.yaml")
+      full_prompt_path_dirname = os.path.dirname(full_prompt_path)
+      y = os.path.join(full_prompt_path_dirname, "config.yaml")
+      print(y)
+      return os.path.join(full_prompt_path_dirname, "config.yaml")
 
   def get_prompt(self, prompt_subpath="common/highest-peak"):
       """Load and return a Prompt object given a subpath to the prompt file.

@@ -6,6 +6,9 @@ models:
   claudev1smart:
     model: 'anthropic/claude-v1'
     temperature: 0
+  seriousGPT:
+    model: 'openai/gpt-4'
+    max_tokens: 1024
   all:
     temperature: 0.7
     max_tokens: 64

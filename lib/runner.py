@@ -12,8 +12,8 @@ from .llms.response import ModelResponse
 from colored import fg, attr
 
 # takes prompt and model, finds provider, runs the prompt
-class Runner:
-  def __init__(self, prompt, model="openai/gpt-3.5-turbo"):
+class PromptRun:
+  def __init__(self, prompt, model):
     self.prompt = prompt
     self.provider_name, self.model_name = model.split("/")
     self.model = self.model_name
@@ -74,3 +74,16 @@ class Runner:
   
   def get_result(self):
     return self.response
+  
+
+class Runner:
+  def __init__(self, prompt):
+    self.prompt = prompt
+
+  def run_all_configured_models(self, option_overrides={}):
+    results = {}
+    for model in self.prompt.config.get('models', {}).keys():
+      prompt_run = PromptRun(self.prompt, model)
+      prompt_run.run(option_overrides)
+      results[model] = prompt_run.get_result()
+    return results  
