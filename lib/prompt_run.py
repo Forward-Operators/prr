@@ -3,6 +3,8 @@ from .llms.providers.anthropic import LLMProviderAnthropic
 
 import time
 
+from colored import fg, attr
+
 def find_provider(provider_name):
   if provider_name == "openai":
     return LLMProviderOpenAI()
@@ -39,6 +41,56 @@ class PromptRunResult:
     return s
 
 
+  def description(self):
+    c = self.config
+
+    if 'model_config_name' in c:
+      model_config_name = c['model_config_name']
+    else:
+      model_config_name = None
+
+    provider_name = c['provider_name']
+    model_name = c['model_name']
+
+    if model_config_name:
+      model_name = f'{fg("green")}🤖 {model_config_name} ({provider_name}/{model_name}):\n{attr("reset")}'
+    else:
+      model_name = f'🤖 {provider_name}/{model_name}:\n'
+
+    prompt = fg('blue') + "Prompt: " + attr('reset') + self.prompt.text_abbrev(25) + " (" + str(self.prompt.text_len()) + " chars)\n"
+
+    elapsed_time = fg('blue') + "Elapsed time: " + attr('reset') + str(round(self.elapsed_time, 2)) + "s\n"
+
+    if 'temperature' in c:
+      temperature = fg('blue') + "Temperature: " + attr('reset') + str(c['temperature']) + "\n"
+    else:
+      temperature = ""
+
+    if 'max_tokens' in c:
+      max_tokens = fg('blue') + "Max tokens: " + attr('reset') + str(c['max_tokens']) + "\n"
+    else:
+      max_tokens = ""
+
+
+    if 'top_p' in c:
+      top_p = fg('blue') + "Top P: " + attr('reset') + str(c['top_p']) + "\n"
+    else:
+      top_p = ""
+
+    if 'top_k' in c:
+      top_k = fg('blue') + "Top K: " + attr('reset') + str(c['top_k']) + "\n"
+    else:
+      top_k = ""
+
+    options = temperature + max_tokens + top_p + top_k
+
+    completion = fg('blue') + "Completion: " + attr('reset') + self.response.completion_abbrev(25) + " (" + str(self.response.completion_len()) + " chars)\n"
+
+    tokens_used = fg('blue') + "Tokens used: " + attr('reset') + str(self.response.tokens_used) + "\n"
+
+    s = model_name + "\n" + prompt + options + "\n" + completion + elapsed_time + tokens_used
+
+    return s
 
 
 # takes prompt and model config, finds provider, runs the prompt

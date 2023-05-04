@@ -33,4 +33,5 @@ results = runner.run_all_configured_models()
 
 for model in results.keys():
   result = results[model]
-  print(str(result))
+  print("\n")
+  print(result.description())

@@ -66,7 +66,7 @@ class PromptConfig:
         #
 
         # get defaults for all models listed
-        all_models_config = models_config
+        all_models_config = models_config.copy()
         all_models_config.pop('models')
 
         # default model config
@@ -78,6 +78,7 @@ class PromptConfig:
         return model_config
       
       else:
+        print("COMPLEX MODEL", model_config_name, models_config)
         # we have a config for each model and maybe
         # a general config for all models in "all" key
 
@@ -102,6 +103,7 @@ class PromptConfig:
 
         # overload it with model-specific config
         model_config.update(original_model_config)
+        model_config.update({'model_config_name': model_config_name})
 
         return model_config
 
