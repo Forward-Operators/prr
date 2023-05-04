@@ -78,7 +78,6 @@ class PromptConfig:
         return model_config
       
       else:
-        print("COMPLEX MODEL", model_config_name, models_config)
         # we have a config for each model and maybe
         # a general config for all models in "all" key
 

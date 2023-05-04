@@ -29,9 +29,9 @@ class Library:
         # print ("Loading prompt config: " + prompt_config_path)
         with open(prompt_config_path, 'r') as file:
             prompt_config = yaml.load(file, Loader=yaml.FullLoader)
-            return Prompt(prompt_template), PromptConfig(prompt_config)
+            return Prompt(prompt_path, prompt_template), PromptConfig(prompt_config)
         
-    return Prompt(prompt_template), PromptConfig({})
+    return Prompt(prompt_path, prompt_template), PromptConfig({})
 
   def get_prompt_path(self, prompt_path):
       """Get the full path of a prompt file given its subpath.

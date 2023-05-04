@@ -1,5 +1,6 @@
 class Prompt:
-  def __init__(self, template):
+  def __init__(self, path, template):
+    self.path = path
     self.template = template
 
   def text(self):

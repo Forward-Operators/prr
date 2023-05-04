@@ -1,6 +1,7 @@
 import sys
 
 from .prompt_run import PromptRun
+from .saver import PromptRunSaver
 
 # high-level class to run prompts based on configuration
 class Runner:
@@ -14,8 +15,15 @@ class Runner:
 
     results = {}
 
+    saver = PromptRunSaver()
+
     for model in configured_models:
       model_config = self.config.model(model)
-      results[model] = PromptRun(self.prompt, model_config).run()
+
+      result = PromptRun(self.prompt, model_config).run()
+
+      saver.save(model, result)
+
+      results[model] = result
 
     return results
