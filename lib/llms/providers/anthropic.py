@@ -36,5 +36,5 @@ class LLMProviderAnthropic:
 
     return {
       'completion': response['completion'],
-      'tokens_used': 42
+      'tokens_used':83
     }

@@ -45,11 +45,24 @@ class PromptRun:
 
   def model_id(self):
     return "/".join([self.provider_name, self.model_name])
+  
+  def describe_options(self, options):
+    parts = []
+
+    if options:
+      if options['temperature']:
+        parts.append(f"temp={options['temperature']}")
+
+      if options['max_tokens']:
+        parts.append(f"max_tokens={options['max_tokens']}")
+
+    return " ".join(parts)
 
   def run(self, options):
-    eprint ('🧠 {model_id}: sending {template_bytes} bytes.'.format(
+    eprint ('🧠 {model_id}: {options_description} prompt_size={template_bytes}.'.format(
       model_id=self.model_id(),
-      template_bytes=self.prompt_template_len()))
+      template_bytes=self.prompt_template_len(),
+      options_description=self.describe_options(options)))
     
     self.stats.before_run()
     self.response = ModelResponse(self.provider.run(self.prompt, self.model, options))

@@ -44,10 +44,10 @@ models_defined = prompt.config.models()
 # print (models_defined)
 
 # iterate over models
-for model in models_defined:
+# for model in models_defined:
   # print ('\n')
   # print (f'----- model [{model}] -----')
-  print (prompt.config.model(model))
+  # print (prompt.config.model(model))
 
 # print (prompt.config.get_model_config('claudev1smart'))
 
@@ -75,6 +75,6 @@ for model in results.keys():
 
   duration = round(stats['elapsed_time'], 2)
 
-  print (f'{model_name} | {duration}s | {result.tokens_used} tokens | {result.completion_len()} response len | {result.completion_abbrev(50)}')
+  print (f'{model_name} | {duration}s | {result.tokens_used} tokens | {result.completion_len()} response len | {result.completion_abbrev(15)}')
 
 # print(results)
