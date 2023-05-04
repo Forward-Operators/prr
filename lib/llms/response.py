@@ -8,7 +8,7 @@ class ModelResponse():
 
   def ready(self):
     return hasattr(self, 'completion')
-
+  
   def completion_len(self):
     if self.ready():
       return len(self.completion)

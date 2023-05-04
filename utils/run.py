@@ -37,22 +37,22 @@ model_overrides = {
 library = Library("prompts")
 prompt = library.get_prompt(parsed_args["prompt_path"])
 
-print (f'----- config for [{parsed_args["prompt_path"]}] -----')
-print (prompt.config)
-print (f'----- models for [{parsed_args["prompt_path"]}] -----')
+# print (f'----- config for [{parsed_args["prompt_path"]}] -----')
+# print (prompt.config)
+# print (f'----- models for [{parsed_args["prompt_path"]}] -----')
 models_defined = prompt.config.models()
-print (models_defined)
+# print (models_defined)
 
 # iterate over models
 for model in models_defined:
-  print ('\n')
-  print (f'----- model [{model}] -----')
+  # print ('\n')
+  # print (f'----- model [{model}] -----')
   print (prompt.config.model(model))
 
 # print (prompt.config.get_model_config('claudev1smart'))
 
-print (f'----- cmdline overrides -----')
-print (model_overrides)
+# print (f'----- cmdline overrides -----')
+# print (model_overrides)
 
 # exit(-1)
 
@@ -67,4 +67,14 @@ runner = Runner(prompt)
 
 results = runner.run_all_configured_models()
 
-print(results)
+for model in results.keys():
+  result = results[model]['results']
+  stats = results[model]['stats']
+
+  model_name = stats['model'] + "/" + stats['provider']
+
+  duration = round(stats['elapsed_time'], 2)
+
+  print (f'{model_name} | {duration}s | {result.tokens_used} tokens | {result.completion_len()} response len | {result.completion_abbrev(50)}')
+
+# print(results)

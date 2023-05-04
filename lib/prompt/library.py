@@ -20,12 +20,12 @@ class Library:
     """
     # Read the prompt template from the file
     with open(prompt_path, 'r') as file:
-        print ("Loading prompt: " + prompt_path)
+        # print ("Loading prompt: " + prompt_path)
         prompt_template = file.read()
 
     # If prompt_config_path is provided and the file exists, load the configuration
     if prompt_config_path and os.path.isfile(prompt_config_path):
-        print ("Loading prompt config: " + prompt_config_path)
+        # print ("Loading prompt config: " + prompt_config_path)
         with open(prompt_config_path, 'r') as file:
             prompt_config = yaml.load(file, Loader=yaml.FullLoader)
             return Prompt(prompt_template, prompt_config)
