@@ -19,6 +19,8 @@ class LLMProviderOpenAI:
       ],
       temperature = self.options.temperature,
       max_tokens = self.options.max_tokens,
+      top_p = self.options.top_p,
+      # top_k = self.options.top_k
     )
 
     # "usage": {
