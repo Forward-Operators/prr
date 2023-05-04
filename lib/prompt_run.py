@@ -41,7 +41,7 @@ class PromptRunResult:
     return s
 
 
-  def description(self):
+  def description(self, abbrev=True):
     c = self.config
 
     if 'model_config_name' in c:
@@ -57,7 +57,10 @@ class PromptRunResult:
     else:
       model_name = f'🤖 {provider_name}/{model_name}:\n'
 
-    prompt = fg('blue') + "Prompt: " + attr('reset') + self.prompt.text_abbrev(25) + " (" + str(self.prompt.text_len()) + " chars)\n"
+    if abbrev:
+      prompt = fg('blue') + "Prompt: " + attr('reset') + self.prompt.text_abbrev(25) + " (" + str(self.prompt.text_len()) + " chars)\n"
+    else:
+      prompt = fg('blue') + "Prompt: " + attr('reset') + "\n----\n" + self.prompt.text() + "\n----\n(" + str(self.prompt.text_len()) + " chars)\n\n"
 
     elapsed_time = fg('blue') + "Elapsed time: " + attr('reset') + str(round(self.elapsed_time, 2)) + "s\n"
 
@@ -84,7 +87,10 @@ class PromptRunResult:
 
     options = temperature + max_tokens + top_p + top_k
 
-    completion = fg('blue') + "Completion: " + attr('reset') + self.response.completion_abbrev(25) + " (" + str(self.response.completion_len()) + " chars)\n"
+    if abbrev:
+      completion = fg('blue') + "Completion: " + attr('reset') + self.response.completion_abbrev(25) + " (" + str(self.response.completion_len()) + " chars)\n"
+    else:
+      completion = fg('blue') + "Completion: " + attr('reset') + "\n----\n" + self.response.completion + "\n----\n(" + str(self.response.completion_len()) + " chars)\n\n"
 
     tokens_used = fg('blue') + "Tokens used: " + attr('reset') + str(self.response.tokens_used) + "\n"
 

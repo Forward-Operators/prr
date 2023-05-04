@@ -17,11 +17,14 @@ from lib.runner import Runner
 parser = argparse.ArgumentParser(description="Run a prompt against a model.",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
+parser.add_argument('--abbrev', help="Abbreviate prompts and completions", action=argparse.BooleanOptionalAction, default=True)
+parser.add_argument("--full_completions", "-fc", help="Display full completions with no abbreviating", default=False)
 parser.add_argument("prompt_path", help="Path to prompt to run")
 args = parser.parse_args()
 parsed_args = vars(args)
 
 prompt_path = parsed_args["prompt_path"]
+abbrev = parsed_args["abbrev"]
 
 library = Library("prompts")
 
@@ -34,4 +37,4 @@ results = runner.run_all_configured_models()
 for model in results.keys():
   result = results[model]
   print("\n")
-  print(result.description())
+  print(result.description(abbrev))
