@@ -1,13 +1,26 @@
+def default_config_from_model_provider_name(model_provider_name):
+  provider_name, model_name = model_provider_name.split("/")
+
+  return {
+    'model': model_provider_name,
+    'provider_name': provider_name,
+    'model_name': model_name
+  }
+
+
 class PromptConfig:
   def __init__(self, config_dictionary):
     """Initialize the PromptConfig class with a specified configuration dictionary ready from config file."""
     self.config = config_dictionary
 
+  def __str__(self):
+    return str(self.config)
+
   def models(self):
     """Get the list of models from the configuration file.
     
     Returns:
-        list: The list of models.
+        list: The list of strings with model names in provider_name/model_name format or configuration names.
     """
     _models = self.config.get('models', [])
 
@@ -19,11 +32,11 @@ class PromptConfig:
       else:
         return list(filter(lambda key: key != 'all', _models.keys()))
 
-  def model(self, model_name):
+  def model(self, model_config_name):
     """Get the configuration for a specific model.
     
     Args:
-        model_name (str): The name of the model in the configuration file.
+        model_name (str): The name of the model in the configuration file - either configuration name or provider_name/provider_model format.
         
     Returns:
         dict: The model configuration as a dictionary.
@@ -36,9 +49,12 @@ class PromptConfig:
       #  models:
       #    - 'openai/gpt-3.5-turbo'
       #    - 'anthropic/claude-v1'
-      return { 'model': model_name }
+      return default_config_from_model_provider_name(model_config_name)
+    
     elif isinstance(models_config, dict):
+      
       model_names = models_config.get('models', {})
+
       if model_names:
         # we have a config for each model or one general config
         #  models:
@@ -48,12 +64,18 @@ class PromptConfig:
         #    temperature: 0.7
         #    max_tokens: 100
         #
-        general_config = models_config.copy()
 
-        # remove the models key
-        general_config.pop('models')
+        # get defaults for all models listed
+        all_models_config = models_config
+        all_models_config.pop('models')
 
-        return general_config
+        # default model config
+        model_config = default_config_from_model_provider_name(model_config_name)
+
+        # update with defaults
+        model_config.update(all_models_config)
+
+        return model_config
       
       else:
         # we have a config for each model and maybe
@@ -70,18 +92,18 @@ class PromptConfig:
         #     temperature: 0.7
         #     max_tokens: 64
 
-        general_config = models_config.get('all', {})
+        # get all section as default
+        all_models_config = models_config.get('all', {})
 
-        model_config = models_config.get(model_name, {})
+        original_model_config = models_config.get(model_config_name, {})
+        model_provider_name = original_model_config['model']
 
-        # not let's override "all" config with specific per-model settings
-        merged_config = general_config.copy()
+        model_config = default_config_from_model_provider_name(model_provider_name)
 
-        # now let's override values from 'all' with specific model options
-        merged_config.update(model_config)
-        merged_config.update({ 'config_name': model_name })
+        # overload it with model-specific config
+        model_config.update(original_model_config)
 
-        return merged_config
+        return model_config
 
 
     raise "Invalid models configuration."
@@ -94,10 +116,3 @@ class PromptConfig:
     """
     return self.config.get('expect', {})
     
-class Prompt:
-  def __init__(self, template, config_dictionary):
-    self.template = template
-    self.config = PromptConfig(config_dictionary)
-
-  def text(self, model="openai/gpt-4"):
-    return self.template

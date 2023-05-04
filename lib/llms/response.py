@@ -22,3 +22,11 @@ class ModelResponse():
       str = self.completion
 
     return str.replace("\n", " ").replace("  ", " ")
+
+  def __str__(self):
+    s = "Completion: ["
+    s += self.completion_abbrev(25) + "] "
+    s += "Len: " + str(self.completion_len()) + " "
+    s += "Tokens used: " + str(self.tokens_used)
+
+    return s

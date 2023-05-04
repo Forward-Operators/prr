@@ -1,15 +1,16 @@
 import openai
 
 from ..options import ModelOptions
+from ..response import ModelResponse
 
 # OpenAI model provider class
 class LLMProviderOpenAI:
-  def run(self, prompt, model, options={}):
-    self.options = ModelOptions(options)
-    prompt_text = prompt.text(model)
+  def run(self, prompt, config):
+    self.options = ModelOptions(config)
+    prompt_text = prompt.text()
 
     completion = openai.ChatCompletion.create(
-      model = model, 
+      model = config['model_name'],
       messages = [
         {
           "role": "user", 
@@ -26,10 +27,7 @@ class LLMProviderOpenAI:
     #   "total_tokens": 261
     # }
 
-
-    return {
+    return ModelResponse({
       'completion': completion.choices[0].message.content,
       'tokens_used': completion.usage.total_tokens
-    }
-  
-    # return completion.choices[0].message.content
+    })

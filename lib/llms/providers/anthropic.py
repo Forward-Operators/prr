@@ -2,20 +2,21 @@ import os
 import anthropic
 
 from ..options import ModelOptions
+from ..response import ModelResponse
 
 # https://console.anthropic.com/docs/api/reference
 
 # Anthropic model provider class
 class LLMProviderAnthropic:
-  def run(self, prompt, model, options={}):
-    self.options = ModelOptions(options)
-    prompt_text = prompt.text(model)
+  def run(self, prompt, config):
+    self.options = ModelOptions(config)
+    prompt_text = prompt.text()
 
     client = anthropic.Client(os.environ['ANTHROPIC_API_KEY'])
     response = client.completion(
         prompt=f"{anthropic.HUMAN_PROMPT} {prompt_text}{anthropic.AI_PROMPT}",
         stop_sequences = [anthropic.HUMAN_PROMPT],
-        model = model,
+        model = config['model_name'],
         max_tokens_to_sample = self.options.max_tokens,
         temperature = self.options.temperature,
         top_p = self.options.top_p,
@@ -34,7 +35,7 @@ class LLMProviderAnthropic:
 
     # print (response)
 
-    return {
+    return ModelResponse({
       'completion': response['completion'],
       'tokens_used':83
-    }
+    })

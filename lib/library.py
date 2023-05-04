@@ -2,6 +2,7 @@ import os
 import yaml
 
 from .prompt import Prompt
+from .config import PromptConfig
 
 class Library:
   def __init__(self, path="prompts"):
@@ -28,9 +29,9 @@ class Library:
         # print ("Loading prompt config: " + prompt_config_path)
         with open(prompt_config_path, 'r') as file:
             prompt_config = yaml.load(file, Loader=yaml.FullLoader)
-            return Prompt(prompt_template, prompt_config)
+            return Prompt(prompt_template), PromptConfig(prompt_config)
         
-    return Prompt(prompt_template)
+    return Prompt(prompt_template), PromptConfig({})
 
   def get_prompt_path(self, prompt_path):
       """Get the full path of a prompt file given its subpath.
@@ -61,7 +62,7 @@ class Library:
       full_prompt_path_dirname = os.path.dirname(full_prompt_path)
       return os.path.join(full_prompt_path_dirname, "config.yaml")
 
-  def get_prompt(self, prompt_subpath="common/highest-peak"):
+  def get_prompt_and_config(self, prompt_subpath="common/highest-peak"):
       """Load and return a Prompt object given a subpath to the prompt file.
       
       Args:
