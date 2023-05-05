@@ -10,7 +10,9 @@ import argparse
 from dotenv import load_dotenv
 load_dotenv()
 
+from rich import print
 from rich.console import Console
+from rich.panel import Panel
 
 from lib.prompts.loader import PromptLoader
 from lib.runs.config import ConfigLoader
@@ -65,6 +67,10 @@ models_to_run = runner.configured_models()
 if config_found:
   console.log(f"✅ Config found for: {models_to_run}")
 
+if not abbrev:
+  console.log(f"Prompt:")
+  print(Panel(prompt.text()))
+
 for model in models_to_run:
   model_config = runner.config.model(model)
 
@@ -77,8 +83,17 @@ for model in models_to_run:
 
   with console.status(f":robot: [bold green]{model_description}[/bold green]") as status:
     options = runner.model_options_for_model(model)
-    console.log(f"\n🤖 [bold]{model_description}[/bold] {options.description()}",)
+
+    console.print(f"\n🤖 [bold]{model_description}[/bold] {options.description()}", style="frame")
+
     result, run_save_directory = runner.run_model(model)
-    print(result.description(abbrev))
+
+    if abbrev:
+      console.log(result.description(abbrev))
+    else:
+      console.log("\nFull completion text:")
+      console.log(Panel('[green]' + result.response.completion + '[/green]'))
+
     console.log(f"💾 run saved to: ")
-    print(run_save_directory)
+    console.log(run_save_directory)
+    console.log("\n")

@@ -3,8 +3,6 @@ from ..llms.providers.anthropic import LLMProviderAnthropic
 
 import time
 
-from colored import fg, attr
-
 def find_provider(provider_name):
   if provider_name == "openai":
     return LLMProviderOpenAI()
@@ -34,19 +32,23 @@ class PromptRunResult:
   def description(self, abbrev=True):
     c = self.config
 
-    if abbrev:
-      prompt = fg('blue') + "Prompt:     " + attr('reset') + self.prompt.text_abbrev(25) + " (" + str(self.prompt.text_len()) + " chars)\n"
-    else:
-      prompt = fg('blue') + "Prompt:     " + attr('reset') + "\n----\n" + self.prompt.text() + "\n----\n(" + str(self.prompt.text_len()) + " chars)\n\n"
-
-    elapsed_time = fg('blue') + "Elapsed time: " + attr('reset') + str(round(self.elapsed_time, 2)) + "s  "
+    prompt = "[blue]Prompt[/blue]:     "
 
     if abbrev:
-      completion = fg('blue') + "Completion: " + attr('reset') + self.response.completion_abbrev(25) + " (" + str(self.response.completion_len()) + " chars)\n"
+      prompt = prompt + self.prompt.text_abbrev(25) + " (" + str(self.prompt.text_len()) + " chars)\n"
     else:
-      completion = fg('blue') + "Completion: " + attr('reset') + "\n----\n" + self.response.completion + "\n----\n(" + str(self.response.completion_len()) + " chars)\n\n"
+      prompt = prompt + "\n----[yellow]\n" + self.prompt.text() + "\n[/yellow]----\n(" + str(self.prompt.text_len()) + " chars)\n\n"
 
-    tokens_used = fg('blue') + "Tokens used: " + attr('reset') + str(self.response.tokens_used) + "\n"
+    elapsed_time = "[blue]Elapsed time[/blue]: " + str(round(self.elapsed_time, 2)) + "s  "
+
+    completion = "[blue]Completion[/blue]: "
+
+    if abbrev:
+      completion = completion + self.response.completion_abbrev(25) + " (" + str(self.response.completion_len()) + " chars)\n"
+    else:
+      completion = completion + "\n----\n[green]" + self.response.completion + "[/green]\n----\n(" + str(self.response.completion_len()) + " chars)\n\n"
+
+    tokens_used = "[blue]Tokens used[/blue]: " + str(self.response.tokens_used) + "\n"
 
     s =  prompt + completion + "\n" + elapsed_time + tokens_used
 
