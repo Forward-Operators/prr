@@ -1,12 +1,17 @@
 from ..prompts.prompt_run import PromptRun
 from .saver import PromptRunSaver
 
+from ..llms.options import ModelOptions
+
 # high-level class to run prompts based on configuration
 class Runner:
   def __init__(self, prompt, config):
     self.prompt = prompt
     self.config = config
     self.saver = PromptRunSaver()
+
+  def model_options_for_model(self, model_config_name):
+    return ModelOptions(self.config.model(model_config_name))
 
   def run_model(self, model_config_name):
     model_config = self.config.model(model_config_name)

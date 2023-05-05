@@ -7,7 +7,6 @@ sys.path.append('.')
 sys.path.append('/opt/conda/lib/python3.10/site-packages')
 
 import argparse
-
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -16,7 +15,7 @@ from rich.console import Console
 from lib.prompts.library import Library
 from lib.runs.runner import Runner
 
-console = Console(log_time=True, log_path=False)
+console = Console(log_time=False, log_path=False)
 
 parser = argparse.ArgumentParser(description="Run a prompt against configured models.",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
@@ -46,13 +45,17 @@ if not config or config.empty():
   console.error(f":x: No config found for: {prompt.path}")
   sys.exit(-1)
 
-console.log(f"Config found for: {config.models()}")
+console.log(f"✅ Config found for: {config.models()}")
 
 runner = Runner(prompt, config)
 
 for model in runner.configured_models():
-  with console.status(f":robot: [bold green]{model}") as status:
-    console.log(f"{model} run started")
+  with console.status(f":robot: [bold green]{model} processing...") as status:
+    options = runner.model_options_for_model(model)
+    console.log(f"🤖 {model} {options.description()}",)
     result, run_save_directory = runner.run_model(model)
+    print("\n")
     print(result.description(abbrev))
-    console.log(f"{model} run done complete, saved to {run_save_directory}")
+    console.log(f"💾 {model} run saved to: ")
+    print(run_save_directory)
+    print("\n\n")

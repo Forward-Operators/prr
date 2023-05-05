@@ -7,7 +7,7 @@ class PromptRunSaver:
     self.run_time = datetime.now()
 
   def run_time_str(self):
-    return self.run_time.strftime("%Y-%m-%d_%H:%M:%S.%f")
+    return self.run_time.strftime("%Y-%m-%d_%H_%M_%S.%f")
   
   def run_root_directory_path(self, prompt_path):
     dirname = os.path.dirname(prompt_path)
