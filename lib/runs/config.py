@@ -13,6 +13,9 @@ class PromptConfig:
     """Initialize the PromptConfig class with a specified configuration dictionary ready from config file."""
     self.config = config_dictionary
 
+  def empty(self):
+    return (not self.config or len(self.config.keys()) == 0)
+
   def __str__(self):
     return str(self.config)
 

@@ -2,7 +2,7 @@ import os
 import yaml
 
 from .prompt import Prompt
-from .config import PromptConfig
+from ..runs.config import PromptConfig
 
 class Library:
   def __init__(self, path="prompts"):

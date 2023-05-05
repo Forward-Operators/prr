@@ -1,5 +1,5 @@
-from .llms.providers.openai import LLMProviderOpenAI
-from .llms.providers.anthropic import LLMProviderAnthropic
+from ..llms.providers.openai import LLMProviderOpenAI
+from ..llms.providers.anthropic import LLMProviderAnthropic
 
 import time
 

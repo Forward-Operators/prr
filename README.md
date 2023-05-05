@@ -4,7 +4,12 @@
 pip install --upgrade openai
 pip install python-dotenv
 pip install colored
-pip install anthropic```
+pip install anthropic
+
+
+pip install rich
+
+```
 
 # setup
 
