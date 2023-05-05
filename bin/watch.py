@@ -3,6 +3,7 @@
 import os
 import sys
 import time
+import subprocess
 
 sys.path.append('.')
 sys.path.append('/opt/conda/lib/python3.10/site-packages')
@@ -15,25 +16,24 @@ from lib.runs.config import ConfigLoader
 from lib.runs.runner import Runner
 from run import CommandArgumentParser
 
-import argparse
-
 parser = CommandArgumentParser()
-parser.add_argument('--cooldown', '-c', help="How much to wait after a re-run", default=5)
 
 args = parser.parse_args()
 parsed_args = vars(args)
 
 prompt_path = parsed_args["prompt_path"]
-cooldown = parsed_args["cooldown"]
 
 print (f"👀 watching for changes on {prompt_path}")
-print (f"👀 watching args {parsed_args}")
+
+exit(-1)
 
 prompt = PromptLoader(prompt_path).load()
 config_loader = ConfigLoader(prompt)
 config_path = config_loader.config_path
 
 info_message = f"👀 watching for changes on {prompt_path} and config file"
+
+cooldown  = os.environ.get('WATCH_RERUN_COOLDOWN_SECONDS')
 
 if cooldown != None:
   if int(cooldown) > 0:

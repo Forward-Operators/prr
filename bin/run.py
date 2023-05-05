@@ -21,11 +21,12 @@ from lib.runs.runner import Runner
 console = Console(log_time=False, log_path=False)
 
 parser = argparse.ArgumentParser(description="Run a prompt against configured models.",
-                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 parser.add_argument('--abbrev', help="Abbreviate prompts and completions", action=argparse.BooleanOptionalAction, default=True)
 parser.add_argument("--model", "-m", help="Model to use if none is configured (defaults to DEFAULT_MODEL environment variable)", default=os.environ.get('DEFAULT_MODEL'))
 parser.add_argument("prompt_path", help="Path to prompt to run")
+
 args = parser.parse_args()
 parsed_args = vars(args)
 
@@ -65,7 +66,6 @@ if config_found:
   console.log(f"✅ Config found for: {models_to_run}")
 
 if not abbrev:
-  console.log(f"Prompt:")
   print(Panel(prompt.text()))
 
 for model in models_to_run:
@@ -89,13 +89,13 @@ for model in models_to_run:
       console.log("Prompt:      " + "[yellow]" + result.prompt.text_abbrev(25) + f"[/yellow] ({result.prompt.text_len()} chars)")
       console.log("Completion:  " + "[green]" + result.response.completion_abbrev(25) + f"[/green] ({result.response.completion_len()} chars)")
     else:
-      console.log("Full prompt:\n")
       console.log(Panel('[yellow]' + result.prompt.text() + '[/yellow]'))
-
-      console.log("\nFull completion:\n")
       console.log(Panel('[green]' + result.response.completion + '[/green]'))
 
-    console.log(f"[blue]Completion length[/blue]: {result.response.completion_len()} bytes    [blue]Tokens used[/blue]: {result.response.tokens_used}\n")
+    completion = f"[blue]Completion length[/blue]: {result.response.completion_len()} bytes"
+    tokens_used = f"[blue]Tokens used[/blue]: {result.response.tokens_used}"
+    elapsed_time = f"[blue]Elapsed time[/blue]: {round(result.elapsed_time, 2)}s"
 
-    console.log(f"💾 run saved to: ")
-    console.log(run_save_directory)
+    console.log(f"{completion} {tokens_used} {elapsed_time}")
+
+    console.log(f"💾 {run_save_directory}")
