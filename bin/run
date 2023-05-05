@@ -23,8 +23,6 @@ console = Console(log_time=False, log_path=False)
 parser = argparse.ArgumentParser(description="Run a prompt against configured models.",
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-parser.add_argument('--quiet', '-q', help="Disable any stdout output", default=False)
-parser.add_argument('--verbose', '-v', help="Be verbose and explain each step", default=False)
 parser.add_argument('--abbrev', help="Abbreviate prompts and completions", action=argparse.BooleanOptionalAction, default=True)
 parser.add_argument("--model", "-m", help="Model to use if none is configured (defaults to DEFAULT_MODEL environment variable)", default=os.environ.get('DEFAULT_MODEL'))
 parser.add_argument("prompt_path", help="Path to prompt to run")
@@ -33,7 +31,6 @@ parsed_args = vars(args)
 
 prompt_path = parsed_args["prompt_path"]
 abbrev = parsed_args["abbrev"]
-quiet = parsed_args["quiet"]
 model = parsed_args["model"]
 
 prompt = PromptLoader(prompt_path).load()
