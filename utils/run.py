@@ -24,7 +24,6 @@ parser = argparse.ArgumentParser(description="Run a prompt against configured mo
 parser.add_argument('--quiet', '-q', help="Disable any stdout output", default=False)
 parser.add_argument('--verbose', '-v', help="Be verbose and explain each step", default=False)
 parser.add_argument('--abbrev', help="Abbreviate prompts and completions", action=argparse.BooleanOptionalAction, default=True)
-parser.add_argument("--full_completions", "-fc", help="Display full completions with no abbreviating", default=False)
 parser.add_argument("--model", "-m", help="Model to use if none is configured (defaults to DEFAULT_MODEL environment variable)", default=os.environ.get('DEFAULT_MODEL'))
 parser.add_argument("prompt_path", help="Path to prompt to run")
 args = parser.parse_args()

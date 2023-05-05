@@ -1,5 +1,5 @@
 import os
-import json
+import yaml
 from datetime import datetime
 
 class PromptRunSaver:
@@ -36,10 +36,10 @@ class PromptRunSaver:
       f.write(prompt.template)
 
   def save_config(self, run_directory, config):
-    config_file = os.path.join(run_directory, f"config.json")
+    config_file = os.path.join(run_directory, f"config.yaml")
 
     with open(config_file, "w") as outfile:
-      json.dump(config, outfile)
+      yaml.dump(config, outfile)
 
   def save_completion(self, run_directory, response):
     completion_file = os.path.join(run_directory, f"completion.txt")
@@ -48,7 +48,7 @@ class PromptRunSaver:
       f.write(response.completion)
 
   def save_metrics(self, run_directory, result):
-    metrics_file = os.path.join(run_directory, f"metrics.json")
+    metrics_file = os.path.join(run_directory, f"metrics.yaml")
 
     metrics = {
       'elapsed_time': result.elapsed_time,
@@ -56,7 +56,7 @@ class PromptRunSaver:
     }
 
     with open(metrics_file, "w") as f:
-      json.dump(metrics, f)
+      yaml.dump(metrics, f)
 
   def save(self, model_or_model_config_name, result):
     run_directory = self.prepare_run_directory(result.prompt.path, model_or_model_config_name)
