@@ -59,7 +59,7 @@ if not config or config.empty():
   console.log(f"✅ Will run {model} as a default.")
 else:
   config_found = True
-  console.log(f":magnifying_glass_tilted_left: Using config: {config_loader.config_path}")
+  console.log(f":thumbs_up: Using config: {config_loader.config_path}")
 
 runner = Runner(prompt, config)
 models_to_run = runner.configured_models()
@@ -89,13 +89,16 @@ for model in models_to_run:
     result, run_save_directory = runner.run_model(model)
 
     if abbrev:
-      console.log(result.prompt.text_abbrev(25))
+      console.log("Prompt:      " + "[yellow]" + result.prompt.text_abbrev(25) + f"[/yellow] ({result.prompt.text_len()} chars)")
+      console.log("Completion:  " + "[green]" + result.response.completion_abbrev(25) + f"[/green] ({result.response.completion_len()} chars)")
     else:
-      console.log("\nFull completion text:")
+      console.log("Full prompt:\n")
+      console.log(Panel('[yellow]' + result.prompt.text() + '[/yellow]'))
+
+      console.log("\nFull completion:\n")
       console.log(Panel('[green]' + result.response.completion + '[/green]'))
 
     console.log(f"[blue]Completion length[/blue]: {result.response.completion_len()} bytes    [blue]Tokens used[/blue]: {result.response.tokens_used}\n")
 
     console.log(f"💾 run saved to: ")
     console.log(run_save_directory)
-    console.log("\n")
