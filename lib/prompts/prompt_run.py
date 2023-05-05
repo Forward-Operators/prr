@@ -31,23 +31,13 @@ class PromptRunResult:
   def update_with_response(self, response):
     self.response = response
 
-  def __str__(self):
-    s = "PromptRunResult: "
-    s += "Config: " + str(self.config) + " "
-    s += "Prompt: [" + str(self.prompt) + "] "
-    s += "Elapsed time: " + str(round(self.elapsed_time, 2)) + "s "
-    s += "Response: " + str(self.response)
-
-    return s
-
-
   def description(self, abbrev=True):
     c = self.config
 
     if abbrev:
-      prompt = fg('blue') + "Prompt: " + attr('reset') + self.prompt.text_abbrev(25) + " (" + str(self.prompt.text_len()) + " chars)\n"
+      prompt = fg('blue') + "Prompt:     " + attr('reset') + self.prompt.text_abbrev(25) + " (" + str(self.prompt.text_len()) + " chars)\n"
     else:
-      prompt = fg('blue') + "Prompt: " + attr('reset') + "\n----\n" + self.prompt.text() + "\n----\n(" + str(self.prompt.text_len()) + " chars)\n\n"
+      prompt = fg('blue') + "Prompt:     " + attr('reset') + "\n----\n" + self.prompt.text() + "\n----\n(" + str(self.prompt.text_len()) + " chars)\n\n"
 
     elapsed_time = fg('blue') + "Elapsed time: " + attr('reset') + str(round(self.elapsed_time, 2)) + "s  "
 

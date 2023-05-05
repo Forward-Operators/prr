@@ -23,7 +23,10 @@ class Runner:
     return result, run_save_directory
 
   def configured_models(self):
-    return self.config.models()
+    if self.config:
+      return self.config.models()
+
+    return []
 
   # runs all models defined for specified prompt
   def run_all_configured_models(self):

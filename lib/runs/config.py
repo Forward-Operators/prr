@@ -1,12 +1,18 @@
-def default_config_from_model_provider_name(model_provider_name):
-  provider_name, model_name = model_provider_name.split("/")
+import os
+import yaml
 
-  return {
+def default_config_from_model_provider_name(model_provider_name, options={}):
+  provider_name, model_name = model_provider_name.split("/")
+  default_options = {
     'model': model_provider_name,
     'provider_name': provider_name,
-    'model_name': model_name
+    'model_name': model_name,
+    'model_config_name': model_provider_name,
   }
+  
+  default_options.update(options)
 
+  return default_options
 
 class PromptConfig:
   def __init__(self, config_dictionary):
@@ -55,7 +61,6 @@ class PromptConfig:
       return default_config_from_model_provider_name(model_config_name)
     
     elif isinstance(models_config, dict):
-      
       model_names = models_config.get('models', {})
 
       if model_names:
@@ -112,11 +117,20 @@ class PromptConfig:
 
     raise "Invalid models configuration."
 
-  def get_expect_config(self):
-    """Get the 'expect' configuration.
-    
-    Returns:
-        dict: The 'expect' configuration as a dictionary.
-    """
-    return self.config.get('expect', {})
-    
+class ConfigLoader:
+  def __init__(self, prompt):
+    self.prompt_path = prompt.path
+    self.config_path = self.prompt_path + ".config"
+
+  def load(self):
+    if os.path.isfile(self.config_path):
+      with open(self.config_path, "r") as stream:
+          try:
+              return PromptConfig(yaml.safe_load(stream))
+          except yaml.YAMLError as exc:
+              print(exc)
+
+    return PromptConfig({})
+
+  def from_dict(self, dict):
+    return PromptConfig(dict)

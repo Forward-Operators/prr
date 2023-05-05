@@ -1,7 +1,7 @@
 #!/usr/bin/env python3.10
 
+import os
 import sys
-import time
 
 sys.path.append('.')
 sys.path.append('/opt/conda/lib/python3.10/site-packages')
@@ -12,7 +12,8 @@ load_dotenv()
 
 from rich.console import Console
 
-from lib.prompts.library import Library
+from lib.prompts.loader import PromptLoader
+from lib.runs.config import ConfigLoader
 from lib.runs.runner import Runner
 
 console = Console(log_time=False, log_path=False)
@@ -22,40 +23,63 @@ parser = argparse.ArgumentParser(description="Run a prompt against configured mo
 
 parser.add_argument('--quiet', '-q', help="Disable any stdout output", default=False)
 parser.add_argument('--verbose', '-v', help="Be verbose and explain each step", default=False)
-parser.add_argument('--library', '-l', help="Path to prompt library directory", default="./prompts")
 parser.add_argument('--abbrev', help="Abbreviate prompts and completions", action=argparse.BooleanOptionalAction, default=True)
 parser.add_argument("--full_completions", "-fc", help="Display full completions with no abbreviating", default=False)
+parser.add_argument("--model", "-m", help="Model to use if none is configured (defaults to DEFAULT_MODEL environment variable)", default=os.environ.get('DEFAULT_MODEL'))
 parser.add_argument("prompt_path", help="Path to prompt to run")
 args = parser.parse_args()
 parsed_args = vars(args)
 
 prompt_path = parsed_args["prompt_path"]
 abbrev = parsed_args["abbrev"]
-library_path = parsed_args["library"]
 quiet = parsed_args["quiet"]
+model = parsed_args["model"]
 
-console.log(f":books: Using prompt library at: {library_path}")
-library = Library(library_path)
+prompt = PromptLoader(prompt_path).load()
+config_loader = ConfigLoader(prompt)
+config = config_loader.load()
 
-console.log(f":magnifying_glass_tilted_left: Looking up prompt: {prompt_path}")
-prompt, config = library.get_prompt_and_config(prompt_path)
-console.log(f":magnifying_glass_tilted_left: Prompt found: {prompt.path}")
+console.log(f":magnifying_glass_tilted_left: Reading {prompt.text_len()} bytes of prompt from {prompt_path}")
+
+config_found = False
 
 if not config or config.empty():
-  console.error(f":x: No config found for: {prompt.path}")
-  sys.exit(-1)
+  console.log(f":x: No config found for the prompt, will use default values")
 
-console.log(f"✅ Config found for: {config.models()}")
+  if not model:
+    console.log(f":x: No model specified with DEFAULT_MODEL variable (see .env.example) and no --model option provided, giving up.")
+    exit(-1)
+
+  config = config_loader.from_dict({
+    "models": [
+      model
+    ]
+  })
+  console.log(f"✅ Will run {model} as a default.")
+else:
+  config_found = True
+  console.log(f":magnifying_glass_tilted_left: Using config: {config_loader.config_path}")
 
 runner = Runner(prompt, config)
+models_to_run = runner.configured_models()
 
-for model in runner.configured_models():
-  with console.status(f":robot: [bold green]{model} processing...") as status:
+if config_found:
+  console.log(f"✅ Config found for: {models_to_run}")
+
+for model in models_to_run:
+  model_config = runner.config.model(model)
+
+  model_provider_name = "/".join([model_config['provider_name'], model_config['model_name']])
+
+  if model_config['model_config_name'] and model_provider_name != model_config['model_config_name']:
+    model_description = f"{model_config['model_config_name']} ({model_provider_name})"
+  else:
+    model_description = model_provider_name
+
+  with console.status(f":robot: [bold green]{model_description}[/bold green]") as status:
     options = runner.model_options_for_model(model)
-    console.log(f"🤖 {model} {options.description()}",)
+    console.log(f"\n🤖 [bold]{model_description}[/bold] {options.description()}",)
     result, run_save_directory = runner.run_model(model)
-    print("\n")
     print(result.description(abbrev))
-    console.log(f"💾 {model} run saved to: ")
+    console.log(f"💾 run saved to: ")
     print(run_save_directory)
-    print("\n\n")
