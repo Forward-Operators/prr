@@ -89,10 +89,12 @@ for model in models_to_run:
     result, run_save_directory = runner.run_model(model)
 
     if abbrev:
-      console.log(result.description(abbrev))
+      console.log(result.prompt.text_abbrev(25))
     else:
       console.log("\nFull completion text:")
       console.log(Panel('[green]' + result.response.completion + '[/green]'))
+
+    console.log(f"[blue]Completion length[/blue]: {result.response.completion_len()} bytes    [blue]Tokens used[/blue]: {result.response.tokens_used}\n")
 
     console.log(f"💾 run saved to: ")
     console.log(run_save_directory)
