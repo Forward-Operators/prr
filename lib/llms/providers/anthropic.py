@@ -1,3 +1,6 @@
+# https://console.anthropic.com/docs/api/reference
+# https://github.com/anthropics/anthropic-sdk-python/tree/main/examples
+
 import os
 import anthropic
 
@@ -37,5 +40,5 @@ class LLMProviderAnthropic:
 
     return ModelResponse({
       'completion': response['completion'],
-      'tokens_used':83
+      'tokens_used': anthropic.count_tokens(response['completion']),
     })
