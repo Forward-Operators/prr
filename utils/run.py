@@ -23,8 +23,6 @@ class RunPromptCommand():
   def __init__(self, args):
     self.args = args
 
-    print(args)
-
     self.prompt = None
     self.config = None
 

@@ -47,7 +47,7 @@ pip install --upgrade openai
 pip install python-dotenv
 pip install anthropic
 pip install rich
-
+pip install Jinja2
 ```
 
 ### Setup your API keys

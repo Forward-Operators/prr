@@ -1,5 +1,6 @@
 import os
 import yaml
+import jinja2
 
 class Prompt:
   def __init__(self, path):
@@ -46,7 +47,13 @@ class Prompt:
 
   def load_text_file(self, path):
     with open(path, "r") as f:
-      self.template = f.read()
+      raw_text = f.read()
+      template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(path))
+      template_env = jinja2.Environment(loader=template_loader)
+      self.template = template_env.get_template(os.path.basename(path))
+
+      # self.template = template.render(name='John Doe')
+      
       self.path = path
 
   def message_text_description(self, message):
@@ -63,7 +70,7 @@ class Prompt:
     if self.messages:
       return "\n".join([self.message_text_description(msg) for msg in self.messages])
     
-    return self.template
+    return self.template.render()
   
   def text_len(self):
     return len(self.text())

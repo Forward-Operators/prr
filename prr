@@ -10,10 +10,6 @@ import argparse
 from dotenv import load_dotenv
 load_dotenv()
 
-from rich import print
-from rich.console import Console
-from rich.panel import Panel
-
 from utils.run import RunPromptCommand
 from utils.watch import WatchPromptCommand
 
