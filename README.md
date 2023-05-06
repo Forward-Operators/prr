@@ -1,3 +1,31 @@
+# prr - The Prompt Runner
+
+![prr - The Prompt Runner Logo](/images/prr-logo.png)
+
+Welcome to **prr - Prompt Runner**! 
+
+Prr is a simple toolchain designed to help you run prompts across multiple Large Language Models (LLMs), whether they are hosted locally or accessible through APIs. Easily refine your parameters, prompts and model choices to achieve the best results while itearting smoothly with quick feedback loop.
+
+Prr is released as an open-source project under the MIT License.
+
+Made by [Forward Operators](https://fwdoperators.com/) AI Lab.
+
+## Note
+
+Prr is in very early stages of development, so things might still explode embarrasingly.
+
+## Features
+
+- Easy integration with Anthropic and OpenAI APIs
+- Simple setup with `.env` API keys
+- Command-line execution of prompts
+- YAML configuration files for each prompt
+- Refine your prompts and parameters with ease
+- Expandable to other LLM providers
+
+## Getting Started
+
+To start using Prr, simply follow these steps:
 # requirements
 
 ```prompt lib with some tooling
@@ -9,12 +37,19 @@ pip install anthropic
 pip install rich
 
 ```
-
-# setup
-
 `.env.example` - setup your keys and save as `.env`
 
-# usage
+1. Clone the repo: `git clone https://github.com/yourusername/prr.git`
+2. Navigate to the project directory: `cd prr`
+3. Set up a virtual environment (optional but recommended): `python3 -m venv venv`
+4. Activate the virtual environment:
+   - On Linux/MacOS: `source venv/bin/activate`
+   - On Windows: `venv\Scripts\activate`
+5. Install the required packages: `pip install -r requirements.txt`
+6. Fill in your API keys for Anthropic and OpenAI in the `.env` file.
+7. Run your first prompt: `./bin/run <prompt_path>`
+
+## Usage
 
 ## Run a prompt from your library
 
@@ -70,41 +105,7 @@ prompts/dingo-dog/crazy-chihuahua-mix/runs
 prompts/dingo-dog/crazy-chihuahua-mix/runs/2023-05-02-22:39.31337/
 
 
-# other
 
-## provider - model
-## library - prompt - template - text
-
-# Prr - Prompt Runner
-
-![Prr - Prompt Runner Logo](/images/prr-logo.png)
-
-Welcome to **Prr - Prompt Runner**! An innovative Python-based toolchain designed to help you run prompts across multiple Large Language Models (LLMs), whether they are hosted locally or accessible through APIs. Easily refine your parameters and prompts to achieve the best results.
-
-Prr is released as an open-source project under the MIT License.
-
-## Features
-
-- Easy integration with Anthropic and OpenAI APIs
-- Simple setup with `.env` API keys
-- Command-line execution of prompts
-- YAML configuration files for each prompt
-- Refine your prompts and parameters with ease
-- Expandable to other LLM providers
-
-## Getting Started
-
-To start using Prr, simply follow these steps:
-
-1. Clone the repo: `git clone https://github.com/yourusername/prr.git`
-2. Navigate to the project directory: `cd prr`
-3. Set up a virtual environment (optional but recommended): `python3 -m venv venv`
-4. Activate the virtual environment:
-   - On Linux/MacOS: `source venv/bin/activate`
-   - On Windows: `venv\Scripts\activate`
-5. Install the required packages: `pip install -r requirements.txt`
-6. Fill in your API keys for Anthropic and OpenAI in the `.env` file.
-7. Run your first prompt: `./bin/run <prompt_path>`
 
 ## Example: Running a Prompt with Configuration
 
