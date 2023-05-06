@@ -2,7 +2,7 @@
 
 ![prr - The Prompt Runner Logo](/images/prr-logo.png)
 
-Welcome to **prr - Prompt Runner**! 
+Welcome to **prr - The Prompt Runner**! 
 
 Prr is a simple toolchain designed to help you run prompts across multiple Large Language Models (LLMs), whether they are hosted locally or accessible through APIs. Easily refine your parameters, prompts and model choices to achieve the best results while itearting smoothly with quick feedback loop.
 
@@ -12,7 +12,7 @@ Made by [Forward Operators](https://fwdoperators.com/) AI Lab.
 
 ## Note
 
-Prr is in very early stages of development, so things might still explode embarrasingly.
+Prr is in very early stages of development, so things might still change or explode embarrasingly.
 
 ## Features
 
@@ -23,21 +23,36 @@ Prr is in very early stages of development, so things might still explode embarr
 - Refine your prompts and parameters with ease
 - Expandable to other LLM providers
 
+## TODO
+
+- [ ] Clean basic code smells
+- [ ] Improve support for OpenAI and Anthropic
+- [ ] Add support for other LLM providers
+- [ ] Add support for testing against expectations (elapsed_time, tokens_used)
+- [ ] Build interface to extract stats from subsequent runs for later analysis
+- [ ] Add support for chat structure in prompts using YAML
+- [ ] Integrate Jinja as templating language for prompts
+- [ ] #!/usr/bin/prr shebang support for executable prompts
+
 ## Getting Started
 
 To start using Prr, simply follow these steps:
-# requirements
+
+### Install dependencies
 
 ```prompt lib with some tooling
+pip install -r requirements.txt
+
 pip install --upgrade openai
 pip install python-dotenv
 pip install anthropic
-
-
 pip install rich
 
 ```
-`.env.example` - setup your keys and save as `.env`
+
+### Setup your API keys
+
+Copy `.env.example` - and save it as `.env`. Fill in your API keys for Anthropic, OpenAI and other providers.
 
 1. Clone the repo: `git clone https://github.com/yourusername/prr.git`
 2. Navigate to the project directory: `cd prr`
@@ -51,19 +66,31 @@ pip install rich
 
 ## Usage
 
-## Run a prompt from your library
+### Run a prompt from a simple text file containing just a prompt
 
 ```
-prr run common/dingo-dog
+prr run ./dogs/dingo-dog
 ```
 
-## Run a prompt from your library against specific model
+### Run a prompt against specific model
 
 ```
-prr run --model anthropic/claude-v1 concept-maps/subconcepts-of-buddhism
+prr run --model anthropic/claude-v1 ./subconcepts-of-buddhism
 ```
 
-## Run a prompt from your library and save output to file
+### Watch prompt for changes to re-run it then when occur (after each save)
+
+```
+prr watch ./subconcepts-of-buddhism
+```
+
+### Watch prompt for changes to re-run the prompt, but not more often than every 15 seconds
+
+```
+prr watch -c 15 ./subconcepts-of-buddhism
+```
+
+### Run a prompt from your library and save output to file
 
 ```
 prr run common/dingo-dog > /tmp/dingo-response.txt
