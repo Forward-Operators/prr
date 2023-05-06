@@ -25,7 +25,9 @@ def timestamp_for_file(path):
 class WatchPromptCommand():
   def __init__(self, args):
     self.args = args
-    
+    self.setup_files_to_monitor()
+
+  def reload_files(self):
     self.setup_files_to_monitor()
 
   def current_timestamps(self):
@@ -42,6 +44,7 @@ class WatchPromptCommand():
     config_loader = ConfigLoader(prompt)
     config_path = config_loader.config_path
     self.files = [prompt.path, config_path]
+    self.files.extend(prompt.dependency_files)
     self.update_timestamps()
 
   def files_changed(self):
@@ -49,6 +52,7 @@ class WatchPromptCommand():
 
     if new_timestamps != self.file_timestamps:
       self.update_timestamps(new_timestamps)
+      self.reload_files()
       return True
 
     return False
@@ -57,7 +61,7 @@ class WatchPromptCommand():
     prompt_path = self.args['prompt_path']
     cooldown = self.args['cooldown']
 
-    message = f"👀 watching {self.args['prompt_path']}"
+    message = f"👀 watching {self.files}"
 
     if cooldown != None:
       if int(cooldown) > 0:
@@ -72,9 +76,12 @@ class WatchPromptCommand():
   def cooldown_if_needed(self):
     cooldown = self.args['cooldown']
 
+    print(f"🕶️ {cooldown}s cooldown started.\n")
+
     if cooldown != None:
       if int(cooldown) > 0:
         time.sleep(int(cooldown))
+        print(self.status_message())
 
   def watch_prompt(self):
     print(self.status_message())

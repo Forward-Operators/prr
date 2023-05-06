@@ -30,10 +30,10 @@ class PromptRunSaver:
     return run_dir
   
   def save_prompt(self, run_directory, prompt):
-    prompt_file = os.path.join(run_directory, f"prompt.txt")
+    prompt_file = os.path.join(run_directory, f"prompt")
 
     with open(prompt_file, "w") as f:
-      f.write(prompt.template)
+      f.write(prompt.dump())
 
   def save_config(self, run_directory, config):
     config_file = os.path.join(run_directory, f"config.yaml")

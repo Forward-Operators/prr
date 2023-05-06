@@ -5,18 +5,30 @@ from ..response import ModelResponse
 
 # OpenAI model provider class
 class LLMProviderOpenAI:
+  def messages_from_prompt(self):
+    messages = self.prompt.messages
+    text = self.prompt.text()
+
+    if messages:
+      return messages
+    
+    return [
+      {
+        "role": "user", 
+        "content": text
+      }
+    ]
+
+
   def run(self, prompt, config):
+    self.prompt = prompt
     self.options = ModelOptions(config)
-    prompt_text = prompt.text()
+
+    messages = self.messages_from_prompt()
 
     completion = openai.ChatCompletion.create(
       model = config['model_name'],
-      messages = [
-        {
-          "role": "user", 
-          "content": prompt_text
-        }
-      ],
+      messages = messages,
       temperature = self.options.temperature,
       max_tokens = self.options.max_tokens
     )

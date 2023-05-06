@@ -13,12 +13,15 @@ class Runner:
   def model_options_for_model(self, model_config_name):
     return ModelOptions(self.config.model(model_config_name))
 
-  def run_model(self, model_config_name):
+  def run_model(self, model_config_name, save_run=False):
     model_config = self.config.model(model_config_name)
 
     result = PromptRun(self.prompt, model_config).run()
 
-    run_save_directory = self.saver.save(model_config_name, result)
+    if save_run:
+      run_save_directory = self.saver.save(model_config_name, result)
+    else:
+      run_save_directory = None
 
     return result, run_save_directory
 

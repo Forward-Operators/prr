@@ -23,6 +23,8 @@ class RunPromptCommand():
   def __init__(self, args):
     self.args = args
 
+    print(args)
+
     self.prompt = None
     self.config = None
 
@@ -56,9 +58,10 @@ class RunPromptCommand():
 
     console.log(f"{completion} {tokens_used} {elapsed_time}")
 
-    console.log(f"💾 {run_save_directory}")
+    if run_save_directory:
+      console.log(f"💾 {run_save_directory}")
 
-  def run_prompt_model_with_config(self, model_config_name):
+  def run_prompt_model_with_config(self, model_config_name, save=False):
     model_config = self.config.model(model_config_name)
     model_description = self.full_model_name_description_from_config(model_config)
 
@@ -69,7 +72,7 @@ class RunPromptCommand():
 
       status.update(status="running model", spinner="dots8Bit")
 
-      result, run_save_directory = self.runner.run_model(model_config_name)
+      result, run_save_directory = self.runner.run_model(model_config_name, save)
 
       self.print_run_results(result, run_save_directory)
 
@@ -116,4 +119,4 @@ class RunPromptCommand():
       print(Panel(self.prompt.text()))
 
     for model_config_name in models_to_run:
-      self.run_prompt_model_with_config(model_config_name)
+      self.run_prompt_model_with_config(model_config_name, self.args['save'])

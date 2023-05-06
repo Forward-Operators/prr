@@ -10,7 +10,5 @@ class PromptLoader:
     self.path = prompt_path
 
   def load(self):
-    if os.path.isfile(self.path):
-      with open(self.path, 'r') as file:
-          prompt_template = file.read()
-          return Prompt(self.path, prompt_template)
+    if os.path.exists(self.path):
+      return Prompt(self.path)

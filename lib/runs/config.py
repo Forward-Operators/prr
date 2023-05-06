@@ -120,7 +120,12 @@ class PromptConfig:
 class ConfigLoader:
   def __init__(self, prompt):
     self.prompt_path = prompt.path
-    self.config_path = self.prompt_path + ".config"
+    root, extension = os.path.splitext(self.prompt_path)
+
+    if extension == ".yaml":
+      self.config_path = root + ".config"
+    else:
+      self.config_path = self.prompt_path + ".config"
 
   def config_file_exists(self):
     return os.path.isfile(self.config_path)
@@ -129,9 +134,9 @@ class ConfigLoader:
     if self.config_file_exists():
       with open(self.config_path, "r") as stream:
           try:
-              return PromptConfig(yaml.safe_load(stream))
+            return PromptConfig(yaml.safe_load(stream))
           except yaml.YAMLError as exc:
-              print(exc)
+            print(exc)
 
     return PromptConfig({})
 
