@@ -13,31 +13,18 @@ from rich import print
 from rich.console import Console
 from rich.panel import Panel
 
-from lib.prompts.loader import PromptLoader
-from lib.runs.config import ConfigLoader
-from lib.runs.runner import Runner
+from lib.loader import PromptLoader
+from lib.runner import Runner
 
 console = Console(log_time=False, log_path=False)
 
 class RunPromptCommand():
   def __init__(self, args):
     self.args = args
-
     self.prompt = None
-    self.config = None
 
     self.load_prompt_for_path()
-    self.load_config_for_prompt()
-
-    self.runner = Runner(self.prompt, self.config)
-
-  def full_model_name_description_from_config(self, model_config):
-    model_provider_name = "/".join([model_config['provider_name'], model_config['model_name']])
-
-    if model_config['model_config_name'] and model_provider_name != model_config['model_config_name']:
-      return f"{model_config['model_config_name']} ({model_provider_name})"
-
-    return model_provider_name
+    self.runner = Runner(self.prompt)
 
   def print_run_results(self, result, run_save_directory):
     prompt = result.prompt
@@ -59,43 +46,19 @@ class RunPromptCommand():
     if run_save_directory:
       console.log(f"💾 {run_save_directory}")
 
-  def run_prompt_model_with_config(self, model_config_name, save=False):
-    model_config = self.config.model(model_config_name)
-    model_description = self.full_model_name_description_from_config(model_config)
+  def run_prompt_on_service(self, service_name, save=False):
+    service_config = self.prompt.config_for_service(service_name)
+    options = service_config.options
 
-    with console.status(f":robot: [bold green]{model_description}[/bold green]") as status:
-      options = self.runner.model_options_for_model(model_config_name)
-
-      console.log(f"\n🤖 [bold]{model_description}[/bold] {options.description()}", style="frame")
+    with console.status(f":robot: [bold green]{service_name}[/bold green]") as status:
+      console.log(f"\n🤖 [bold]{service_name}[/bold] {options.description()}", style="frame")
 
       status.update(status="running model", spinner="dots8Bit")
 
-      result, run_save_directory = self.runner.run_model(model_config_name, save)
+      result, run_save_directory = self.runner.run_service(service_name, save)
 
       self.print_run_results(result, run_save_directory)
 
-
-  def load_config_for_prompt(self):
-    config_loader = ConfigLoader(self.prompt)
-    default_model = self.args['model']
-
-    if config_loader.config_file_exists():
-      console.log(f":thumbs_up: Using config: {config_loader.config_path}")
-      self.config = config_loader.load()
-    else:
-      console.log(f":x: No config found for the prompt, will use default values")
-
-      if not default_model:
-        console.log(f":white_flag: No model specified with DEFAULT_MODEL variable (see .env.example) and no --model option provided, giving up.")
-        exit(-1)
-
-      self.config = config_loader.from_dict({
-        "models": [
-          default_model
-        ]
-      })
-
-      console.log(f"✅ Will run {default_model} as a default.")
 
   def load_prompt_for_path(self):
     prompt_path = self.args['prompt_path']
@@ -109,12 +72,21 @@ class RunPromptCommand():
     self.prompt = prompt_loader.load()
 
   def run_prompt(self):
-    models_to_run = self.runner.configured_models()
+    services_to_run = self.prompt.configured_service_names()
 
-    console.log(f":racing_car:  Models to run: {models_to_run}")
+    if services_to_run == []:
+      if self.args['service']:
+        services_to_run = [self.args['service']]
+        console.log(f":racing_car:  Running service {self.args['service']} with default options.")
+      else:
+        console.log(f":x: No services configured for prompt {self.args['prompt_path']}, nor given in command-line. Not even in .env!")
+        exit(-1)
+    else:
+      console.log(f":racing_car:  Running services: {services_to_run}")
+
 
     if not self.args["abbrev"]:
       print(Panel(self.prompt.text()))
 
-    for model_config_name in models_to_run:
-      self.run_prompt_model_with_config(model_config_name, self.args['save'])
+    for service_name in services_to_run:
+      self.run_prompt_on_service(service_name, self.args['log'])

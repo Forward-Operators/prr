@@ -11,8 +11,7 @@ sys.path.append('/opt/conda/lib/python3.10/site-packages')
 from dotenv import load_dotenv
 load_dotenv()
 
-from lib.prompts.loader import PromptLoader
-from lib.runs.config import ConfigLoader
+from lib.loader import PromptLoader
 
 from utils.run import RunPromptCommand
 
@@ -41,9 +40,7 @@ class WatchPromptCommand():
 
   def setup_files_to_monitor(self):
     prompt = PromptLoader(self.args['prompt_path']).load()
-    config_loader = ConfigLoader(prompt)
-    config_path = config_loader.config_path
-    self.files = [prompt.path, config_path]
+    self.files = [prompt.path]
     self.files.extend(prompt.dependency_files)
     self.update_timestamps()
 

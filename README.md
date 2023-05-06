@@ -32,7 +32,15 @@ Prr is in very early stages of development, so things might still change or expl
 - [ ] Build interface to extract stats from subsequent runs for later analysis
 - [ ] Add support for chat structure in prompts using YAML
 - [ ] Integrate Jinja as templating language for prompts
+- [ ] Make dependency files for Jinja subtemplates are tracked in watch command
 - [ ] #!/usr/bin/prr shebang support for executable prompts
+- [ ] More output modalities (audio, image, video)
+- [ ] Support different text output formats (json, markdown, code, etc.)
+- [ ] Diff command to compare differences in output
+- [ ] Support evaluating prompt outputs for quality by LLMs themselves
+- [ ] Support for streaming
+- [ ] Support for running prompts in parallel
+- [ ] Support for calculating pricing for prompts based on defined pricelist
 
 ## Getting Started
 

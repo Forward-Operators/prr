@@ -1,15 +1,4 @@
-from ..llms.providers.openai import LLMProviderOpenAI
-from ..llms.providers.anthropic import LLMProviderAnthropic
-
 import time
-
-def find_provider(provider_name):
-  if provider_name == "openai":
-    return LLMProviderOpenAI()
-  elif provider_name == "anthropic":
-    return LLMProviderAnthropic()
-  else:
-    raise Exception("Unknown provider: " + provider_name)
 
 class PromptRunResult:
   def __init__(self, prompt, config):
@@ -29,19 +18,26 @@ class PromptRunResult:
   def update_with_response(self, response):
     self.response = response
 
+  def metrics(self):
+    return {
+      'elapsed_time': self.elapsed_time,
+      'tokens_used': self.response.tokens_used,
+    }
+
+
 # takes prompt and model config, finds provider, runs the prompt
 class PromptRun:
-  def __init__(self, prompt, config):
+  def __init__(self, prompt, service, service_config):
     self.prompt = prompt
-    self.config = config
-    self.provider = find_provider(config['provider_name'])
+    self.service = service
+    self.service_config = service_config
 
   def run(self):
-    result = PromptRunResult(self.prompt, self.config)
+    result = PromptRunResult(self.prompt, self.service_config)
     
     result.before_run()
 
-    response = self.provider.run(self.prompt, self.config)
+    response = self.service.run(self.prompt, self.service_config)
 
     result.after_run()
 

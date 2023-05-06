@@ -50,10 +50,7 @@ class PromptRunSaver:
   def save_metrics(self, run_directory, result):
     metrics_file = os.path.join(run_directory, f"metrics.yaml")
 
-    metrics = {
-      'elapsed_time': result.elapsed_time,
-      'tokens_used': result.response.tokens_used,
-    }
+    metrics = result.metrics()
 
     with open(metrics_file, "w") as f:
       yaml.dump(metrics, f)
