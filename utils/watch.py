@@ -5,13 +5,13 @@ import sys
 import time
 import datetime
 
+from lib.prompt import Prompt
+
 sys.path.append('.')
 sys.path.append('/opt/conda/lib/python3.10/site-packages')
 
 from dotenv import load_dotenv
 load_dotenv()
-
-from lib.loader import PromptLoader
 
 from utils.run import RunPromptCommand
 
@@ -39,9 +39,8 @@ class WatchPromptCommand():
       self.file_timestamps = self.current_timestamps()
 
   def setup_files_to_monitor(self):
-    prompt = PromptLoader(self.args['prompt_path']).load()
-    self.files = [prompt.path]
-    self.files.extend(prompt.dependency_files)
+    prompt = Prompt(self.args['prompt_path'])
+    self.files = prompt.dependency_files
     self.update_timestamps()
 
   def files_changed(self):

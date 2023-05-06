@@ -46,7 +46,7 @@ def parse_specifically_configured_services(services_config):
 # services:
 #   models: 
 #     - 'openai/chat/gpt-3.5-turbo'
-#     - 'anthropic/complete/laude-v1'
+#     - 'anthropic/complete/claude-v1'
 #   options:
 #     temperature: 0.7
 #     max_tokens: 100
@@ -116,9 +116,9 @@ class Prompt:
     if prompt_config.get('messages'):
       self.parse_messages(prompt_config['messages'])
     elif prompt_config.get('content'):
-      self.template = jinja2.Template(prompt_config['content'])
+      self.template = self.load_jinja_template_from_string(prompt_config['content'])
     elif prompt_config.get('content_file'):
-      self.template = self.load_jinja_template(prompt_config['content_file'])
+      self.template = self.load_jinja_template_from_file(prompt_config['content_file'])
 
   def config_for_service(self, service_name):
     if self.services:
@@ -141,14 +141,20 @@ class Prompt:
         if data['prompt']:
           self.parse_prompt_config(data['prompt'])
 
-  def load_jinja_template(self, template_path):
-    template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(template_path))
+  def load_jinja_template_from_string(self, content):
+    template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(self.path))
+    template_env = jinja2.Environment(loader=template_loader)
+    
+    return template_env.from_string(content)
+
+  def load_jinja_template_from_file(self, template_path):
+    template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(self.path))
     template_env = jinja2.Environment(loader=template_loader)
 
     return template_env.get_template(os.path.basename(template_path))
 
   def load_text_file(self, path):
-    self.template = self.load_jinja_template(path)
+    self.template = self.load_jinja_template_from_string(path)
     self.path = path
 
   def message_text_description(self, message):

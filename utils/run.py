@@ -3,6 +3,8 @@
 import os
 import sys
 
+from lib.prompt import Prompt
+
 sys.path.append('.')
 sys.path.append('/opt/conda/lib/python3.10/site-packages')
 
@@ -13,7 +15,6 @@ from rich import print
 from rich.console import Console
 from rich.panel import Panel
 
-from lib.loader import PromptLoader
 from lib.runner import Runner
 
 console = Console(log_time=False, log_path=False)
@@ -68,8 +69,7 @@ class RunPromptCommand():
       exit(-1)
 
     console.log(f":magnifying_glass_tilted_left: Reading {prompt_path}")
-    prompt_loader = PromptLoader(prompt_path)
-    self.prompt = prompt_loader.load()
+    self.prompt = Prompt(prompt_path)
 
   def run_prompt(self):
     services_to_run = self.prompt.configured_service_names()
