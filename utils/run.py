@@ -110,7 +110,7 @@ class RunPromptCommand():
   def run_prompt(self):
     models_to_run = self.runner.configured_models()
 
-    console.log(f":racing_car: Models to run: {models_to_run}")
+    console.log(f":racing_car:  Models to run: {models_to_run}")
 
     if not self.args["abbrev"]:
       print(Panel(self.prompt.text()))

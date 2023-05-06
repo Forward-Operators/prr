@@ -3,7 +3,7 @@
 import os
 import sys
 import time
-import subprocess
+import datetime
 
 sys.path.append('.')
 sys.path.append('/opt/conda/lib/python3.10/site-packages')
@@ -88,11 +88,8 @@ class WatchPromptCommand():
       time.sleep(0.25)
 
   def run(self):
-    print(f'🧨 running')
-
+    timestamp = datetime.datetime.now().strftime("%H:%M:%S")
+    print("\n")
+    print("------------- new run at " + timestamp + " -------------")
     command = RunPromptCommand(self.args)
     command.run_prompt()
-
-    print(f'🧨 DONE')
-
-    # os.system(cmdline)
