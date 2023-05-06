@@ -14,17 +14,34 @@ from rich import print
 from rich.console import Console
 from rich.panel import Panel
 
-from .utils.run import run_prompt_with_args
+from utils.run import RunPromptCommand
+from utils.watch import WatchPromptCommand
 
 parser = argparse.ArgumentParser(description="Run a prompt against configured models.",
-                                formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+                                 prog="prr",
+                                 formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
-parser.add_argument('--abbrev', help="Abbreviate prompts and completions", action=argparse.BooleanOptionalAction, default=True)
-parser.add_argument('--cooldown', '-c', help="How much to wait after a re-run", default=5)
-parser.add_argument("--model", "-m", help="Model to use if none is configured (defaults to DEFAULT_MODEL environment variable)", default=os.environ.get('DEFAULT_MODEL'))
-parser.add_argument("prompt_path", help="Path to prompt to run")
+sub_parsers = parser.add_subparsers(help='command to execute', dest='command')
+run_parser = sub_parsers.add_parser('run', help='run prompt against models')
+watch_parser = sub_parsers.add_parser('watch', help='watch prompts/config changes to launch re-runs')
+
+def add_common_args(_parser):
+  _parser.add_argument('--abbrev', help="Abbreviate prompts and completions", action=argparse.BooleanOptionalAction, default=True)
+  _parser.add_argument("--model", "-m", help="Model to use if none is configured (defaults to DEFAULT_MODEL environment variable)", default=os.environ.get('DEFAULT_MODEL'), type=str)
+  _parser.add_argument("prompt_path", help="Path to prompt to run")
+    
+add_common_args(run_parser)
+add_common_args(watch_parser)
+
+watch_parser.add_argument('--cooldown', '-c', type=int, help="How much to wait after a re-run", default=5)
 
 args = parser.parse_args()
 parsed_args = vars(args)
 
-run_prompt_with_args(parsed_args)
+if parsed_args['command'] == 'run':
+  command = RunPromptCommand(parsed_args)
+  command.run_prompt()
+
+if parsed_args['command'] == 'watch':
+  command = WatchPromptCommand(parsed_args)
+  command.watch_prompt()

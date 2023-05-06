@@ -13,35 +13,8 @@ load_dotenv()
 
 from lib.prompts.loader import PromptLoader
 from lib.runs.config import ConfigLoader
-from lib.runs.runner import Runner
-from run import CommandArgumentParser
 
-parser = CommandArgumentParser()
-
-args = parser.parse_args()
-parsed_args = vars(args)
-
-prompt_path = parsed_args["prompt_path"]
-
-print (f"👀 watching for changes on {prompt_path}")
-
-exit(-1)
-
-prompt = PromptLoader(prompt_path).load()
-config_loader = ConfigLoader(prompt)
-config_path = config_loader.config_path
-
-info_message = f"👀 watching for changes on {prompt_path} and config file"
-
-cooldown  = os.environ.get('WATCH_RERUN_COOLDOWN_SECONDS')
-
-if cooldown != None:
-  if int(cooldown) > 0:
-    info_message += f" with {cooldown}s cooldown between re-runs."
-  else:
-    info_message += f" with no cooldown between re-runs."
-
-info_message += f" Press Ctrl+C to exit."
+from utils.run import RunPromptCommand
 
 def timestamp_for_file(path):
   if os.path.exists(path):
@@ -49,44 +22,77 @@ def timestamp_for_file(path):
 
   return 0
 
+class WatchPromptCommand():
+  def __init__(self, args):
+    self.args = args
+    
+    self.setup_files_to_monitor()
 
-files_to_watch = [prompt_path, config_path]
-last_timestamps = [timestamp_for_file(path) for path in files_to_watch]
+  def current_timestamps(self):
+    return [timestamp_for_file(path) for path in self.files]
 
-run_script_path = os.path.join(os.path.dirname(__file__), "run")
-# TODO/FIXME: this system business and building args again is ugly
-params = [run_script_path]
+  def update_timestamps(self, ready_timestamps=None):
+    if ready_timestamps != None:
+      self.file_timestamps = ready_timestamps
+    else:
+      self.file_timestamps = self.current_timestamps()
 
-if abbrev:
-  params.append('--abbrev')
+  def setup_files_to_monitor(self):
+    prompt = PromptLoader(self.args['prompt_path']).load()
+    config_loader = ConfigLoader(prompt)
+    config_path = config_loader.config_path
+    self.files = [prompt.path, config_path]
+    self.update_timestamps()
 
-if model:
-  params.append('--model')
-  params.append(model)
+  def files_changed(self):
+    new_timestamps = self.current_timestamps()
 
-params.append(prompt_path)
+    if new_timestamps != self.file_timestamps:
+      self.update_timestamps(new_timestamps)
+      return True
 
-cmdline = (' ').join(params)
+    return False
 
-print(info_message)
+  def status_message(self):
+    prompt_path = self.args['prompt_path']
+    cooldown = self.args['cooldown']
 
-def run():
-  print(f'🧨 running {run_script_path} with prompt_path {params}:', cmdline)
-  os.system(cmdline)
-
-
-while True:
-  new_timestamps = [timestamp_for_file(path) for path in files_to_watch]
-
-  if new_timestamps != last_timestamps:
-    run()
+    message = f"👀 watching {self.args['prompt_path']}"
 
     if cooldown != None:
       if int(cooldown) > 0:
-        print(f'{cooldown}s cooldown...')
+        message += f" with {cooldown}s cooldown."
+      else:
+        message += f" with no cooldown."
+
+    message += f"\nPress Ctrl+C to exit."
+
+    return message
+  
+  def cooldown_if_needed(self):
+    cooldown = self.args['cooldown']
+
+    if cooldown != None:
+      if int(cooldown) > 0:
         time.sleep(int(cooldown))
 
-    last_timestamps = new_timestamps
+  def watch_prompt(self):
+    print(self.status_message())
 
-  time.sleep(0.25)
+    while True:
+      if self.files_changed():
+        self.run()
+        self.cooldown_if_needed()
 
+      # standard tick
+      time.sleep(0.25)
+
+  def run(self):
+    print(f'🧨 running')
+
+    command = RunPromptCommand(self.args)
+    command.run_prompt()
+
+    print(f'🧨 DONE')
+
+    # os.system(cmdline)

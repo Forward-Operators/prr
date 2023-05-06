@@ -19,89 +19,101 @@ from lib.runs.runner import Runner
 
 console = Console(log_time=False, log_path=False)
 
-def full_model_name_description_from_config(model_config):
-  model_provider_name = "/".join([model_config['provider_name'], model_config['model_name']])
+class RunPromptCommand():
+  def __init__(self, args):
+    self.args = args
 
-  if model_config['model_config_name'] and model_provider_name != model_config['model_config_name']:
-    return f"{model_config['model_config_name']} ({model_provider_name})"
+    self.prompt = None
+    self.config = None
 
-  return model_provider_name
+    self.load_prompt_for_path()
+    self.load_config_for_prompt()
 
+    self.runner = Runner(self.prompt, self.config)
 
-def run_prompt_model_with_args_and_config(parsed_args, model_config_name, runner):
-  model_config = runner.config.model(model_config_name)
-  model_description = full_model_name_description_from_config(model_config)
+  def full_model_name_description_from_config(self, model_config):
+    model_provider_name = "/".join([model_config['provider_name'], model_config['model_name']])
 
-  with console.status(f":robot: [bold green]{model_description}[/bold green]") as status:
-    options = runner.model_options_for_model(model_config_name)
+    if model_config['model_config_name'] and model_provider_name != model_config['model_config_name']:
+      return f"{model_config['model_config_name']} ({model_provider_name})"
 
-    console.print(f"\n🤖 [bold]{model_description}[/bold] {options.description()}", style="frame")
+    return model_provider_name
 
-    status.update(status="[bold red]Moving Covid32.exe to Trash", spinner="bouncingBall", spinner_style="yellow")
+  def print_run_results(self, result, run_save_directory):
+    prompt = result.prompt
+    response = result.response
 
-    result, run_save_directory = runner.run_model(model_config_name)
-
-    if parsed_args['abbrev']:
-      console.log("Prompt:      " + "[yellow]" + result.prompt.text_abbrev(25) + f"[/yellow] ({result.prompt.text_len()} chars)")
-      console.log("Completion:  " + "[green]" + result.response.completion_abbrev(25) + f"[/green] ({result.response.completion_len()} chars)")
+    if self.args['abbrev']:
+      console.log("Prompt:      " + "[yellow]" + prompt.text_abbrev(25) + f"[/yellow] ({prompt.text_len()} chars)")
+      console.log("Completion:  " + "[green]" + response.completion_abbrev(25) + f"[/green] ({response.completion_len()} chars)")
     else:
-      console.log(Panel('[yellow]' + result.prompt.text() + '[/yellow]'))
-      console.log(Panel('[green]' + result.response.completion + '[/green]'))
+      console.log(Panel('[yellow]' + prompt.text() + '[/yellow]'))
+      console.log(Panel('[green]' + response.completion + '[/green]'))
 
-    completion = f"[blue]Completion length[/blue]: {result.response.completion_len()} bytes"
-    tokens_used = f"[blue]Tokens used[/blue]: {result.response.tokens_used}"
+    completion = f"[blue]Completion length[/blue]: {response.completion_len()} bytes"
+    tokens_used = f"[blue]Tokens used[/blue]: {response.tokens_used}"
     elapsed_time = f"[blue]Elapsed time[/blue]: {round(result.elapsed_time, 2)}s"
 
     console.log(f"{completion} {tokens_used} {elapsed_time}")
 
     console.log(f"💾 {run_save_directory}")
 
+  def run_prompt_model_with_config(self, model_config_name):
+    model_config = self.config.model(model_config_name)
+    model_description = self.full_model_name_description_from_config(model_config)
 
-def load_config_for_prompt(prompt, default_model=None):
-  config_loader = ConfigLoader(prompt)
+    with console.status(f":robot: [bold green]{model_description}[/bold green]") as status:
+      options = self.runner.model_options_for_model(model_config_name)
 
-  if config_loader.config_file_exists():
-    console.log(f":thumbs_up: Using config: {config_loader.config_path}")
-    config = config_loader.load()
-  else:
-    console.log(f":x: No config found for the prompt, will use default values")
+      console.log(f"\n🤖 [bold]{model_description}[/bold] {options.description()}", style="frame")
 
-    if not default_model:
-      console.log(f":white_flag: No model specified with DEFAULT_MODEL variable (see .env.example) and no --model option provided, giving up.")
+      status.update(status="running model", spinner="dots8Bit")
+
+      result, run_save_directory = self.runner.run_model(model_config_name)
+
+      self.print_run_results(result, run_save_directory)
+
+
+  def load_config_for_prompt(self):
+    config_loader = ConfigLoader(self.prompt)
+    default_model = self.args['model']
+
+    if config_loader.config_file_exists():
+      console.log(f":thumbs_up: Using config: {config_loader.config_path}")
+      self.config = config_loader.load()
+    else:
+      console.log(f":x: No config found for the prompt, will use default values")
+
+      if not default_model:
+        console.log(f":white_flag: No model specified with DEFAULT_MODEL variable (see .env.example) and no --model option provided, giving up.")
+        exit(-1)
+
+      self.config = config_loader.from_dict({
+        "models": [
+          default_model
+        ]
+      })
+
+      console.log(f"✅ Will run {default_model} as a default.")
+
+  def load_prompt_for_path(self):
+    prompt_path = self.args['prompt_path']
+
+    if not os.path.exists(prompt_path) or not os.access(prompt_path, os.R_OK):
+      console.log(f":x: Prompt file {prompt_path} is not accessible, giving up.")
       exit(-1)
 
-    config = config_loader.from_dict({
-      "models": [
-        default_model
-      ]
-    })
+    console.log(f":magnifying_glass_tilted_left: Reading {prompt_path}")
+    prompt_loader = PromptLoader(prompt_path)
+    self.prompt = prompt_loader.load()
 
-    console.log(f"✅ Will run {default_model} as a default.")
+  def run_prompt(self):
+    models_to_run = self.runner.configured_models()
 
-  return config
+    console.log(f":racing_car: Models to run: {models_to_run}")
 
-def load_prompt_for_path(prompt_path):
-  prompt_loader = PromptLoader(prompt_path)
-  prompt = prompt_loader.load()
+    if not self.args["abbrev"]:
+      print(Panel(self.prompt.text()))
 
-  return prompt
-
-def run_prompt_with_args(parsed_args):
-  prompt_path = parsed_args["prompt_path"]
-  default_model = parsed_args["model"]
-
-  prompt = load_prompt_for_path(prompt_path)
-  console.log(f":magnifying_glass_tilted_left: Reading {prompt.text_len()} bytes of prompt from {prompt_path}")
-
-  config = load_config_for_prompt(prompt, default_model)
-
-  runner = Runner(prompt, config)
-  models_to_run = runner.configured_models()
-
-  console.log(f"🏎️ Models to run: {models_to_run}")
-
-  if not parsed_args["abbrev"]:
-    print(Panel(prompt.text()))
-
-  for model_config_name in models_to_run:
-    run_prompt_model_with_args_and_config(parsed_args, runner, model_config_name)
+    for model_config_name in models_to_run:
+      self.run_prompt_model_with_config(model_config_name)
