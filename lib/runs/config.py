@@ -122,8 +122,11 @@ class ConfigLoader:
     self.prompt_path = prompt.path
     self.config_path = self.prompt_path + ".config"
 
+  def config_file_exists(self):
+    return os.path.isfile(self.config_path)
+
   def load(self):
-    if os.path.isfile(self.config_path):
+    if self.config_file_exists():
       with open(self.config_path, "r") as stream:
           try:
               return PromptConfig(yaml.safe_load(stream))
