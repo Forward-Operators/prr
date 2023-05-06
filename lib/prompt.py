@@ -71,11 +71,16 @@ def parse_config_into_services(services_config):
 
 class Prompt:
   def __init__(self, path):
+    self.path = None
     self.messages = None
     self.template = None
     self.services = {}
     # TODO/FIXME: should also include jinja includes
     self.dependency_files = []
+
+    template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(path))
+    self.template_env = jinja2.Environment(loader=template_loader)
+
 
     root, extension = os.path.splitext(path)
 
@@ -142,19 +147,13 @@ class Prompt:
           self.parse_prompt_config(data['prompt'])
 
   def load_jinja_template_from_string(self, content):
-    template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(self.path))
-    template_env = jinja2.Environment(loader=template_loader)
-    
-    return template_env.from_string(content)
+    return self.template_env.from_string(content)
 
   def load_jinja_template_from_file(self, template_path):
-    template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(self.path))
-    template_env = jinja2.Environment(loader=template_loader)
-
-    return template_env.get_template(os.path.basename(template_path))
+    return self.template_env.get_template(os.path.basename(template_path))
 
   def load_text_file(self, path):
-    self.template = self.load_jinja_template_from_string(path)
+    self.template = self.load_jinja_template_from_file(path)
     self.path = path
 
   def message_text_description(self, message):

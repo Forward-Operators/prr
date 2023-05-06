@@ -18,6 +18,7 @@ parser = argparse.ArgumentParser(description="Run a prompt against configured mo
                                  formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 
 sub_parsers = parser.add_subparsers(help='command to execute', dest='command')
+
 run_parser = sub_parsers.add_parser('run', help='run prompt against models')
 watch_parser = sub_parsers.add_parser('watch', help='watch prompts/config changes to launch re-runs')
 

@@ -28,6 +28,7 @@ Prr is in very early stages of development, so things might still change or expl
 - [ ] Clean basic code smells
 - [ ] Improve support for OpenAI and Anthropic
 - [ ] Add support for other LLM providers
+- [ ] Pass model-related options to templating engine to allow for model-specific prompts
 - [ ] Add support for testing against expectations (elapsed_time, tokens_used)
 - [ ] Build interface to extract stats from subsequent runs for later analysis
 - [ ] Add support for chat structure in prompts using YAML
