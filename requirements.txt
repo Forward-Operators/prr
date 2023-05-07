@@ -3,3 +3,4 @@ python-dotenv
 anthropic
 rich
 Jinja2
+pyyaml
