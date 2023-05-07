@@ -74,7 +74,9 @@ pip install -r requirements.txt
 Copy `.env.example` - and save it as `.env`. Fill in your API keys for OpenAI, Anthropic and others:
 
 ```bash
+# https://platform.openai.com/account/api-keys
 OPENAI_API_KEY="sk-..."
+# https://console.anthropic.com/account/keys
 ANTHROPIC_API_KEY="sk-ant-..."
 DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
 ```
