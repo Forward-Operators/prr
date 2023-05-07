@@ -65,6 +65,8 @@ $ git clone https://github.com/Forward-Operators/prr.git
 
 2. Install the required packages: 
 
+Make sure you have python 3.8 or newer installed.
+
 ```sh
 pip install -r requirements.txt
 ```
@@ -219,10 +221,8 @@ Teach me how to bark like a Chihuahua!
 
 Now all you need to do is run the prompt without specifying any model in order to run all of the defined services.
 
-Let's use `--no-abbrev` to display full prompts and completions as it runs.
-
 ```sh
-$ prr run --no-abbrev --log ./chihuahua.yaml 
+$ prr run --log ./chihuahua.yaml 
 🔍 Reading ./chihuahua.yaml                                                       
 🏎  Running services: ['gpt35crazy', 'claudev1smart']                              
 ╭────────────────────────────────────────────────────────────────────────────────╮

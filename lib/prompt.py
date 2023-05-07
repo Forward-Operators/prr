@@ -158,14 +158,13 @@ class Prompt:
     self.add_dependency_files_from_jinja_template(content)
     return self.template_env.from_string(content)
 
-  def load_jinja_template_from_file(self, _template_path):
-    template_path = os.path.join(os.path.dirname(self.path), _template_path)
+  def load_jinja_template_from_file(self, template_path):
     
     try:
       with open(template_path, "r") as stream:
         self.add_dependency_files_from_jinja_template(stream.read())
 
-      return self.template_env.get_template(os.path.basename(template_path))
+      return self.template_env.get_template(template_path)
     except FileNotFoundError:
       print(f"Could not find template file: {template_path}")
       exit(-1)
@@ -173,7 +172,9 @@ class Prompt:
 
   def load_text_file(self, path):
     self.path = path
-    self.template = self.load_jinja_template_from_file(path)
+
+    with open(path, "r") as stream:
+      self.template = self.template_env.from_string(stream.read())
 
   def message_text_description(self, message):
     name = message.get('name')

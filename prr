@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -22,7 +22,7 @@ run_parser = sub_parsers.add_parser('run', help='run prompt against models')
 watch_parser = sub_parsers.add_parser('watch', help='watch prompts/config changes to launch re-runs')
 
 def add_common_args(_parser):
-  _parser.add_argument('--abbrev', help="Abbreviate prompts and completions", default=True)
+  _parser.add_argument('--abbrev', help="Abbreviate prompts and completions", action='store_true', default=False)
   _parser.add_argument("--service", "-s", help="Service to use if none is configured (defaults to DEFAULT_SERVICE environment variable)", default=os.environ.get('DEFAULT_SERVICE'), type=str)
   _parser.add_argument("--log", "-l", help="Save each run in <prompt>.runs directory", default=False)
   _parser.add_argument("prompt_path", help="Path to prompt to run")
