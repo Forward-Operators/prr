@@ -33,13 +33,13 @@ class RunPromptCommand():
 
     if self.args['abbrev']:
       console.log("Prompt:      " + "[yellow]" + prompt.text_abbrev(25) + f"[/yellow] ({prompt.text_len()} chars)")
-      console.log("Completion:  " + "[green]" + response.completion_abbrev(25) + f"[/green] ({response.completion_len()} chars)")
+      console.log("Completion:  " + "[green]" + response.response_abbrev(25) + f"[/green] ({len(response.response_content)} chars)")
     else:
       console.log(Panel('[yellow]' + prompt.text() + '[/yellow]'))
-      console.log(Panel('[green]' + response.completion + '[/green]'))
+      console.log(Panel('[green]' + response.response_content + '[/green]'))
 
-    completion = f"[blue]Completion length[/blue]: {response.completion_len()} bytes"
-    tokens_used = f"[blue]Tokens used[/blue]: {response.tokens_used}"
+    completion = f"[blue]Completion length[/blue]: {len(response.response_content)} bytes"
+    tokens_used = f"[blue]Tokens used[/blue]: {response.tokens_used()}"
     elapsed_time = f"[blue]Elapsed time[/blue]: {round(result.elapsed_time, 2)}s"
 
     console.log(f"{completion} {tokens_used} {elapsed_time}")

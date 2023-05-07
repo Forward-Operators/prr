@@ -42,6 +42,9 @@ Prr is in very early stages of development, so things might still change or expl
 - [ ] Support for streaming
 - [ ] Support for running prompts in parallel
 - [ ] Support for calculating pricing for prompts based on defined pricelist
+- [ ] Allow for specifying how many times to run each service to ensure statistically relevantish performance results
+- [ ] Fine-tuning
+- [ ] Support multiple completions
 
 ## Getting Started
 

@@ -40,7 +40,8 @@ class WatchPromptCommand():
 
   def setup_files_to_monitor(self):
     prompt = Prompt(self.args['prompt_path'])
-    self.files = prompt.dependency_files
+    self.files = [prompt.path]
+    self.files.extend(prompt.dependency_files)
     self.update_timestamps()
 
   def files_changed(self):
@@ -57,13 +58,7 @@ class WatchPromptCommand():
     prompt_path = self.args['prompt_path']
     cooldown = self.args['cooldown']
 
-    message = f"👀 watching {self.files}"
-
-    if cooldown != None:
-      if int(cooldown) > 0:
-        message += f" with {cooldown}s cooldown."
-      else:
-        message += f" with no cooldown."
+    message = f"👀 watching {self.files}."
 
     message += f"\nPress Ctrl+C to exit."
 

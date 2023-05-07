@@ -1,32 +1,26 @@
-class ModelResponse():
-  def __init__(self, result = {}):
-    if 'completion' in result:
-      self.completion = result['completion']
-
-    if 'tokens_used' in result:
-      self.tokens_used = result['tokens_used']
-
-  def ready(self):
-    return hasattr(self, 'completion')
+# response coming from service
+class ServiceResponse():
+  def __init__(self, response_content, data = {}):
+    self.data = data
+    self.response_content = response_content
   
-  def completion_len(self):
-    if self.ready():
-      return len(self.completion)
+  def response_abbrev(self, max_len = 25):
+    str = self.response_content
 
-    return 0
-
-  def completion_abbrev(self, max_len = 25):
-    if self.completion_len() > max_len:
-      str = self.completion[0:max_len] + "..."
-    else:
-      str = self.completion
+    if len(self.response_content) > max_len:
+      str = self.response_content[0:max_len] + "..."
 
     return str.replace("\n", " ").replace("  ", " ")
-
-  def __str__(self):
-    s = "Completion: ["
-    s += self.completion_abbrev(25) + "] "
-    s += "Len: " + str(self.completion_len()) + " "
-    s += "Tokens used: " + str(self.tokens_used)
-
-    return s
+  
+  def __repr__(self):
+    return " ".join([f'{key}={value}' for key,value in self.data.items()])
+  
+  def to_dict(self):
+    return {key:value for key,value in self.data.items() if key!= "completion"}
+  
+  def tokens_used(self):
+    if self.data:
+      if self.data.get("tokens_used"):
+        return self.data.get("tokens_used")
+    
+    return None

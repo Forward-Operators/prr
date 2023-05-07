@@ -1,43 +1,37 @@
+DEFAULT_OPTIONS = {
+  'temperature': 1.0,
+  'top_k': -1,
+  'top_p': -1,
+  'max_tokens': 32
+}
+
+ALLOWED_OPTIONS = DEFAULT_OPTIONS.keys()
+
 class ModelOptions():
   def __init__(self, options = {}):
-    self.temperature = None
-    self.max_tokens = None
-    self.top_k = None
-    self.top_p = None
+    self.options_set = []
+    self.update_options(DEFAULT_OPTIONS)
+    self.update_options(options)
 
-    if 'temperature' in options:
-      self.temperature = options['temperature']
-    else:
-      self.temperature = 1.0
-
-    if 'max_tokens' in options:
-      self.max_tokens = options['max_tokens']
-    else:
-      self.max_tokens = 32
-
-    if 'top_k' in options:
-      self.top_k = options['top_k']
-    else:
-      self.top_k = -1
-
-    if 'top_p' in options:
-      self.top_p = options['top_p']
-    else:
-      self.top_p = -1
+  def update_options(self, options):
+    for key in options.keys():
+      if key in ALLOWED_OPTIONS:
+        self.options_set.append(key)
+        setattr(self, key, options[key])
 
   def description(self):
-    parts = []
+    return " ".join([f'{key}={self.option(key)}' for key in self.options_set])
+  
+  def option(self, key):
+    return getattr(self, key)
+  
+  def __repr__(self):
+    return self.description()
 
-    if self.temperature != None:
-      parts.append("t=" + str(self.temperature))
+  def to_dict(self):
+    dict = {}
 
-    if self.max_tokens != None:
-      parts.append("max=" + str(self.max_tokens))
+    for key in self.options_set:
+      dict[key] = self.option(key)
 
-    if self.top_k != None:
-      parts.append("k=" + str(self.top_k))
-
-    if self.top_p != None:
-      parts.append("p=" + str(self.top_p))
-
-    return " ".join(parts)
+    return dict

@@ -9,7 +9,7 @@ service_registry.register_all_services()
 class Runner:
   def __init__(self, prompt):
     self.prompt = prompt
-    self.saver = PromptRunSaver()
+    self.saver = PromptRunSaver(self.prompt)
 
   def run_service(self, service_name, save_run=False):
     service_config = self.prompt.config_for_service(service_name)

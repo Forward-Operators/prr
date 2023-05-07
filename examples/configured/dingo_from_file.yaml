@@ -1,6 +1,6 @@
 version: 1
 prompt:
-  content_file: '_dingo'
+  content_file: '_user_prompt'
 services:
   models: 
     - 'openai/chat/gpt-3.5-turbo'

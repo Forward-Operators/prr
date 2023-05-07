@@ -2,6 +2,7 @@ import os
 import yaml
 import jinja2
 
+from jinja2 import meta
 from .service_config import ServiceConfig
 
 # parse something like:
@@ -81,7 +82,6 @@ class Prompt:
     template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(path))
     self.template_env = jinja2.Environment(loader=template_loader)
 
-
     root, extension = os.path.splitext(path)
 
     if extension == ".yaml":
@@ -113,6 +113,14 @@ class Prompt:
             self.dependency_files.append(file_path)
         else:
           self.messages.append(message)
+
+  def add_dependency_files_from_jinja_template(self, jinja_template_content):
+    parsed_content = self.template_env.parse(jinja_template_content)
+    referenced_templates = meta.find_referenced_templates(parsed_content)
+    
+    for referenced_template in referenced_templates:
+      template_path = os.path.join(os.path.dirname(self.path), referenced_template)
+      self.dependency_files.append(template_path)
 
   def parse_services(self, services_config):
     self.services = parse_config_into_services(services_config)
@@ -147,14 +155,25 @@ class Prompt:
           self.parse_prompt_config(data['prompt'])
 
   def load_jinja_template_from_string(self, content):
+    self.add_dependency_files_from_jinja_template(content)
     return self.template_env.from_string(content)
 
-  def load_jinja_template_from_file(self, template_path):
-    return self.template_env.get_template(os.path.basename(template_path))
+  def load_jinja_template_from_file(self, _template_path):
+    template_path = os.path.join(os.path.dirname(self.path), _template_path)
+    
+    try:
+      with open(template_path, "r") as stream:
+        self.add_dependency_files_from_jinja_template(stream.read())
+
+      return self.template_env.get_template(os.path.basename(template_path))
+    except FileNotFoundError:
+      print(f"Could not find template file: {template_path}")
+      exit(-1)
+
 
   def load_text_file(self, path):
-    self.template = self.load_jinja_template_from_file(path)
     self.path = path
+    self.template = self.load_jinja_template_from_file(path)
 
   def message_text_description(self, message):
     name = message.get('name')

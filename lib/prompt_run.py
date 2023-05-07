@@ -14,10 +14,11 @@ class PromptRun:
     
     result.before_run()
 
-    response = self.service.run(self.prompt, self.service_config)
+    request, response = self.service.run(self.prompt, self.service_config)
 
     result.after_run()
 
+    result.update_with_request(request)
     result.update_with_response(response)
 
     return result
