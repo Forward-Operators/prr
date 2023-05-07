@@ -29,6 +29,7 @@ prr is in very early stages of development, so things might still change unexpec
 
 As this is early stage work, there's lots improvements that can be done in the future and you're welcome to contribute!
 
+- [ ] Get rix of Python 3.10 dependency
 - [ ] Clean basic code smells
 - [ ] Improve support for OpenAI and Anthropic
 - [ ] Add support for other LLM providers
@@ -65,10 +66,10 @@ $ git clone https://github.com/Forward-Operators/prr.git
 
 2. Install the required packages: 
 
-Make sure you have python 3.8 or newer installed.
+Make sure you have python 3.10 or newer installed.
 
 ```sh
-pip install -r requirements.txt
+pip3.10 install -r requirements.txt
 ```
 
 3. Setup your API keys

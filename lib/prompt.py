@@ -117,7 +117,7 @@ class Prompt:
   def add_dependency_files_from_jinja_template(self, jinja_template_content):
     parsed_content = self.template_env.parse(jinja_template_content)
     referenced_templates = meta.find_referenced_templates(parsed_content)
-    
+
     for referenced_template in referenced_templates:
       template_path = os.path.join(os.path.dirname(self.path), referenced_template)
       self.dependency_files.append(template_path)
@@ -158,15 +158,14 @@ class Prompt:
     self.add_dependency_files_from_jinja_template(content)
     return self.template_env.from_string(content)
 
-  def load_jinja_template_from_file(self, template_path):
-    
+  def load_jinja_template_from_file(self, template_subpath):
     try:
-      with open(template_path, "r") as stream:
+      with open(os.path.join(os.path.dirname(self.path), template_subpath), "r") as stream:
         self.add_dependency_files_from_jinja_template(stream.read())
 
-      return self.template_env.get_template(template_path)
+      return self.template_env.get_template(template_subpath)
     except FileNotFoundError:
-      print(f"Could not find template file: {template_path}")
+      print(f"Could not find template file: {template_subpath}")
       exit(-1)
 
 
