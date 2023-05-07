@@ -93,10 +93,10 @@ Let's create a simple text file and call it `dingo` with the following content:
 What are key traits of a Dingo dog?
 ```
 
-Now start prr's `run` command providing path to your prompt file as argument.
+Now start prr's `run` command providing path to your prompt file as argument. Let's use `--abbrev` option to skip showing the full prompt and completion for now.
 
 ```sh
-$ prr run ./dingo 
+$ prr run --abbrev ./dingo 
 🔍 Reading ./dingo                                                                
 🏎 Running service openai/chat/gpt-3.5-turbo with default options.                
                                                                                   
@@ -143,7 +143,7 @@ If you refer to another template within your template, changes to that file will
 If your prompt is often saved and you're worried of running it too often, you can use `-c` option that's specific to `watch` command which enables defined number of seconds cooldown after every run, before it proceeds to execute on your changes again.
 
 ```
-prr watch -c 15 ./subconcepts-of-buddhism
+$ prr watch -c 15 ./subconcepts-of-buddhism
 ```
 
 
@@ -219,7 +219,7 @@ Let's also create a file `_user_prompt` with the following:
 Teach me how to bark like a Chihuahua!
 ```
 
-Now all you need to do is run the prompt without specifying any model in order to run all of the defined services.
+Now all you need to do is run the prompt without specifying any model in order to run all of the defined services. We're not using `--abbrev` anymore, so we'll see the full prompts and responses.
 
 ```sh
 $ prr run --log ./chihuahua.yaml 
