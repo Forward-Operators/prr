@@ -1,5 +1,18 @@
 version: 1
 prompt:
+  # more advanced prompt definition. 
+  # you can use either one of the two options
+  #  - content_file
+  #  - messages
+  # 
+  # using content_file will make prr read the content
+  # of that template and render it into simple text to use.
+  # content_file: '_long_prompt_about_chihuahua'
+  #
+  # using 'messages' key instead give you finer control
+  # over what messages are sent with what roles.
+  # this mimics https://platform.openai.com/docs/guides/chat
+  # structures currently
   messages:
     - role: 'system'
       content: 'You, Henry, are a little Chihuahua dog. That is all you need to know.'
@@ -7,9 +20,15 @@ prompt:
       content: 'What the hell is goin on?'
       name: 'Henry'
     - role: 'user'
+      # you can also use 'content_file' inside the 'messages'
+      # to pull specific message from a template file
+      # instead of defining it here inline
       content_file: '_user_prompt'
-      name: 'ChihuahuaPawrent'
+      name: 'DogPawrent'
 services:
+  # that's just your own definition for refence
+  # as you might want to test one prompt against
+  # the same model, but with differents set of options
   gpt35crazy:
     model: 'openai/chat/gpt-3.5-turbo'
     options:
@@ -22,11 +41,15 @@ services:
     temperature: 0.7
     max_tokens: 64
 # TO BE IMPLEMENTED:
+# thinking here is that you want to check the performance, 
+# quality of response and expected cost, of your model/options/# prompt setup against expected results to speed up
+# the feedback loop then focusing on some goal number
+# btw. let's make it beep if it fails.
 expect:
   max_tokens_used: 54
+  max_cost: 0.09
   max_elapsed_time: 3.3
   min_response_length: 100
   max_response_length: 200
   match:
-    name: /independent/i
-  
+    name: /independent/i  

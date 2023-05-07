@@ -28,15 +28,15 @@ class RunPromptCommand():
     self.runner = Runner(self.prompt)
 
   def print_run_results(self, result, run_save_directory):
-    prompt = result.prompt
+    request = result.request
     response = result.response
 
     if self.args['abbrev']:
-      console.log("Prompt:      " + "[yellow]" + prompt.text_abbrev(25) + f"[/yellow] ({prompt.text_len()} chars)")
-      console.log("Completion:  " + "[green]" + response.response_abbrev(25) + f"[/green] ({len(response.response_content)} chars)")
+      console.log("Prompt:      " + "[yellow]" + request.prompt_text(25).strip() + f"[/yellow] ({len(request.prompt_text())} chars)")
+      console.log("Completion:  " + "[green]" + response.response_abbrev(25).strip() + f"[/green] ({len(response.response_content)} chars)")
     else:
-      console.log(Panel('[yellow]' + prompt.text() + '[/yellow]'))
-      console.log(Panel('[green]' + response.response_content + '[/green]'))
+      console.log(Panel('[yellow]' + request.prompt_text().strip() + '[/yellow]'))
+      console.log(Panel('[green]' + response.response_content.strip() + '[/green]'))
 
     completion = f"[blue]Completion length[/blue]: {len(response.response_content)} bytes"
     tokens_used = f"[blue]Tokens used[/blue]: {response.tokens_used()}"

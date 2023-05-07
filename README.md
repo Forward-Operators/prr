@@ -1,49 +1,54 @@
 # prr - The Prompt Runner
 
-![prr - The Prompt Runner Logo](/images/prr-logo.png)
-
 Welcome to **prr - The Prompt Runner**! 
 
-Prr is a simple toolchain designed to help you run prompts across multiple Large Language Models (LLMs), whether they are hosted locally or accessible through APIs. Easily refine your parameters, prompts and model choices to achieve the best results while itearting smoothly with quick feedback loop.
+**prr** is a simple toolchain designed to help you run prompts across multiple Large Language Models (LLMs), whether they are hosted locally or accessible through APIs. Easily refine your parameters, prompts and model choices to achieve the best results while itearting smoothly with quick feedback loop.
 
-Prr is released as an open-source project under the MIT License.
+**prr** is released as an open-source project under the MIT License.
 
-Made by [Forward Operators](https://fwdoperators.com/) AI Lab.
+Made by [Forward Operators](https://fwdoperators.com/). We work with some of the smartest people on LLM and ML-related projects.
+
+You are more than welcome to contribute!
 
 ## Note
 
-Prr is in very early stages of development, so things might still change or explode embarrasingly.
+prr is in very early stages of development, so things might still change unexpectedly or explode embarrasingly.
 
 ## Features
 
-- Easy integration with Anthropic and OpenAI APIs
-- Simple setup with `.env` API keys
 - Command-line execution of prompts
-- YAML configuration files for each prompt
-- Refine your prompts and parameters with ease
-- Expandable to other LLM providers
+- Quick iteration on prompt design and paramter refinement with `watch` command
+- YAML configuration ties prompts to models and their configurations
+- All prompts use Jinja templates for flow control, partials and others
+- Execute multiple models, or configurations against the same prompt
+- Expandable to other LLM providers (current integrations are <100 lines of code each)
+- Each prompt run across models gives you stats on model response times and token counts used to work across performance, quality and cost factors
+- Each prompt run is recorded in detail for later analysis including raw rendered prompt and raw completion
 
 ## TODO
+
+As this is early stage work, there's lots improvements that can be done in the future and you're welcome to contribute!
 
 - [ ] Clean basic code smells
 - [ ] Improve support for OpenAI and Anthropic
 - [ ] Add support for other LLM providers
+- [ ] Add support for locally hosted models
 - [ ] Pass model-related options to templating engine to allow for model-specific prompts
 - [ ] Add support for testing against expectations (elapsed_time, tokens_used)
 - [ ] Build interface to extract stats from subsequent runs for later analysis
-- [ ] Add support for chat structure in prompts using YAML
-- [ ] Integrate Jinja as templating language for prompts
-- [ ] Make dependency files for Jinja subtemplates are tracked in watch command
+- [x] Add support for chat structure in prompts using YAML
+- [x] Integrate Jinja as templating language for prompts
+- [x] Make dependency files for Jinja subtemplates are tracked in watch command
 - [ ] #!/usr/bin/prr shebang support for executable prompts
 - [ ] More output modalities (audio, image, video)
 - [ ] Support different text output formats (json, markdown, code, etc.)
-- [ ] Diff command to compare differences in output
+- [ ] Diff command to compare differences in output on subsequent runs
 - [ ] Support evaluating prompt outputs for quality by LLMs themselves
-- [ ] Support for streaming
+- [ ] Support for streaming responses
 - [ ] Support for running prompts in parallel
 - [ ] Support for calculating pricing for prompts based on defined pricelist
-- [ ] Allow for specifying how many times to run each service to ensure statistically relevantish performance results
-- [ ] Fine-tuning
+- [ ] Allow for specifying how many times to run each service to ensure statistically relevant-ish performance results
+- [ ] Prompt fine-tuning tooling
 - [ ] Support multiple completions
 
 ## Getting Started
@@ -76,123 +81,285 @@ Copy `.env.example` - and save it as `.env`. Fill in your API keys for Anthropic
 6. Fill in your API keys for Anthropic and OpenAI in the `.env` file.
 7. Run your first prompt: `./bin/run <prompt_path>`
 
-## Usage
+## Getting started
+
+Here's a quick run through on what you need to know to use `prr` effectively. 
+
+### Setup your API keys
+
+Copy `.env.example` - and save it as `.env`. Fill in your API keys for OpenAI, Anthropic and others:
+
+```bash
+OPENAI_API_KEY="sk-..."
+ANTHROPIC_API_KEY="sk-ant-..."
+DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
+```
+
+You can also use DEFAULT_SERVICE to specify the model you want to use by default.
 
 ### Run a prompt from a simple text file containing just a prompt
 
+Let's create a simple text file and call it `dingo` with the following content:
+
+```text
+What are key traits of a Dingo dog?
 ```
-prr run ./dogs/dingo-dog
+
+Now start prr's `run` command providing path to your prompt file as argument.
+
+```sh
+$ prr run ./dingo 
+🔍 Reading ./dingo                                                                
+🏎 Running service openai/chat/gpt-3.5-turbo with default options.                
+                                                                                  
+🤖 openai/chat/gpt-3.5-turbo temperature=1.0 top_k=-1 top_p=-1 max_tokens=32      
+Prompt:      What are key traits of a ... (35 chars)                              
+Completion:  Here are some key traits ... (133 chars)                             
+Completion length: 133 bytes Tokens used: 50 Elapsed time: 2.74s
 ```
+
+Your prompt was ran against default model with default configuration and you can see the execution time as well as how much tokens were used.
 
 ### Run a prompt against specific model
 
+With `--model` parameter, you can use any model the `prr` currently supports (see below) that you have configured with the API key. Here's how to use it against **Anthropic's Claude v1**.
+
+```sh
+$ prr run --model anthropic/complete/claude-v1 ./subconcepts-of-buddhism
 ```
-prr run --model anthropic/claude-v1 ./subconcepts-of-buddhism
+
+### Templating with Jinja
+
+All prompts (whenever defined in separate files or as values in configuration) use [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) for templating. 
+
+With that, you can easily create complex prompts with flow control, including other templates for easy management of larger prompts, and introduce variations to prompt text based on specific models (soon), among other things.
+
+Basic example of including external file to prompt with templating language:
+
+```
+Tell me all about {% include '_current_topic' %}, please.
 ```
 
 ### Watch prompt for changes to re-run it then when occur (after each save)
 
-```
-prr watch ./subconcepts-of-buddhism
+To enable quick feedback loop based on changes you are going to introduce to your prompt, as you go about editing it, prr offers `watch` command. It allows for the same options as `run` and is able to follow changes to your prompt and re-execute all defined models when you save your work.
+
+```sh
+$ prr watch ./subconcepts-of-buddhism
 ```
 
-### Watch prompt for changes to re-run the prompt, but not more often than every 15 seconds
+If you refer to another template within your template, changes to that file will automatically be tracked too.
+
+### Watch - cooldown mode
+
+If your prompt is often saved and you're worried of running it too often, you can use `-c` option that's specific to `watch` command which enables defined number of seconds cooldown after every run, before it proceeds to execute on your changes again.
 
 ```
 prr watch -c 15 ./subconcepts-of-buddhism
 ```
 
-### Run a prompt from your library and save output to file
 
-```
-prr run common/dingo-dog > /tmp/dingo-response.txt
-```
+### Configuring Prompt Runs
 
-## Test "adjectives" version of "common/dingo-dog" prompt against defined test expectations
+`prr` allows you to define a number of model configurations (or "services") that you will be running your prompt against. By default, the `run` command will run all services defined, instead of your default model with default configuration as discussed above.
 
-```
-prr test common/dingo-dog/adjectives
-```
+Let's now work on another prompt, call it `chihuahua.yaml`, as listed below.
 
-# library
-
-
-## prompts
-
-Prompts are versions/attempts at creating prompt text content.
-
-prompts/dingo-dog (if just a file)
-
-prompts/dingo-dog/prompt (file)
-prompts/dingo-dog/crazy-chihuahua-mix (file)
-
-## tests
-
-Tests describe expected effect we're looking for with different LLMs we're considering. They include latency, token efficiency and content expectations.
-
-prompts/dingo-dog/prompt/prompt
-prompts/dingo-dog/prompt/test.yaml
-
-prompts/dingo-dog/crazy-chihuahua-mix/prompt
-prompts/dingo-dog/crazy-chihuahua-mix/test.yaml
-
-## runs
-
-Each modified prompt run is saved for later analysis.
-
-prompts/dingo-dog/crazy-chihuahua-mix/runs
-prompts/dingo-dog/crazy-chihuahua-mix/runs/2023-05-02-22:39.31337/
-
-
-
-
-## Example: Running a Prompt with Configuration
-
-Let's say you have a prompt named `example_prompt.txt`. To run it with Prr, you'll need to create a configuration file named `example_prompt.config` in YAML format.
-
-Here's an example of a simple configuration file:
+Notice also how you can define prompt inline, or by referencing external template files.
 
 ```yaml
-llm_provider: "openai"
-api_key: "your_openai_api_key_here"
-model: "text-davinci-002"
-max_tokens: 100
+version: 1
+prompt:
+  # more advanced prompt definition. 
+  # you can use either one of the two options
+  #  - content_file
+  #  - messages
+  # 
+  # using content_file will make prr read the content
+  # of that template and render it into simple text to use.
+  # content_file: '_long_prompt_about_chihuahua'
+  #
+  # using 'messages' key instead give you finer control
+  # over what messages are sent with what roles.
+  # this mimics https://platform.openai.com/docs/guides/chat
+  # structures currently
+  messages:
+    - role: 'system'
+      content: 'You, Henry, are a little Chihuahua dog. That is all you need to know.'
+    - role: 'assistant'
+      content: 'What the hell is goin on?'
+      name: 'Henry'
+    - role: 'user'
+      # you can also use 'content_file' inside the 'messages'
+      # to pull specific message from a template file
+      # instead of defining it here inline
+      content_file: '_user_prompt'
+      name: 'DogPawrent'
+services:
+  # that's just your own definition for refence
+  # as you might want to test one prompt against
+  # the same model, but with differents set of options
+  gpt35crazy:
+    model: 'openai/chat/gpt-3.5-turbo'
+    options:
+      temperature: 0.99
+  claudev1smart:
+    model: 'anthropic/complete/claude-v1'
+    options:
+      temperature: 0
+  options:
+    temperature: 0.7
+    max_tokens: 64
+# TO BE IMPLEMENTED:
+# thinking here is that you want to check the performance, 
+# quality of response and expected cost, of your model/options/# prompt setup against expected results to speed up
+# the feedback loop then focusing on some goal number
+# btw. let's make it beep if it fails.
+#expect:
+#  max_tokens_used: 54
+#  max_cost: 0.09
+#  max_elapsed_time: 3.3
+#  min_response_length: 100
+#  max_response_length: 200
+#  match:
+#    name: /independent/i  
 ```
 
-With the configuration file in place, simply run the prompt using Prr:
+Let's also create a file `_user_prompt` with the following:
 
-```bash
-./bin/run example_prompt.txt
+```
+Teach me how to bark like a Chihuahua!
 ```
 
-This will run the prompt with the specified parameters, leveraging the power of the chosen LLM provider.
+Now all you need to do is run the prompt without specifying any model in order to run all of the defined services.
+
+Let's use `--no-abbrev` to display full prompts and completions as it runs.
+
+```sh
+$ prr run --no-abbrev --log ./chihuahua.yaml 
+🔍 Reading ./chihuahua.yaml                                                       
+🏎  Running services: ['gpt35crazy', 'claudev1smart']                              
+╭────────────────────────────────────────────────────────────────────────────────╮
+│ system: You, Henry, are a little Chihuahua dog. That is all you need to know.  │
+│ Henry (assistant): What the hell is goin on?                                   │
+│ DogPawrent (user): Teach me how to bark like a Chihuahua!                      │
+│                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────╯
+                                                                                  
+🤖 gpt35crazy temperature=0.99 top_k=-1 top_p=-1 max_tokens=64 temperature=0.99   
+max_tokens=64                                                                     
+╭────────────────────────────────────────────────────────────────────────────────╮
+│ system: You, Henry, are a little Chihuahua dog. That is all you need to know.  │
+│ Henry (assistant): What the hell is goin on?                                   │
+│ DogPawrent (user): Teach me how to bark like a Chihuahua!                      │
+│                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────────────────────────────────────────────────────────────╮
+│ Sure thing! As a Chihuahua, my bark is quite high-pitched and yappy. It's      │
+│ important to start with a short, sharp bark and then keep repeating it         │
+│ rapidly. It may take a bit of practice, but you'll get the hang of it in no    │
+│ time! Woof woof!                                                               │
+╰────────────────────────────────────────────────────────────────────────────────╯
+Completion length: 237 bytes Tokens used: 127 Elapsed time: 5.19s                 
+💾 ./chihuahua.runs/3/gpt35crazy                                                  
+                                                                                  
+🤖 claudev1smart temperature=0 top_k=-1 top_p=-1 max_tokens=64 temperature=0      
+max_tokens=64                                                                     
+╭────────────────────────────────────────────────────────────────────────────────╮
+│ system: You, Henry, are a little Chihuahua dog. That is all you need to know.  │
+│ Henry (assistant): What the hell is goin on?                                   │
+│ DogPawrent (user): Teach me how to bark like a Chihuahua!                      │
+│                                                                                │
+╰────────────────────────────────────────────────────────────────────────────────╯
+╭────────────────────────────────────────────────────────────────────────────────╮
+│  I apologize, but I am not actually a Chihuahua dog. I am Claude, an AI        │
+│ assistant created by Anthropic.                                                │
+╰────────────────────────────────────────────────────────────────────────────────╯
+Completion length: 103 bytes Tokens used: 71 Elapsed time: 1.35s                  
+💾 ./chihuahua.runs/3/claudev1smart                                     ```
+
+We have also used the `--log` option, so that `prr` would save our runs for our deeper debugging if needed.
+```
+
+### Prompt Run Logs
+
+Using `--log` (or `-l` for short) with `run` or `watch` commands will save details about each subsequent runs. In the future, it will allow for statistical (or any other) analysis of the results. In our `chihuahua.yaml`, a `chihuahua.runs` director will be created.
+
+A subdirectory is created for each subsequent run
+
+```sh
+$ ls chihuahua.runs/
+1  2  3
+```
+
+Each run is separated for service-level details - we have our configurations reflected in directories.
+
+```sh
+$ ls chihuahua.runs/3
+claudev1smart  gpt35crazy
+```
+
+Finally, for the details
+
+```sh
+$ ls chihuahua.runs/15/claudev1smart/
+completion  prompt  run.yaml
+```
+
+* **Prompt** file contains prompt used/rendered in this instance. In this instance we've used Claude, which uses text input as format rather than message-like structure with OpenAI. `prr` buit the corrext text based on our `messages` structure to comply with the specification.
+
+```sh
+$ cat chihuahua.runs/15/claudev1smart/prompt
+
+Human:  You, Henry, are a little Chihuahua dog. That is all you need to know. Teach me how to bark like a Chihuahua!
+
+
+Assistant:
+```
+
+* **Completion** file contains completion as received from the service. 
+
+* In **run.yaml** you will find the details about this specific execution including count of tokens used, and elapsed request time.
+
+```yaml
+request:
+  model: anthropic/complete/claude-v1
+  options:
+    max_tokens: 64
+    temperature: 0
+    top_k: -1
+    top_p: -1
+response:
+  completion_tokens: 28
+  log_id: e4ec82a710f780100ccf671f85254bcf
+  prompt_tokens: 43
+  stop_reason: stop_sequence
+  tokens_used: 71
+  total_tokens: 71
+  truncated: false
+stats:
+  elapsed_time: 1.1589760780334473
+  end_time: 1683471638.6106346
+  start_time: 1683471637.4516585
+```
+
+## Available models
+
+### Current integrations
+
+* OpenAI/chat - https://platform.openai.com/docs/guides/chat
+* Anthropic/complete - https://console.anthropic.com/docs/api
 
 ## Contributing
 
 We'd love your help in making Prr even better! To contribute, please follow these steps:
 
 1. Fork the repo
-2. Create a new branch: `git checkout -b feature/my-new-feature`
-3. Commit your changes: `git commit -am 'Add some new feature'`
-4. Push the branch to your fork: `git push origin feature/my-new-feature`
+2. Create a new branch
+3. Commit your changes
+4. Push the branch to your fork
 5. Create a new Pull Request
 
 ## License
 
-Prr - Prompt Runner is released under the [MIT License](/LICENSE).
-
-## Support and Community
-
-Join our [Gitter community](https://gitter.im/prr-prompt-runner/community) for help, discussions, and updates about Prr.
-
-## Screenshots and Screencasts
-
-![Screenshot of Prr in action](/images/screenshot.png)
-
-[![Screencast: Using Prr](/images/screencast-thumbnail.png)](https://youtu.be/your_video_link)
-
-Watch our [screencast](https://youtu.be/your_video_link) to see Prr in action and learn how to get the most out of your prompt running experience.
-
----
-
-Happy prompting!
+**prr** - Prompt Runner is released under the [MIT License](/LICENSE).
