@@ -1,12 +1,9 @@
-#!/usr/bin/env python3.10
+#!/usr/bin/env python
 
 import os
 import sys
 
 from lib.prompt import Prompt
-
-sys.path.append('.')
-sys.path.append('/opt/conda/lib/python3.10/site-packages')
 
 from dotenv import load_dotenv
 load_dotenv()
