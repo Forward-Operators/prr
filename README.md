@@ -51,41 +51,25 @@ As this is early stage work, there's lots improvements that can be done in the f
 - [ ] Prompt fine-tuning tooling
 - [ ] Support multiple completions
 
-## Getting Started
-
-To start using Prr, simply follow these steps:
-
-### Install dependencies
-
-```prompt lib with some tooling
-pip install -r requirements.txt
-
-pip install --upgrade openai
-pip install python-dotenv
-pip install anthropic
-pip install rich
-pip install Jinja2
-```
-
-### Setup your API keys
-
-Copy `.env.example` - and save it as `.env`. Fill in your API keys for Anthropic, OpenAI and other providers.
-
-1. Clone the repo: `git clone https://github.com/yourusername/prr.git`
-2. Navigate to the project directory: `cd prr`
-3. Set up a virtual environment (optional but recommended): `python3 -m venv venv`
-4. Activate the virtual environment:
-   - On Linux/MacOS: `source venv/bin/activate`
-   - On Windows: `venv\Scripts\activate`
-5. Install the required packages: `pip install -r requirements.txt`
-6. Fill in your API keys for Anthropic and OpenAI in the `.env` file.
-7. Run your first prompt: `./bin/run <prompt_path>`
 
 ## Getting started
 
 Here's a quick run through on what you need to know to use `prr` effectively. 
 
-### Setup your API keys
+
+1. Clone the repo
+
+```sh
+$ git clone https://github.com/Forward-Operators/prr.git
+```
+
+2. Install the required packages: 
+
+```sh
+pip install -r requirements.txt
+```
+
+3. Setup your API keys
 
 Copy `.env.example` - and save it as `.env`. Fill in your API keys for OpenAI, Anthropic and others:
 
