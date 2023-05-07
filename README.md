@@ -19,7 +19,7 @@ prr is in very early stages of development, so things might still change unexpec
 - Command-line execution of prompts
 - Quick iteration on prompt design and paramter refinement with `watch` command
 - YAML configuration ties prompts to models and their configurations
-- All prompts use Jinja templates for flow control, partials and others
+- All prompts can optionally use templating language ([Jinja](https://jinja.palletsprojects.com/en/3.1.x/)) for flow control, partials and others
 - Execute multiple models, or configurations against the same prompt
 - Expandable to other LLM providers (current integrations are <100 lines of code each)
 - Each prompt run across models gives you stats on model response times and token counts used to work across performance, quality and cost factors
