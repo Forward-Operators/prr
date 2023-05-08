@@ -6,13 +6,13 @@ Welcome to **prr - The Prompt Runner**!
 
 **prr** is released as an open-source project under the MIT License.
 
-Made by [Forward Operators](https://fwdoperators.com/). We work with some of the smartest people on LLM and ML-related projects.
+Made by [Forward Operators](https://fwdoperators.com/). We work on LLM and ML-related projects with some awesome human beings and cool companies.
 
-You are more than welcome to contribute!
+Everyone is welcome to contribute!
 
 ## Note
 
-prr is in very early stages of development, so things might still change unexpectedly or explode embarrasingly.
+**prr** is in very early stages of development, so things might still change unexpectedly or explode embarrasingly.
 
 ## Features
 
@@ -110,6 +110,7 @@ $ ./prr run --abbrev ./dingo
 🤖 openai/chat/gpt-3.5-turbo temperature=1.0 top_k=-1 top_p=-1 max_tokens=32
 Prompt:      What are key traits of a ... (35 chars)
 Completion:  Here are some key traits ... (133 chars)
+
 Completion length: 133 bytes Tokens used: 50 Elapsed time: 2.74s
 ```
 
@@ -120,7 +121,7 @@ Your prompt was ran against default model with default configuration and you can
 With `--model` parameter, you can use any model the `prr` currently supports (see below) that you have configured with the API key. Here's how to use it against **Anthropic's Claude v1**.
 
 ```sh
-$ prr run --model anthropic/complete/claude-v1 ./subconcepts-of-buddhism
+$ ./prr run --model anthropic/complete/claude-v1 ./subconcepts-of-buddhism
 ```
 
 ### Templating with Jinja
@@ -140,7 +141,7 @@ Tell me all about {% include '_current_topic' %}, please.
 To enable quick feedback loop based on changes you are going to introduce to your prompt, as you go about editing it, prr offers `watch` command. It allows for the same options as `run` and is able to follow changes to your prompt and re-execute all defined models when you save your work.
 
 ```sh
-$ prr watch ./subconcepts-of-buddhism
+$ ./prr watch ./subconcepts-of-buddhism
 ```
 
 If you refer to another template within your template, changes to that file will automatically be tracked too.
@@ -150,7 +151,7 @@ If you refer to another template within your template, changes to that file will
 If your prompt is often saved and you're worried of running it too often, you can use `-c` option that's specific to `watch` command which enables defined number of seconds cooldown after every run, before it proceeds to execute on your changes again.
 
 ```
-$ prr watch -c 15 ./subconcepts-of-buddhism
+$ ./prr watch -c 15 ./subconcepts-of-buddhism
 ```
 
 
@@ -163,6 +164,7 @@ Let's now work on another prompt, call it `chihuahua.yaml`, as listed below.
 Notice also how you can define prompt inline, or by referencing external template files.
 
 ```yaml
+
 version: 1
 prompt:
   # more advanced prompt definition.
@@ -229,9 +231,10 @@ Teach me how to bark like a Chihuahua!
 Now all you need to do is run the prompt without specifying any model in order to run all of the defined services. We're not using `--abbrev` anymore, so we'll see the full prompts and responses.
 
 ```sh
-$ prr run --log ./chihuahua.yaml
-🔍 Reading ./chihuahua.yaml
-🏎  Running services: ['gpt35crazy', 'claudev1smart']
+$ ./prr run --log ./chihuahua.yaml 
+🔍 Reading ./chihuahua.yaml                                                       
+🏎  Running services: ['gpt35crazy', 'claudev1smart']                              
+
 ╭────────────────────────────────────────────────────────────────────────────────╮
 │ system: You, Henry, are a little Chihuahua dog. That is all you need to know.  │
 │ Henry (assistant): What the hell is goin on?                                   │
@@ -270,9 +273,10 @@ max_tokens=64
 ╰────────────────────────────────────────────────────────────────────────────────╯
 Completion length: 103 bytes Tokens used: 71 Elapsed time: 1.35s
 💾 ./chihuahua.runs/3/claudev1smart                                     ```
+```
 
 We have also used the `--log` option, so that `prr` would save our runs for our deeper debugging if needed.
-```
+
 
 ### Prompt Run Logs
 
