@@ -1,6 +1,6 @@
 # prr - The Prompt Runner
 
-Welcome to **prr - The Prompt Runner**! 
+Welcome to **prr - The Prompt Runner**!
 
 **prr** is a simple toolchain designed to help you run prompts across multiple Large Language Models (LLMs), whether they are hosted locally or accessible through APIs. Easily refine your parameters, prompts and model choices to achieve the best results while itearting smoothly with quick feedback loop.
 
@@ -55,7 +55,7 @@ As this is early stage work, there's lots improvements that can be done in the f
 
 ## Getting started
 
-Here's a quick run through on what you need to know to use `prr` effectively. 
+Here's a quick run through on what you need to know to use `prr` effectively.
 
 
 1. Clone the repo
@@ -64,15 +64,19 @@ Here's a quick run through on what you need to know to use `prr` effectively.
 $ git clone https://github.com/Forward-Operators/prr.git
 ```
 
-2. Install the required packages: 
+2. Make sure you have right python version
+Make sure you have python 3.10 installed.
+If you need to have multiple python versions in your system, consider using [asdf](https://github.com/asdf-vm/asdf)
 
-Make sure you have python 3.10 or newer installed.
+3. Install the required packages:
+This project uses Poetry. See how to [install](https://python-poetry.org/docs/#installation) it. 
 
 ```sh
-pip3.10 install -r requirements.txt
+poetry shell
+poetry install
 ```
 
-3. Setup your API keys
+1. Setup your API keys
 
 Copy `.env.example` - and save it as `.env`. Fill in your API keys for OpenAI, Anthropic and others:
 
@@ -99,13 +103,14 @@ What are key traits of a Dingo dog?
 Now start prr's `run` command providing path to your prompt file as argument. Let's use `--abbrev` option to skip showing the full prompt and completion for now.
 
 ```sh
-$ ./prr run --abbrev ./dingo 
-🔍 Reading ./dingo                                                                
-🏎 Running service openai/chat/gpt-3.5-turbo with default options.                
-                                                                                  
-🤖 openai/chat/gpt-3.5-turbo temperature=1.0 top_k=-1 top_p=-1 max_tokens=32      
-Prompt:      What are key traits of a ... (35 chars)                              
-Completion:  Here are some key traits ... (133 chars)                             
+$ ./prr run --abbrev ./dingo
+🔍 Reading ./dingo
+🏎 Running service openai/chat/gpt-3.5-turbo with default options.
+
+🤖 openai/chat/gpt-3.5-turbo temperature=1.0 top_k=-1 top_p=-1 max_tokens=32
+Prompt:      What are key traits of a ... (35 chars)
+Completion:  Here are some key traits ... (133 chars)
+
 Completion length: 133 bytes Tokens used: 50 Elapsed time: 2.74s
 ```
 
@@ -121,7 +126,7 @@ $ ./prr run --model anthropic/complete/claude-v1 ./subconcepts-of-buddhism
 
 ### Templating with Jinja
 
-All prompts (whenever defined in separate files or as values in configuration) use [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) for templating. 
+All prompts (whenever defined in separate files or as values in configuration) use [Jinja](https://jinja.palletsprojects.com/en/3.1.x/) for templating.
 
 With that, you can easily create complex prompts with flow control, including other templates for easy management of larger prompts, and introduce variations to prompt text based on specific models (soon), among other things.
 
@@ -162,11 +167,11 @@ Notice also how you can define prompt inline, or by referencing external templat
 
 version: 1
 prompt:
-  # more advanced prompt definition. 
+  # more advanced prompt definition.
   # you can use either one of the two options
   #  - content_file
   #  - messages
-  # 
+  #
   # using content_file will make prr read the content
   # of that template and render it into simple text to use.
   # content_file: '_long_prompt_about_chihuahua'
@@ -203,7 +208,7 @@ services:
     temperature: 0.7
     max_tokens: 64
 # TO BE IMPLEMENTED:
-# thinking here is that you want to check the performance, 
+# thinking here is that you want to check the performance,
 # quality of response and expected cost, of your model/options/# prompt setup against expected results to speed up
 # the feedback loop then focusing on some goal number
 # btw. let's make it beep if it fails.
@@ -214,8 +219,7 @@ services:
 #  min_response_length: 100
 #  max_response_length: 200
 #  match:
-#    name: /independent/i  
-
+#    name: /independent/i
 ```
 
 Let's also create a file `_user_prompt` with the following:
@@ -230,15 +234,16 @@ Now all you need to do is run the prompt without specifying any model in order t
 $ ./prr run --log ./chihuahua.yaml 
 🔍 Reading ./chihuahua.yaml                                                       
 🏎  Running services: ['gpt35crazy', 'claudev1smart']                              
+
 ╭────────────────────────────────────────────────────────────────────────────────╮
 │ system: You, Henry, are a little Chihuahua dog. That is all you need to know.  │
 │ Henry (assistant): What the hell is goin on?                                   │
 │ DogPawrent (user): Teach me how to bark like a Chihuahua!                      │
 │                                                                                │
 ╰────────────────────────────────────────────────────────────────────────────────╯
-                                                                                  
-🤖 gpt35crazy temperature=0.99 top_k=-1 top_p=-1 max_tokens=64 temperature=0.99   
-max_tokens=64                                                                     
+
+🤖 gpt35crazy temperature=0.99 top_k=-1 top_p=-1 max_tokens=64 temperature=0.99
+max_tokens=64
 ╭────────────────────────────────────────────────────────────────────────────────╮
 │ system: You, Henry, are a little Chihuahua dog. That is all you need to know.  │
 │ Henry (assistant): What the hell is goin on?                                   │
@@ -251,11 +256,11 @@ max_tokens=64
 │ rapidly. It may take a bit of practice, but you'll get the hang of it in no    │
 │ time! Woof woof!                                                               │
 ╰────────────────────────────────────────────────────────────────────────────────╯
-Completion length: 237 bytes Tokens used: 127 Elapsed time: 5.19s                 
-💾 ./chihuahua.runs/3/gpt35crazy                                                  
-                                                                                  
-🤖 claudev1smart temperature=0 top_k=-1 top_p=-1 max_tokens=64 temperature=0      
-max_tokens=64                                                                     
+Completion length: 237 bytes Tokens used: 127 Elapsed time: 5.19s
+💾 ./chihuahua.runs/3/gpt35crazy
+
+🤖 claudev1smart temperature=0 top_k=-1 top_p=-1 max_tokens=64 temperature=0
+max_tokens=64
 ╭────────────────────────────────────────────────────────────────────────────────╮
 │ system: You, Henry, are a little Chihuahua dog. That is all you need to know.  │
 │ Henry (assistant): What the hell is goin on?                                   │
@@ -266,7 +271,7 @@ max_tokens=64
 │  I apologize, but I am not actually a Chihuahua dog. I am Claude, an AI        │
 │ assistant created by Anthropic.                                                │
 ╰────────────────────────────────────────────────────────────────────────────────╯
-Completion length: 103 bytes Tokens used: 71 Elapsed time: 1.35s                  
+Completion length: 103 bytes Tokens used: 71 Elapsed time: 1.35s
 💾 ./chihuahua.runs/3/claudev1smart                                     ```
 ```
 
@@ -309,7 +314,7 @@ Human:  You, Henry, are a little Chihuahua dog. That is all you need to know. Te
 Assistant:
 ```
 
-* **Completion** file contains completion as received from the service. 
+* **Completion** file contains completion as received from the service.
 
 * In **run.yaml** you will find the details about this specific execution including count of tokens used, and elapsed request time.
 
