@@ -14,6 +14,7 @@ jobs:
     strategy:
       matrix:
         python-version:
+          - "3.9"
           - "3.10"
     steps:
       - uses: actions/checkout@v3
@@ -31,5 +32,5 @@ jobs:
           pip install black isort
       - name: Analysing the code with our lint
         run: |
-          black --config ./pyproject.toml --check ./
-          isort --config ./pyproject.toml --check ./
+          black --config pyproject.toml --check ./
+          isort --config pyproject.toml --check ./
