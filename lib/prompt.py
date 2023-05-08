@@ -155,32 +155,31 @@ class Prompt:
 
     def load_yaml_file(self, path):
         with open(path, "r") as stream:
-          try:
-            file_contents = self.deal_with_shebang_line(stream)
-            data = yaml.safe_load(file_contents)
-            self.path = path
-          except yaml.YAMLError as exc:
-            print(exc)
+            try:
+                file_contents = self.deal_with_shebang_line(stream)
+                data = yaml.safe_load(file_contents)
+                self.path = path
+            except yaml.YAMLError as exc:
+                print(exc)
 
-          if data:
-              if data["services"]:
-                  self.parse_services(data["services"])
-              if data["prompt"]:
-                  self.parse_prompt_config(data["prompt"])
+            if data:
+                if data["services"]:
+                    self.parse_services(data["services"])
+                if data["prompt"]:
+                    self.parse_prompt_config(data["prompt"])
 
     def deal_with_shebang_line(self, stream):
         file_contents = stream.readlines()
 
         # if the file starts with a shebang, like #!/usr/bin/prr, omit it
         if file_contents[0].startswith("#!/"):
-          if file_contents[1] == '\n':
-            # allow for one empty line below the shebang
-            file_contents = file_contents[2:]
-          else:
-            file_contents = file_contents[1:]
+            if file_contents[1] == "\n":
+                # allow for one empty line below the shebang
+                file_contents = file_contents[2:]
+            else:
+                file_contents = file_contents[1:]
 
         return "".join(file_contents)
-
 
     def load_jinja_template_from_string(self, content):
         self.add_dependency_files_from_jinja_template(content)
@@ -202,8 +201,8 @@ class Prompt:
         self.path = path
 
         with open(path, "r") as stream:
-          file_contents = self.deal_with_shebang_line(stream)
-          self.template = self.template_env.from_string(file_contents)
+            file_contents = self.deal_with_shebang_line(stream)
+            self.template = self.template_env.from_string(file_contents)
 
     def message_text_description(self, message):
         name = message.get("name")
