@@ -1,9 +1,8 @@
 #!/usr/bin/env python
 
-from io import StringIO
-
 import os
 import sys
+from io import StringIO
 
 from dotenv import load_dotenv
 
