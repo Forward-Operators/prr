@@ -8,11 +8,11 @@ Welcome to **prr - The Prompt Runner**!
 
 Made by [Forward Operators](https://fwdoperators.com/). We work on LLM and ML-related projects with some awesome human beings and cool companies.
 
-You are more than welcome to contribute!
+Everyone is welcome to contribute!
 
 ## Note
 
-prr is in very early stages of development, so things might still change unexpectedly or explode embarrasingly.
+**prr** is in very early stages of development, so things might still change unexpectedly or explode embarrasingly.
 
 ## Features
 
