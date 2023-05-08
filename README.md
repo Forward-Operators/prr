@@ -29,7 +29,7 @@ Everyone is welcome to contribute!
 
 As this is early stage work, there's lots improvements that can be done in the future and you're welcome to contribute!
 
-- [ ] Get rix of Python 3.10 dependency
+- [x] Get rix of Python 3.10 dependency
 - [ ] Clean basic code smells
 - [ ] Improve support for OpenAI and Anthropic
 - [ ] Add support for other LLM providers
@@ -64,7 +64,7 @@ Here's a quick run through on what you need to know to use `prr` effectively.
 $ git clone https://github.com/Forward-Operators/prr.git
 ```
 
-2. Make sure you have Python 3.10 installed. If you need to have multiple Python versions in your system, consider using [asdf](https://github.com/asdf-vm/asdf).
+2. Make sure you have Python 3.9 or 3.10 installed. If you need to have multiple Python versions in your system, consider using [asdf](https://github.com/asdf-vm/asdf).
 
 3. Install the required packages:
 This project uses Poetry. See [how to install](https://python-poetry.org/docs/#installation) it. 
