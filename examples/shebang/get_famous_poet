@@ -1,0 +1,3 @@
+#!/workspaces/prr/prr script
+
+Return a JSON object with bio (1 sentence) of Adam Mickiewicz and some basic details about him. Return only JSON, nothing else.

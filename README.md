@@ -19,6 +19,7 @@ Everyone is welcome to contribute!
 - Command-line execution of prompts
 - Quick iteration on prompt design and paramter refinement with `watch` command
 - YAML configuration ties prompts to models and their configurations
+- Write prompt-scripts with #!/usr/bin/prr shebang and execute them directly
 - All prompts can optionally use templating language ([Jinja](https://jinja.palletsprojects.com/en/3.1.x/)) for flow control, partials and others
 - Execute multiple models, or configurations against the same prompt
 - Expandable to other LLM providers (current integrations are <100 lines of code each)
@@ -40,7 +41,7 @@ As this is early stage work, there's lots improvements that can be done in the f
 - [x] Add support for chat structure in prompts using YAML
 - [x] Integrate Jinja as templating language for prompts
 - [x] Make dependency files for Jinja subtemplates are tracked in watch command
-- [ ] #!/usr/bin/prr shebang support for executable prompts
+- [x] #!/usr/bin/prr shebang support for executable prompts
 - [ ] More output modalities (audio, image, video)
 - [ ] Support different text output formats (json, markdown, code, etc.)
 - [ ] Diff command to compare differences in output on subsequent runs

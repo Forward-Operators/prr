@@ -1,4 +1,9 @@
-DEFAULT_OPTIONS = {"temperature": 1.0, "top_k": -1, "top_p": -1, "max_tokens": 32}
+DEFAULT_OPTIONS = {
+  'temperature': 1.0,
+  'top_k': -1,
+  'top_p': -1,
+  'max_tokens': 256
+}
 
 ALLOWED_OPTIONS = DEFAULT_OPTIONS.keys()
 
