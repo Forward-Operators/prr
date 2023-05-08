@@ -64,19 +64,17 @@ Here's a quick run through on what you need to know to use `prr` effectively.
 $ git clone https://github.com/Forward-Operators/prr.git
 ```
 
-2. Make sure you have right python version
-Make sure you have python 3.10 installed.
-If you need to have multiple python versions in your system, consider using [asdf](https://github.com/asdf-vm/asdf)
+2. Make sure you have Python 3.10 installed. If you need to have multiple Python versions in your system, consider using [asdf](https://github.com/asdf-vm/asdf).
 
 3. Install the required packages:
-This project uses Poetry. See how to [install](https://python-poetry.org/docs/#installation) it. 
+This project uses Poetry. See [how to install](https://python-poetry.org/docs/#installation) it. 
 
 ```sh
 poetry shell
 poetry install
 ```
 
-1. Setup your API keys
+4. Setup your API keys
 
 Copy `.env.example` - and save it as `.env`. Fill in your API keys for OpenAI, Anthropic and others:
 
@@ -90,7 +88,7 @@ ANTHROPIC_API_KEY="sk-ant-..."
 DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
 ```
 
-You can also use DEFAULT_SERVICE to specify the model you want to use by default.
+You can also use DEFAULT_SERVICE to specify the model you want to use by default, but otherwise you're good to go!
 
 ### Run a prompt from a simple text file containing just a prompt
 
