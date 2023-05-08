@@ -33,4 +33,4 @@ jobs:
       - name: Analysing the code with our lint
         run: |
           black --config pyproject.toml --check ./
-          isort --config pyproject.toml --check ./
+          isort --settings-path pyproject.toml --check ./
