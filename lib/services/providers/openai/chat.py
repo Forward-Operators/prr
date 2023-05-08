@@ -3,57 +3,55 @@ import openai
 from lib.request import ServiceRequest
 from lib.response import ServiceResponse
 
+
 # OpenAI model provider class
 class ServiceOpenAIChat:
-  provider = 'openai'
-  service = 'chat'
-  
-  def run(self, prompt, service_config):
-    self.prompt = prompt
-    self.service_config = service_config
+    provider = "openai"
+    service = "chat"
 
-    messages = self.messages_from_prompt()
+    def run(self, prompt, service_config):
+        self.prompt = prompt
+        self.service_config = service_config
 
-    service_request = ServiceRequest(self.service_config,
-                                     { 'messages': messages })
+        messages = self.messages_from_prompt()
 
-    options = self.service_config.options
+        service_request = ServiceRequest(self.service_config, {"messages": messages})
 
-    completion = openai.ChatCompletion.create(
-      model = self.service_config.model_name(),
-      messages = messages,
-      temperature = options.temperature,
-      max_tokens = options.max_tokens,
-    )
+        options = self.service_config.options
 
-    usage = completion.usage
+        completion = openai.ChatCompletion.create(
+            model=self.service_config.model_name(),
+            messages=messages,
+            temperature=options.temperature,
+            max_tokens=options.max_tokens,
+        )
 
-    choices = completion.choices
-    first_choice = choices[0]
+        usage = completion.usage
 
-    completion_content = first_choice.message.content
+        choices = completion.choices
+        first_choice = choices[0]
 
-    service_response = ServiceResponse(completion_content, {
-      'choices': len(choices),
-      'tokens_used': usage.total_tokens,
-      'completion_tokens': usage.completion_tokens,
-      'prompt_tokens': usage.prompt_tokens,
-      'total_tokens': usage.total_tokens,
-      'finish_reason': first_choice.finish_reason,
-    })
+        completion_content = first_choice.message.content
 
-    return service_request, service_response
+        service_response = ServiceResponse(
+            completion_content,
+            {
+                "choices": len(choices),
+                "tokens_used": usage.total_tokens,
+                "completion_tokens": usage.completion_tokens,
+                "prompt_tokens": usage.prompt_tokens,
+                "total_tokens": usage.total_tokens,
+                "finish_reason": first_choice.finish_reason,
+            },
+        )
 
-  def messages_from_prompt(self):
-    messages = self.prompt.messages
+        return service_request, service_response
 
-    # prefer messages in prompt if they exist
-    if messages:
-      return messages
-    
-    return [
-      {
-        "role": "user", 
-        "content": self.prompt.text()
-      }
-    ]
+    def messages_from_prompt(self):
+        messages = self.prompt.messages
+
+        # prefer messages in prompt if they exist
+        if messages:
+            return messages
+
+        return [{"role": "user", "content": self.prompt.text()}]

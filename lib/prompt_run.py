@@ -2,24 +2,24 @@ import time
 
 from .prompt_run_result import PromptRunResult
 
+
 # takes prompt and model config, finds provider, runs the prompt
 class PromptRun:
-  def __init__(self, prompt, service, service_config):
-    self.prompt = prompt
-    self.service = service
-    self.service_config = service_config
+    def __init__(self, prompt, service, service_config):
+        self.prompt = prompt
+        self.service = service
+        self.service_config = service_config
 
-  def run(self):
-    result = PromptRunResult(self.prompt, self.service_config)
-    
-    result.before_run()
+    def run(self):
+        result = PromptRunResult(self.prompt, self.service_config)
 
-    request, response = self.service.run(self.prompt, self.service_config)
+        result.before_run()
 
-    result.after_run()
+        request, response = self.service.run(self.prompt, self.service_config)
 
-    result.update_with_request(request)
-    result.update_with_response(response)
+        result.after_run()
 
-    return result
+        result.update_with_request(request)
+        result.update_with_response(response)
 
+        return result
