@@ -1,7 +1,7 @@
 [tool.poetry]
 name = "prr"
 version = "0.1.0"
-description = ""
+description = "prr - command-line LLM prompt runner"
 authors = ["Zbigniew Sobiecki <zbigniew@sobiecki.name>"]
 license = "MIT"
 readme = "README.md"
