@@ -74,6 +74,7 @@ This project uses Poetry. See [how to install](https://python-poetry.org/docs/#i
 poetry shell
 poetry install
 ```
+It will install `prr` executable file in your active python environment.
 
 4. Setup your API keys
 
@@ -102,7 +103,7 @@ What are key traits of a Dingo dog?
 Now start prr's `run` command providing path to your prompt file as argument. Let's use `--abbrev` option to skip showing the full prompt and completion for now.
 
 ```sh
-$ ./prr run --abbrev ./dingo
+$ prr run --abbrev ./dingo
 🔍 Reading ./dingo
 🏎 Running service openai/chat/gpt-3.5-turbo with default options.
 
@@ -120,7 +121,7 @@ Your prompt was ran against default model with default configuration and you can
 With `--service` parameter, you can use any model the `prr` currently supports (see below) that you have configured with the API key. Here's how to use it against **Anthropic's Claude v1**.
 
 ```sh
-$ ./prr run --service anthropic/complete/claude-v1 ./subconcepts-of-buddhism
+$ prr run --service anthropic/complete/claude-v1 ./subconcepts-of-buddhism
 ```
 
 ### Templating with Jinja
@@ -140,7 +141,7 @@ Tell me all about {% include '_current_topic' %}, please.
 To enable quick feedback loop based on changes you are going to introduce to your prompt, as you go about editing it, prr offers `watch` command. It allows for the same options as `run` and is able to follow changes to your prompt and re-execute all defined models when you save your work.
 
 ```sh
-$ ./prr watch ./subconcepts-of-buddhism
+$ prr watch ./subconcepts-of-buddhism
 ```
 
 If you refer to another template within your template, changes to that file will automatically be tracked too.
@@ -153,13 +154,13 @@ If your prompt is often saved and you're worried of running it too often, you ca
 $ ./prr watch -c 15 ./subconcepts-of-buddhism
 ```
 
+
 ### Prompt Scripts
 
 You can run prompts directly by setting the right first shebang line, pointing to your prr installation and using the `script` command.
 
 ```
-#!/your/path/to/prr script
-
+#!prr script
 Write a nerdcore rap song about an AI from the projects who reaches unbelievable levels of success, but has to sacrifice a lot of tokens along the way.
 ```
 
@@ -168,10 +169,8 @@ Write a nerdcore rap song about an AI from the projects who reaches unbelievable
 In the below example, you are reading the file (let's say csv, but try other formats too!) passed in argument to your prompt script and including its contents in the prompt. 
 
 ```
-#!/usr/bin/prr script
-
+#!prr script
 Convert content below to JSON. First line are column names.
-
 {% include prompt_args %}
 ```
 
@@ -194,6 +193,8 @@ $ ./convert_to_json myfile.xml | brandon9000-json-ingestor
 ```
 
 ...or another prompt script, calling another (or the same) model to do more work on your data.
+
+
 
 
 ### Configuring Prompt Runs
@@ -272,7 +273,7 @@ Teach me how to bark like a Chihuahua!
 Now all you need to do is run the prompt without specifying any model in order to run all of the defined services. We're not using `--abbrev` anymore, so we'll see the full prompts and responses.
 
 ```sh
-$ ./prr run --log ./chihuahua.yaml 
+$ prr run --log ./chihuahua.yaml 
 🔍 Reading ./chihuahua.yaml                                                       
 🏎  Running services: ['gpt35crazy', 'claudev1smart']                              
 
@@ -394,9 +395,10 @@ We'd love your help in making Prr even better! To contribute, please follow thes
 
 1. Fork the repo
 2. Create a new branch
-3. Commit your changes
-4. Push the branch to your fork
-5. Create a new Pull Request
+3. Install pre-commit - `pre-commit install`
+4. Commit your changes
+5. Push the branch to your fork
+6. Create a new Pull Request
 
 ## License
 

@@ -20,6 +20,9 @@ pre-commit = "^2.12.0"
 black = "^23.3.0"
 isort = "^5.12.0"
 
+[tool.poetry.scripts]
+prr = { callable = "prr:main" }
+
 [tool.isort]
 # https://pycqa.github.io/isort/docs/configuration/black_compatibility/
 profile = "black"
