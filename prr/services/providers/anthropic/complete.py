@@ -5,8 +5,8 @@ import os
 
 import anthropic
 
-from lib.request import ServiceRequest
-from lib.response import ServiceResponse
+from prr.request import ServiceRequest
+from prr.response import ServiceResponse
 
 # https://console.anthropic.com/docs/api/reference
 

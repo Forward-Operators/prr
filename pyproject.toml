@@ -1,8 +1,8 @@
 [tool.poetry]
 name = "prr"
-version = "0.1.0"
+version = "0.2.0"
 description = "prr - command-line LLM prompt runner"
-authors = ["Zbigniew Sobiecki <zbigniew@sobiecki.name>"]
+authors = ["Zbigniew Sobiecki <zbigniew@sobiecki.name>", "Mateusz Kozak <mateusz@mkozak.pl"]
 license = "MIT"
 readme = "README.md"
 
@@ -27,6 +27,8 @@ prr = { callable = "prr:main" }
 # https://pycqa.github.io/isort/docs/configuration/black_compatibility/
 profile = "black"
 
+[project.urls]
+Homepage = "https://github.com/Forward-Operators/prr"
 
 [build-system]
 requires = ["poetry-core"]

@@ -11,8 +11,8 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from utils.run import RunPromptCommand
-from utils.watch import WatchPromptCommand
+from .utils.run import RunPromptCommand
+from .utils.watch import WatchPromptCommand
 
 
 def main():

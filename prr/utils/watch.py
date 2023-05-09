@@ -7,11 +7,11 @@ import time
 
 from dotenv import load_dotenv
 
-from lib.prompt import Prompt
+from prr.prompt import Prompt
 
 load_dotenv()
 
-from utils.run import RunPromptCommand
+from prr.utils.run import RunPromptCommand
 
 
 def timestamp_for_file(path):

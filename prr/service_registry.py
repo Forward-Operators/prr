@@ -1,5 +1,5 @@
-from lib.services.providers.anthropic.complete import ServiceAnthropicComplete
-from lib.services.providers.openai.chat import ServiceOpenAIChat
+from prr.services.providers.anthropic.complete import ServiceAnthropicComplete
+from prr.services.providers.openai.chat import ServiceOpenAIChat
 
 
 class ServiceRegistry:

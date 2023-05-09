@@ -1,7 +1,7 @@
 import openai
 
-from lib.request import ServiceRequest
-from lib.response import ServiceResponse
+from prr.request import ServiceRequest
+from prr.response import ServiceResponse
 
 
 # OpenAI model provider class
