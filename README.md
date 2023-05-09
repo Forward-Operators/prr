@@ -163,6 +163,7 @@ You can run prompts directly by setting the right first shebang line, pointing t
 Write a nerdcore rap song about an AI from the projects who reaches unbelievable levels of success, but has to sacrifice a lot of tokens along the way.
 ```
 
+
 ### Prompt Scripts arguments
 
 In the below example, you are reading the file (let's say csv, but try other formats too!) passed in argument to your prompt script and including its contents in the prompt. 
