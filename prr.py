@@ -68,13 +68,13 @@ def main():
         "--cooldown", "-c", type=int, help="How much to wait after a re-run", default=5
     )
 
-    args = parser.parse_args()
+    args, prompt_args = parser.parse_known_args()
     parsed_args = vars(args)
 
     if parsed_args["command"] == "script":
         parsed_args["quiet"] = True
         parsed_args["abbrev"] = False
-        command = RunPromptCommand(parsed_args)
+        command = RunPromptCommand(parsed_args, prompt_args)
         command.run_prompt()
 
     if parsed_args["command"] == "run":
