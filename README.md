@@ -74,6 +74,7 @@ This project uses Poetry. See [how to install](https://python-poetry.org/docs/#i
 poetry shell
 poetry install
 ```
+It will install `prr` executable file in your active python environment.
 
 4. Setup your API keys
 
