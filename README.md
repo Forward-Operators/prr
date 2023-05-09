@@ -160,7 +160,7 @@ $ ./prr watch -c 15 ./subconcepts-of-buddhism
 You can run prompts directly by setting the right first shebang line, pointing to your prr installation and using the `script` command.
 
 ```
-#!/your/path/to/prr script
+#!prr script
 Write a nerdcore rap song about an AI from the projects who reaches unbelievable levels of success, but has to sacrifice a lot of tokens along the way.
 ```
 
@@ -169,7 +169,7 @@ Write a nerdcore rap song about an AI from the projects who reaches unbelievable
 In the below example, you are reading the file (let's say csv, but try other formats too!) passed in argument to your prompt script and including its contents in the prompt. 
 
 ```
-#!/usr/bin/prr script
+#!prr script
 Convert content below to JSON. First line are column names.
 {% include prompt_args %}
 ```
