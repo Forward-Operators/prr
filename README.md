@@ -121,7 +121,7 @@ Your prompt was ran against default model with default configuration and you can
 With `--service` parameter, you can use any model the `prr` currently supports (see below) that you have configured with the API key. Here's how to use it against **Anthropic's Claude v1**.
 
 ```sh
-$ ./prr run --service anthropic/complete/claude-v1 ./subconcepts-of-buddhism
+$ prr run --service anthropic/complete/claude-v1 ./subconcepts-of-buddhism
 ```
 
 ### Templating with Jinja
@@ -153,6 +153,48 @@ If your prompt is often saved and you're worried of running it too often, you ca
 ```
 $ ./prr watch -c 15 ./subconcepts-of-buddhism
 ```
+
+
+### Prompt Scripts
+
+You can run prompts directly by setting the right first shebang line, pointing to your prr installation and using the `script` command.
+
+```
+#!/your/path/to/prr script
+Write a nerdcore rap song about an AI from the projects who reaches unbelievable levels of success, but has to sacrifice a lot of tokens along the way.
+```
+
+### Prompt Scripts arguments
+
+In the below example, you are reading the file (let's say csv, but try other formats too!) passed in argument to your prompt script and including its contents in the prompt. 
+
+```
+#!/usr/bin/prr script
+Convert content below to JSON. First line are column names.
+{% include prompt_args %}
+```
+
+If you save the script above as `convert_to_json`, you can call it with an input file like so:
+
+```
+$ ./convert_to_json myfile.xml
+```
+
+Script mode quiets all other messages `prr` would generate, so as an output you get the actual completion from model, you can easily save to file...
+
+```
+$ ./convert_to_json myfile.xml > myfile.json
+```
+
+...pipe to another another command...
+
+```
+$ ./convert_to_json myfile.xml | brandon9000-json-ingestor
+```
+
+...or another prompt script, calling another (or the same) model to do more work on your data.
+
+
 
 
 ### Configuring Prompt Runs
