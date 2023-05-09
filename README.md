@@ -58,6 +58,13 @@ As this is early stage work, there's lots improvements that can be done in the f
 
 Here's a quick run through on what you need to know to use `prr` effectively.
 
+### I just want to use it
+Install it via `pip` 
+```sh
+$ pip install prr
+```
+
+and continue to step 4
 
 1. Clone the repo
 
