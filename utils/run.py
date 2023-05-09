@@ -20,8 +20,9 @@ console = Console(log_time=False, log_path=False)
 
 
 class RunPromptCommand:
-    def __init__(self, args):
+    def __init__(self, args, prompt_args=None):
         self.args = args
+        self.prompt_args = prompt_args
         self.prompt = None
 
         if self.args["quiet"]:
@@ -99,7 +100,7 @@ class RunPromptCommand:
             exit(-1)
 
         self.console.log(f":magnifying_glass_tilted_left: Reading {prompt_path}")
-        self.prompt = Prompt(prompt_path)
+        self.prompt = Prompt(prompt_path, self.prompt_args)
 
     def run_prompt(self):
         services_to_run = self.prompt.configured_service_names()

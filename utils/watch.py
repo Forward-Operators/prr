@@ -22,8 +22,9 @@ def timestamp_for_file(path):
 
 
 class WatchPromptCommand:
-    def __init__(self, args):
+    def __init__(self, args, prompt_args=None):
         self.args = args
+        self.prompt_args = prompt_args
         self.setup_files_to_monitor()
 
     def reload_files(self):
@@ -39,7 +40,7 @@ class WatchPromptCommand:
             self.file_timestamps = self.current_timestamps()
 
     def setup_files_to_monitor(self):
-        prompt = Prompt(self.args["prompt_path"])
+        prompt = Prompt(self.args["prompt_path"], self.prompt_args)
         self.files = [prompt.path]
         self.files.extend(prompt.dependency_files)
         self.update_timestamps()
