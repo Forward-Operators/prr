@@ -76,11 +76,12 @@ def parse_config_into_services(services_config):
 
 
 class Prompt:
-    def __init__(self, path):
+    def __init__(self, path, args=None):
         self.path = None
         self.messages = None
         self.template = None
         self.services = {}
+        self.args = args
         # TODO/FIXME: should also include jinja includes
         self.dependency_files = []
 
@@ -219,6 +220,9 @@ class Prompt:
             return "\n".join(
                 [self.message_text_description(msg) for msg in self.messages]
             )
+
+        if self.args:
+            return self.template.render({"prompt_args": self.args})
 
         return self.template.render()
 
