@@ -1,4 +1,4 @@
-DEFAULT_OPTIONS = {"temperature": 1.0, "top_k": -1, "top_p": -1, "max_tokens": 256}
+DEFAULT_OPTIONS = {"temperature": 1.0, "top_k": -1, "top_p": -1, "max_tokens": 4000}
 
 ALLOWED_OPTIONS = DEFAULT_OPTIONS.keys()
 
@@ -12,7 +12,8 @@ class ModelOptions:
     def update_options(self, options):
         for key in options.keys():
             if key in ALLOWED_OPTIONS:
-                self.options_set.append(key)
+                if key not in self.options_set:
+                  self.options_set.append(key)
                 setattr(self, key, options[key])
 
     def description(self):
