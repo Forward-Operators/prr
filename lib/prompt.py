@@ -195,8 +195,8 @@ class Prompt:
 
                 return self.template_env.get_template(template_subpath)
         except FileNotFoundError:
-                print(f"Could not find template file: {template_subpath}")
-                exit(-1)
+            print(f"Could not find template file: {template_subpath}")
+            exit(-1)
 
     def load_text_file(self, path):
         self.path = path
