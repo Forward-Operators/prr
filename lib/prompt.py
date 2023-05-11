@@ -186,12 +186,12 @@ class Prompt:
         self.add_dependency_files_from_jinja_template(content)
         return self.template_env.from_string(content)
 
-        def load_jinja_template_from_file(self, template_subpath):
-            try:
-                with open(
-                    os.path.join(os.path.dirname(self.path), template_subpath), "r"
-                ) as stream:
-                    self.add_dependency_files_from_jinja_template(stream.read())
+    def load_jinja_template_from_file(self, template_subpath):
+        try:
+            with open(
+              os.path.join(os.path.dirname(self.path), template_subpath), "r"
+            ) as stream:
+                self.add_dependency_files_from_jinja_template(stream.read())
 
                 return self.template_env.get_template(template_subpath)
             except FileNotFoundError:
