@@ -52,6 +52,7 @@ As this is early stage work, there's lots improvements that can be done in the f
 - [ ] Allow for specifying how many times to run each service to ensure statistically relevant-ish performance results
 - [ ] Prompt fine-tuning tooling
 - [ ] Support multiple completions
+- [ ] Support `.env` file for configuration from current directory (or any other as `--config` option)
 
 
 ## Getting started
@@ -64,7 +65,7 @@ Install it via `pip`
 $ pip install prr
 ```
 
-Copy `.env.example` - and save it as `.env`. Fill in your API keys for OpenAI, Anthropic and others:
+Check `.env.example` - and save it as `~/.prr_rc`. Fill in your API keys for OpenAI, Anthropic and others:
 
 ```bash
 # https://platform.openai.com/account/api-keys
@@ -101,7 +102,7 @@ It will install `prr` executable file in your active python environment.
 
 4. Setup your API keys
 
-Copy `.env.example` - and save it as `.env`. Fill in your API keys for OpenAI, Anthropic and others:
+Copy `.env.example` - and save it as `~/.prr_rc`. Fill in your API keys for OpenAI, Anthropic and others:
 
 ```bash
 # https://platform.openai.com/account/api-keys
