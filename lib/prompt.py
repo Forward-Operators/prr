@@ -194,7 +194,7 @@ class Prompt:
                 self.add_dependency_files_from_jinja_template(stream.read())
 
                 return self.template_env.get_template(template_subpath)
-            except FileNotFoundError:
+        except FileNotFoundError:
                 print(f"Could not find template file: {template_subpath}")
                 exit(-1)
 
