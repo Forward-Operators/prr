@@ -2,15 +2,9 @@
 
 import datetime
 import os
-import sys
 import time
 
-from dotenv import load_dotenv
-
 from prr.prompt import Prompt
-
-load_dotenv()
-
 from prr.utils.run import RunPromptCommand
 
 

@@ -1,7 +1,10 @@
 import openai
 
+from prr.config import load_config
 from prr.request import ServiceRequest
 from prr.response import ServiceResponse
+
+config = load_config()
 
 
 # OpenAI model provider class

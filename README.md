@@ -58,13 +58,29 @@ As this is early stage work, there's lots improvements that can be done in the f
 
 Here's a quick run through on what you need to know to use `prr` effectively.
 
-### I just want to use it
+### Installation & configuration
 Install it via `pip` 
 ```sh
 $ pip install prr
 ```
 
-and continue to step 4
+Copy `.env.example` - and save it as `.env`. Fill in your API keys for OpenAI, Anthropic and others:
+
+```bash
+# https://platform.openai.com/account/api-keys
+OPENAI_API_KEY="sk-..."
+
+# https://console.anthropic.com/account/keys
+ANTHROPIC_API_KEY="sk-ant-..."
+
+DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
+```
+
+You can also use DEFAULT_SERVICE to specify the model you want to use by default, but otherwise you're good to go!
+
+
+## Development
+
 
 1. Clone the repo
 
