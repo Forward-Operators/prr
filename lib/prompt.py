@@ -189,7 +189,7 @@ class Prompt:
     def load_jinja_template_from_file(self, template_subpath):
         try:
             with open(
-              os.path.join(os.path.dirname(self.path), template_subpath), "r"
+                os.path.join(os.path.dirname(self.path), template_subpath), "r"
             ) as stream:
                 self.add_dependency_files_from_jinja_template(stream.read())
 

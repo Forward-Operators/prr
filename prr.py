@@ -49,7 +49,9 @@ def main():
             type=str,
         )
         _parser.add_argument(
-            "--quiet", "-q", help="Quiet mode, just outputs the completion",
+            "--quiet",
+            "-q",
+            help="Quiet mode, just outputs the completion",
             action="store_true",
             default=False,
         )
