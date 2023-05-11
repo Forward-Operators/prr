@@ -19,8 +19,6 @@ class ServiceOpenAIChat:
 
         options = self.service_config.options
 
-        print("OPENAI TEMP ", options.temperature, " MAX TOKENS", options.max_tokens)
-
         completion = openai.ChatCompletion.create(
             model=self.service_config.model_name(),
             messages=messages,

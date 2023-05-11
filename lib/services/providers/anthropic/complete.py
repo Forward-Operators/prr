@@ -27,8 +27,6 @@ class ServiceAnthropicComplete:
 
         service_request = ServiceRequest(self.service_config, prompt_text)
 
-        print("ANTHROPIC TEMP ", options.temperature, " MAX TOKENS", options.max_tokens)
-
         response = client.completion(
             prompt=prompt_text,
             stop_sequences=[anthropic.HUMAN_PROMPT],
