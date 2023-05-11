@@ -13,7 +13,7 @@ class ModelOptions:
         for key in options.keys():
             if key in ALLOWED_OPTIONS:
                 if key not in self.options_set:
-                  self.options_set.append(key)
+                    self.options_set.append(key)
                 setattr(self, key, options[key])
 
     def description(self):
