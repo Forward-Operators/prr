@@ -4,17 +4,13 @@ import os
 import sys
 from io import StringIO
 
-from dotenv import load_dotenv
-
-from lib.prompt import Prompt
-
-load_dotenv()
-
 from rich import print
 from rich.console import Console
 from rich.panel import Panel
 
-from lib.runner import Runner
+# from prr.config import config
+from prr.prompt import Prompt
+from prr.runner import Runner
 
 console = Console(log_time=False, log_path=False)
 

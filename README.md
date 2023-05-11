@@ -52,33 +52,20 @@ As this is early stage work, there's lots improvements that can be done in the f
 - [ ] Allow for specifying how many times to run each service to ensure statistically relevant-ish performance results
 - [ ] Prompt fine-tuning tooling
 - [ ] Support multiple completions
+- [ ] Support `.env` file for configuration from current directory (or any other as `--config` option)
 
 
 ## Getting started
 
 Here's a quick run through on what you need to know to use `prr` effectively.
 
-
-1. Clone the repo
-
+### Installation & configuration
+Install it via `pip` 
 ```sh
-$ git clone https://github.com/Forward-Operators/prr.git
+$ pip install prr
 ```
 
-2. Make sure you have Python 3.9 or 3.10 installed. If you need to have multiple Python versions in your system, consider using [asdf](https://github.com/asdf-vm/asdf).
-
-3. Install the required packages:
-This project uses Poetry. See [how to install](https://python-poetry.org/docs/#installation) it. 
-
-```sh
-poetry shell
-poetry install
-```
-It will install `prr` executable file in your active python environment.
-
-4. Setup your API keys
-
-Copy `.env.example` - and save it as `.env`. Fill in your API keys for OpenAI, Anthropic and others:
+Check `.env.example` - and save it as `~/.prr_rc`. Fill in your API keys for OpenAI, Anthropic and others:
 
 ```bash
 # https://platform.openai.com/account/api-keys
@@ -91,6 +78,7 @@ DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
 ```
 
 You can also use DEFAULT_SERVICE to specify the model you want to use by default, but otherwise you're good to go!
+
 
 ### Run a prompt from a simple text file containing just a prompt
 
@@ -388,6 +376,42 @@ stats:
 
 * OpenAI/chat - https://platform.openai.com/docs/guides/chat
 * Anthropic/complete - https://console.anthropic.com/docs/api
+
+## Development
+
+1. Clone the repo
+
+```sh
+$ git clone https://github.com/Forward-Operators/prr.git
+```
+
+2. Make sure you have Python 3.9 or 3.10 installed. If you need to have multiple Python versions in your system, consider using [asdf](https://github.com/asdf-vm/asdf).
+
+3. Install the required packages:
+This project uses Poetry. See [how to install](https://python-poetry.org/docs/#installation) it. 
+
+```sh
+poetry shell
+poetry install
+```
+It will install `prr` executable file in your active python environment.
+
+4. Setup your API keys
+
+Copy `.env.example` - and save it as `~/.prr_rc`. Fill in your API keys for OpenAI, Anthropic and others:
+
+```bash
+# https://platform.openai.com/account/api-keys
+OPENAI_API_KEY="sk-..."
+
+# https://console.anthropic.com/account/keys
+ANTHROPIC_API_KEY="sk-ant-..."
+
+DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
+```
+
+You can also use DEFAULT_SERVICE to specify the model you want to use by default, but otherwise you're good to go!
+
 
 ## Contributing
 

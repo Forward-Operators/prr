@@ -5,8 +5,11 @@ import os
 
 import anthropic
 
-from lib.request import ServiceRequest
-from lib.response import ServiceResponse
+from prr.config import load_config
+from prr.request import ServiceRequest
+from prr.response import ServiceResponse
+
+config = load_config()
 
 # https://console.anthropic.com/docs/api/reference
 
@@ -23,7 +26,7 @@ class ServiceAnthropicComplete:
 
         prompt_text = self.prompt_text()
 
-        client = anthropic.Client(os.environ["ANTHROPIC_API_KEY"])
+        client = anthropic.Client(config["ANTHROPIC_API_KEY"])
 
         service_request = ServiceRequest(self.service_config, prompt_text)
 

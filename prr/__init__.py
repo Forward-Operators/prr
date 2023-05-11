@@ -1,18 +1,18 @@
 #!/usr/bin/env python
 
+import argparse
 import os
 import sys
 
-sys.path.append(".")
+from prr.config import load_config
 
-import argparse
+from .utils.run import RunPromptCommand
+from .utils.watch import WatchPromptCommand
 
-from dotenv import load_dotenv
+# sys.path.append(".")
 
-load_dotenv()
 
-from utils.run import RunPromptCommand
-from utils.watch import WatchPromptCommand
+config = load_config()
 
 
 def main():
@@ -45,7 +45,7 @@ def main():
             "--service",
             "-s",
             help="Service to use if none is configured (defaults to DEFAULT_SERVICE environment variable)",
-            default=os.environ.get("DEFAULT_SERVICE"),
+            default=config["DEFAULT_SERVICE"],
             type=str,
         )
         _parser.add_argument(
