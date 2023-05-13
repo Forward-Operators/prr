@@ -412,6 +412,8 @@ DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
 
 You can also use DEFAULT_SERVICE to specify the model you want to use by default, but otherwise you're good to go!
 
+If you'd like to run this code during developmnent, you can use `python -m prr` to load the module.
+
 
 ## Contributing
 
