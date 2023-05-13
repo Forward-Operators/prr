@@ -9,9 +9,6 @@ from prr.config import load_config
 from .utils.run import RunPromptCommand
 from .utils.watch import WatchPromptCommand
 
-# sys.path.append(".")
-
-
 config = load_config()
 
 
@@ -88,7 +85,3 @@ def main():
     if parsed_args["command"] == "watch":
         command = WatchPromptCommand(parsed_args)
         command.watch_prompt()
-
-
-if __name__ == "__main__":
-    main()
