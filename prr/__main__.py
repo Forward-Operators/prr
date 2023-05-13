@@ -85,3 +85,7 @@ def main():
     if parsed_args["command"] == "watch":
         command = WatchPromptCommand(parsed_args)
         command.watch_prompt()
+
+
+if __name__ == "__main__":
+    main()
