@@ -426,6 +426,12 @@ We'd love your help in making Prr even better! To contribute, please follow thes
 5. Push the branch to your fork
 6. Create a new Pull Request
 
+### Running unit tests
+
+```sh
+$ pytest
+```
+
 ## License
 
 **prr** - Prompt Runner is released under the [MIT License](/LICENSE).
