@@ -2,8 +2,8 @@ from . import Prompt
 
 class PromptLoader:
   def __init__(self):
-    dependency_files = []
-    # 
+    self.dependency_files = []
+    self.prompt = None
   
   def load_from_path(path):
     if is_file_yaml(path):
@@ -34,10 +34,17 @@ class PromptLoader:
       file_contents = self.deal_with_shebang_line(stream)
       self.template = self.template_env.from_string(file_contents)
 
-
-  def __load_text_file(self, path):
-    self.path = path
-
+  def __load_yaml_file(self, path):
     with open(path, "r") as stream:
-      file_contents = self.deal_with_shebang_line(stream)
-      self.template = self.template_env.from_string(file_contents)
+      try:
+          file_contents = self.deal_with_shebang_line(stream)
+          data = yaml.safe_load(file_contents)
+          self.path = path
+      except yaml.YAMLError as exc:
+          print(exc)
+
+      if data:
+          if data["services"]:
+              self.parse_services(data["services"])
+          if data["prompt"]:
+              self.parse_prompt_config(data["prompt"])
