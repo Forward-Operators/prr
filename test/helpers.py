@@ -9,5 +9,6 @@ def create_temp_file(content, extension):
     with tempfile.NamedTemporaryFile(suffix="." + extension, delete=False) as temp:
         temp.write(content.encode())
         temp_path = temp.name
+    
     return temp_path
 

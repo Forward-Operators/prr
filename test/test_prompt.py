@@ -14,4 +14,4 @@ class TestPrompt:
         path = create_temp_file("f00b4r", "yaml")
         remove_temp_file(path)
         print(path)
-        assert self.value == 2
+        assert self.value == 0

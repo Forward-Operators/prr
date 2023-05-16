@@ -7,7 +7,7 @@ from jinja2 import meta
 from ..service_config import ServiceConfig
 
 from .prompt_config import PromptConfig
-from .prompt_content import PromptContent
+from .prompt_template import PromptTemplate
 
 # parse something like:
 #
