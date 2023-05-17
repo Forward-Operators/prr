@@ -13,4 +13,66 @@ prompt:
 """)
 
     assert config is not None
-    assert config.config_content['prompt']['content'] == 'foo bar'
+    assert config.prompt.render_text() == 'foo bar'
+    assert config.prompt.render_messages() == [
+      {
+        'content': 'foo bar',
+        'role': 'user'
+      }
+    ]
+
+  def test_basic_services_model_list(self):
+    config = PromptConfig("""
+prompt:
+  content: 'foo bar'
+services:
+  models:
+    - 'openai/chat/gpt-4'
+    - 'anthropic/complete/claude-v1.3'
+  options:
+    temperature: 0.42
+    max_tokens: 1337
+""")
+
+    assert config is not None
+    services = config.configured_services()
+
+    assert services == ['openai/chat/gpt-4', 'anthropic/complete/claude-v1.3']
+    
+    for service_name in services:
+      assert config.option_for_service(service_name, 'temperature') == 0.42
+      assert config.option_for_service(service_name, 'max_tokens') == 1337
+
+  def test_services(self):
+    config = PromptConfig("""
+prompt:
+  content: 'foo bar'
+services:
+  gpt4:
+    model: 'openai/chat/gpt-4'
+    options:
+      max_tokens: 2048
+  claude13:
+    model: 'anthropic/complete/claude-v1.3'
+    options:
+      temperature: 0.84
+  claude_default:
+    model: 'anthropic/complete/claude-v1'
+  options:
+    temperature: 0.42
+    max_tokens: 1337
+""")
+
+    assert config is not None
+    services = config.configured_services()
+
+    assert services == ['gpt4', 'claude13', 'claude_default']
+    
+    assert config.option_for_service('gpt4', 'temperature') == 0.42
+    assert config.option_for_service('gpt4', 'max_tokens') == 2048
+
+    assert config.option_for_service('claude13', 'temperature') == 0.84
+    assert config.option_for_service('claude13', 'max_tokens') == 1337
+
+    assert config.option_for_service('claude_default', 'temperature') == 0.42
+    assert config.option_for_service('claude_default', 'max_tokens') == 1337
