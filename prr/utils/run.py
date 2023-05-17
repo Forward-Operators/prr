@@ -12,14 +12,15 @@ from rich.panel import Panel
 from prr.prompt import Prompt
 from prr.runner import Runner
 
-console = Console(log_time=False, log_path=False)
+from prr.prompt.prompt_loader import PromptConfigLoader
 
+console = Console(log_time=False, log_path=False)
 
 class RunPromptCommand:
     def __init__(self, args, prompt_args=None):
         self.args = args
         self.prompt_args = prompt_args
-        self.prompt = None
+        self.prompt_config = None
 
         if self.args["quiet"]:
             self.console = Console(file=StringIO())
@@ -27,7 +28,7 @@ class RunPromptCommand:
             self.console = Console(log_time=False, log_path=False)
 
         self.load_prompt_for_path()
-        self.runner = Runner(self.prompt)
+        self.runner = Runner(self.prompt_config)
 
     def print_run_results(self, result, run_save_directory):
         request = result.request
@@ -69,7 +70,7 @@ class RunPromptCommand:
                 self.console.log(f"💾 {run_save_directory}")
 
     def run_prompt_on_service(self, service_name, save=False):
-        service_config = self.prompt.config_for_service(service_name)
+        service_config = self.prompt_config.options_for_service(service_name)
         options = service_config.options
 
         with self.console.status(
@@ -89,17 +90,13 @@ class RunPromptCommand:
     def load_prompt_for_path(self):
         prompt_path = self.args["prompt_path"]
 
-        if not os.path.exists(prompt_path) or not os.access(prompt_path, os.R_OK):
-            self.console.log(
-                f":x: Prompt file {prompt_path} is not accessible, giving up."
-            )
-            exit(-1)
-
         self.console.log(f":magnifying_glass_tilted_left: Reading {prompt_path}")
-        self.prompt = Prompt(prompt_path, self.prompt_args)
+
+        loader = PromptConfigLoader()
+        self.prompt_config = loader.load_from_path(prompt_path)
 
     def run_prompt(self):
-        services_to_run = self.prompt.configured_service_names()
+        services_to_run = self.prompt_config.configured_services()
 
         if services_to_run == []:
             if self.args["service"]:
@@ -109,14 +106,14 @@ class RunPromptCommand:
                 )
             else:
                 self.console.log(
-                    f":x: No services configured for prompt {self.args['prompt_path']}, nor given in command-line. Not even in .env!"
+                    f":x: No services configured for prompt {self.args['prompt_path']}, in ~/.prr_rc nor given in command-line."
                 )
                 exit(-1)
         else:
             self.console.log(f":racing_car:  Running services: {services_to_run}")
 
         if not self.args["abbrev"]:
-            self.console.log(Panel(self.prompt.text()))
+            self.console.log(Panel(self.prompt_config.template_text()))
 
-            for service_name in services_to_run:
-                self.run_prompt_on_service(service_name, self.args["log"])
+        for service_name in services_to_run:
+            self.run_prompt_on_service(service_name, self.args["log"])

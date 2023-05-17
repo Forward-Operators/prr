@@ -14,17 +14,14 @@ class ServiceOpenAIChat:
     service = "chat"
 
     def run(self, prompt, service_config):
-        self.prompt = prompt
-        self.service_config = service_config
+        messages = prompt.template.render_messages()
 
-        messages = self.messages_from_prompt()
+        service_request = ServiceRequest(service_config, {"messages": messages})
 
-        service_request = ServiceRequest(self.service_config, {"messages": messages})
-
-        options = self.service_config.options
+        options = service_config.options
 
         completion = openai.ChatCompletion.create(
-            model=self.service_config.model_name(),
+            model=service_config.model_name(),
             messages=messages,
             temperature=options.temperature,
             max_tokens=options.max_tokens,
@@ -50,12 +47,3 @@ class ServiceOpenAIChat:
         )
 
         return service_request, service_response
-
-    def messages_from_prompt(self):
-        messages = self.prompt.messages
-
-        # prefer messages in prompt if they exist
-        if messages:
-            return messages
-
-        return [{"role": "user", "content": self.prompt.text()}]

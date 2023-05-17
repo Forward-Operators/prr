@@ -5,15 +5,15 @@ from .prompt_template import PromptTemplateSimple, PromptTemplateMessages
 
 class PromptConfig:
   # raw_config_content is text to be parsed into YAML
-  def __init__(self, raw_config_content, search_path='.'):
+  def __init__(self, search_path='.', filename=None):
     # where are we supposed to look for referenced files
     self.search_path = search_path
 
-    # raw YAML string
-    self.raw_config_content = raw_config_content
+    # "foo" or "foo.yaml" - no path
+    self.filename = filename
 
-    # prompt: (PromptTemplate)
-    self.prompt = None
+    # template: (PromptTemplate)
+    self.template = None
 
     # services: (ServiceConfig)
     self.services = {}
@@ -21,22 +21,54 @@ class PromptConfig:
     # version: 1
     self.version = None
 
+  def template_text(self):
+    return self.template.render_text()
+
+  # raw YAML file
+  def load_from_config_contents(self, raw_config_content):
+    # raw YAML string
+    self.raw_config_content = raw_config_content
+
     # parse raw YAML content into a dictionary
-    self.__parse_raw()
+    self.__parse_raw_config()
 
     # parse that dictionary into respective parts of prompt config
     self.__parse()
+
+  # raw prompt template file
+  def load_from_template_contents(self, raw_template_content):
+    self.__parse_prompt_template_simple(raw_template_content)
+
+  # raw prompt template file from file
+  def load_from_template_contents_at_path(self, path):
+    try:
+      with open(path, "r") as file:
+        return self.__parse_prompt_template_simple(file.read())
+
+    except FileNotFoundError:
+      print("The specified file does not exist.")
+
+    except PermissionError:
+      print("You do not have permission to access the specified file.")
+
+    except Exception as e:
+      print("An error occurred while opening the file:", str(e))
 
   # list keys/names of all services that we have configured in the config file
   def configured_services(self):
     return list(self.services.keys())
 
   # returns options for specific service, already includes all option inheritance
-  # def options_for_service(self, service_name):
-  #   return self.services[service_name]
+  def options_for_service(self, service_name):
+    service_config = self.services.get(service_name)
+    
+    if service_config:
+      return service_config.options
+    else:
+      return ServiceConfig(service_name, service_name)
 
   def option_for_service(self, service_name, option_name):
-    return self.services[service_name].options.option(option_name)
+    return self.options_for_service(service_name).option(option_name)
 
   ####################################################
 
@@ -45,7 +77,7 @@ class PromptConfig:
     self.__parse_prompt()
     self.__parse_services()
 
-  def __parse_raw(self):
+  def __parse_raw_config(self):
     try:
       self.config_content = yaml.safe_load(self.raw_config_content)
     except yaml.YAMLError as exc:
@@ -54,6 +86,9 @@ class PromptConfig:
   def __parse_version(self):
     if self.config_content:
       self.version = self.config_content.get('version')
+
+  def __parse_prompt_template_simple(self, content):
+    self.template = PromptTemplateSimple(content, self.search_path)
 
   # high level "prompt:" parsing
   def __parse_prompt(self):
@@ -68,11 +103,11 @@ class PromptConfig:
         if content_file:
           with open(content_file, "r") as file:
             file_contents = file.read()
-            self.prompt = PromptTemplateSimple(file_contents, self.search_path)
+            self.template = PromptTemplateSimple(file_contents, self.search_path)
         elif content:
-          self.prompt = PromptTemplateSimple(content, self.search_path)
+          self.template = PromptTemplateSimple(content, self.search_path)
         elif messages:
-          self.prompt = PromptTemplateMessages(messages, self.search_path)
+          self.template = PromptTemplateMessages(messages, self.search_path)
 
   # high level "services:" parsing
   def __parse_services(self):

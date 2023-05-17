@@ -11,24 +11,19 @@ from prr.response import ServiceResponse
 
 config = load_config()
 
-# https://console.anthropic.com/docs/api/reference
-
-
 # Anthropic model provider class
 class ServiceAnthropicComplete:
     provider = "anthropic"
     service = "complete"
 
     def run(self, prompt, service_config):
-        self.service_config = service_config
-        options = self.service_config.options
-        self.prompt = prompt
-
-        prompt_text = self.prompt_text()
-
         client = anthropic.Client(config["ANTHROPIC_API_KEY"])
 
-        service_request = ServiceRequest(self.service_config, prompt_text)
+        options = service_config.options
+
+        prompt_text = self.prompt_text_from_template(prompt.template)
+
+        service_request = ServiceRequest(service_config, prompt_text)
 
         response = client.completion(
             prompt=prompt_text,
@@ -59,18 +54,16 @@ class ServiceAnthropicComplete:
 
         return service_request, service_response
 
-    def prompt_text(self):
-        messages = self.prompt.messages
-
+    def prompt_text_from_template(self, template):
         prompt_text = ""
 
-        # prefer messages from prompt if they exist
-        if messages:
-            for message in messages:
-                if message["role"] != "assistant":
-                    prompt_text += " " + message["content"]
+        # prefer messages from template if they exist
+        if template.messages:
+            for message in template.messages:
+                if message.role != "assistant":
+                    prompt_text += " " + message.render_text()
 
         else:
-            prompt_text = self.prompt.text()
+            prompt_text = template.render_text()
 
         return f"{anthropic.HUMAN_PROMPT} {prompt_text}{anthropic.AI_PROMPT}"

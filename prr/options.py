@@ -1,7 +1,13 @@
-DEFAULT_OPTIONS = {"temperature": 1.0, "top_k": -1, "top_p": -1, "max_tokens": 4000}
+ALLOWED_OPTIONS = ["max_tokens", "temperature", "top_k", "top_p"]
 
-ALLOWED_OPTIONS = DEFAULT_OPTIONS.keys()
-
+# user-level defaults
+# TODO/FIXME: make it user-configurable in ~/.prr*
+DEFAULT_OPTIONS = {
+  "max_tokens": 4000,
+  "temperature": 0.7,
+  "top_k": -1,
+  "top_p": -1
+}
 
 class ModelOptions:
     def __init__(self, options={}):
@@ -14,6 +20,7 @@ class ModelOptions:
             if key in ALLOWED_OPTIONS:
                 if key not in self.options_set:
                     self.options_set.append(key)
+               
                 setattr(self, key, options[key])
 
     def description(self):

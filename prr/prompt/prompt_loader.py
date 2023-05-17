@@ -1,26 +1,33 @@
+import os
+
+import yaml
+
 from . import Prompt
 from .prompt_template import PromptTemplate, PromptTemplateSimple, PromptTemplateMessages
+from .prompt_config import PromptConfig
 
-class PromptLoader:
+class PromptConfigLoader:
   def __init__(self):
     self.dependency_files = []
-    self.config = None   # PromptConfig
+    self.config = None
   
-  def load_from_path(path):
+  def load_from_path(self, path):
+    self.path = path
+    self.config = PromptConfig(self.__search_path())
     self.__add_file_dependency(path)
 
-    if is_file_yaml(path):
+    if self.__is_file_yaml(path):
       # prompt is in yaml config file format
       self.__load_yaml_file(path)
     else:
       # simple text (or jinja) file, no config
       self.__load_text_file(path)
 
-    return Prompt(self.template, self.config)
+    return self.config
 
   #####################################
 
-  def __is_file_yaml(path):
+  def __is_file_yaml(self, path):
     root, extension = os.path.splitext(path)
 
     if extension == ".yaml":
@@ -28,45 +35,20 @@ class PromptLoader:
 
     return False
 
-  def __search_path():
+  def __search_path(self):
     return os.path.dirname(self.path)
 
   def __load_text_file(self, path):
-    self.path = path
-
-    try:
-      with open(path, "r") as file:
-        file_contents = file.read()
-        self.template = PromptTemplateSimple(file_contents, __search_path())
-
-    except FileNotFoundError:
-      print("The specified file does not exist.")
-
-    except PermissionError:
-      print("You do not have permission to access the specified file.")
-
-    except Exception as e:
-      print("An error occurred while opening the file:", str(e))      
+    self.config.load_from_template_contents_at_path(path)
 
   def __load_yaml_file(self, path):
-    with open(path, "r") as stream:
       try:
-        self.path = path
-        self.config = PromptConfig(stream.read(), self.__search_path())
+        with open(path, "r") as stream:
+          self.config.load_from_config_contents(stream.read())
       
       except yaml.YAMLError as exc:
         print(exc)
 
-      except FileNotFoundError:
-        print("The specified file does not exist.")
-
-      except PermissionError:
-        print("You do not have permission to access the specified file.")
-
-      except Exception as e:
-        print("An error occurred while opening the file:", str(e))
-
-
-  # def __add_file_dependency(self, path):
-  #   if not path in self.dependency_files:
-  #     self.dependency_files.append(path)
+  def __add_file_dependency(self, path):
+    if not path in self.dependency_files:
+      self.dependency_files.append(path)

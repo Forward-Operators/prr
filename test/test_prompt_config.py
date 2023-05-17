@@ -7,14 +7,14 @@ from prr.prompt.prompt_config import PromptConfig
 class TestPromptConfig:
 
   def test_basic_parsing(self):
-    config = PromptConfig("""
+    config = PromptConfig()
+    config.load_from_config_contents("""
 prompt:
   content: 'foo bar'
 """)
 
-    assert config is not None
-    assert config.prompt.render_text() == 'foo bar'
-    assert config.prompt.render_messages() == [
+    assert config.template.render_text() == 'foo bar'
+    assert config.template.render_messages() == [
       {
         'content': 'foo bar',
         'role': 'user'
@@ -22,7 +22,8 @@ prompt:
     ]
 
   def test_basic_services_model_list(self):
-    config = PromptConfig("""
+    config = PromptConfig()
+    config.load_from_config_contents("""
 prompt:
   content: 'foo bar'
 services:
@@ -44,7 +45,8 @@ services:
       assert config.option_for_service(service_name, 'max_tokens') == 1337
 
   def test_services(self):
-    config = PromptConfig("""
+    config = PromptConfig()
+    config.load_from_config_contents("""
 prompt:
   content: 'foo bar'
 services:

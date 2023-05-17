@@ -3,10 +3,9 @@ from datetime import datetime
 
 import yaml
 
-
 class PromptRunSaver:
-    def __init__(self, prompt):
-        self.prompt_path = prompt.path
+    def __init__(self, prompt_config):
+        self.prompt_config = prompt_config
         self.run_time = datetime.now()
         self.runs_subdir = self.run_root_directory_path()
 
@@ -26,8 +25,12 @@ class PromptRunSaver:
             run_id += 1
 
     def run_root_directory_path(self):
-        dirname = os.path.dirname(self.prompt_path)
-        basename = os.path.basename(self.prompt_path)
+        dirname = self.prompt_config.search_path
+
+        if self.prompt_config.filename:
+          basename = os.path.basename(self.prompt_config.filename)
+        else:
+          basename = "prr"
 
         root, extension = os.path.splitext(basename)
 
@@ -38,13 +41,13 @@ class PromptRunSaver:
 
         return self.run_root_directory_path_for_runs_dir(runs_dir)
 
-    def run_directory_path(self, model_or_model_config_name):
-        model_name_part = model_or_model_config_name.replace("/", "-")
+    def run_directory_path(self, service_or_model_name):
+        model_name_part = service_or_model_name.replace("/", "-")
 
         return os.path.join(self.runs_subdir, model_name_part)
 
-    def prepare_run_directory(self, model_or_model_config_name):
-        run_dir = self.run_directory_path(model_or_model_config_name)
+    def prepare_run_directory(self, service_or_model_name):
+        run_dir = self.run_directory_path(service_or_model_name)
 
         os.makedirs(run_dir, exist_ok=True)
 
@@ -78,8 +81,8 @@ class PromptRunSaver:
         with open(run_file, "w") as f:
             yaml.dump(run_data, f, default_flow_style=False)
 
-    def save(self, model_or_model_config_name, result):
-        run_directory = self.prepare_run_directory(model_or_model_config_name)
+    def save(self, service_or_model_name, result):
+        run_directory = self.prepare_run_directory(service_or_model_name)
 
         self.save_prompt(run_directory, result.request)
         self.save_completion(run_directory, result.response)
