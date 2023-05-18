@@ -26,7 +26,7 @@ class ServiceAnthropicComplete:
 
         prompt_text = self.prompt_text()
 
-        client = anthropic.Client(config["ANTHROPIC_API_KEY"])
+        client = anthropic.Client(config.get("ANTHROPIC_API_KEY", None))
 
         service_request = ServiceRequest(self.service_config, prompt_text)
 
