@@ -12,7 +12,7 @@ class Runner:
         self.saver = PromptRunSaver(self.prompt_config)
 
     def run_service(self, service_name, save_run=False):
-        service_config = self.prompt_config.options_for_service(service_name)
+        service_config = self.prompt_config.service_with_name(service_name)
 
         service = service_registry.service_for_service_config(service_config)
 

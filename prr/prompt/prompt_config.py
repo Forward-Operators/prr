@@ -58,14 +58,18 @@ class PromptConfig:
   def configured_services(self):
     return list(self.services.keys())
 
-  # returns options for specific service, already includes all option inheritance
-  def options_for_service(self, service_name):
+  def service_with_name(self, service_name):
     service_config = self.services.get(service_name)
     
     if service_config:
-      return service_config.options
+      return service_config
     else:
       return ServiceConfig(service_name, service_name)
+
+
+  # returns options for specific service, already includes all option inheritance
+  def options_for_service(self, service_name):
+    return self.service_with_name(service_name).options
 
   def option_for_service(self, service_name, option_name):
     return self.options_for_service(service_name).option(option_name)
@@ -101,9 +105,8 @@ class PromptConfig:
         messages = prompt.get('messages')
 
         if content_file:
-          with open(content_file, "r") as file:
-            file_contents = file.read()
-            self.template = PromptTemplateSimple(file_contents, self.search_path)
+          include_contents = "{% include '" + content_file + "' %}"
+          self.template = PromptTemplateSimple(include_contents, self.search_path)
         elif content:
           self.template = PromptTemplateSimple(content, self.search_path)
         elif messages:

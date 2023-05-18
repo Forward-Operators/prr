@@ -10,9 +10,11 @@ DEFAULT_OPTIONS = {
 }
 
 class ModelOptions:
+    defaults = DEFAULT_OPTIONS
+
     def __init__(self, options={}):
         self.options_set = []
-        self.update_options(DEFAULT_OPTIONS)
+        self.update_options(ModelOptions.defaults)
         self.update_options(options)
 
     def update_options(self, options):

@@ -58,11 +58,11 @@ class RunPromptCommand:
                     Panel("[green]" + response.response_content.strip() + "[/green]")
                 )
 
-                completion = f"[blue]Completion length[/blue]: {len(response.response_content)} bytes"
-                tokens_used = f"[blue]Tokens used[/blue]: {response.tokens_used()}"
-                elapsed_time = (
-                    f"[blue]Elapsed time[/blue]: {round(result.elapsed_time, 2)}s"
-                )
+            completion = f"[blue]Completion length[/blue]: {len(response.response_content)} bytes"
+            tokens_used = f"[blue]Tokens used[/blue]: {response.tokens_used()}"
+            elapsed_time = (
+                f"[blue]Elapsed time[/blue]: {round(result.elapsed_time, 2)}s"
+            )
 
             self.console.log(f"{completion} {tokens_used} {elapsed_time}")
 
@@ -70,8 +70,7 @@ class RunPromptCommand:
                 self.console.log(f"💾 {run_save_directory}")
 
     def run_prompt_on_service(self, service_name, save=False):
-        service_config = self.prompt_config.options_for_service(service_name)
-        options = service_config.options
+        options = self.prompt_config.options_for_service(service_name)
 
         with self.console.status(
             f":robot: [bold green]{service_name}[/bold green]"

@@ -62,9 +62,8 @@ class PromptTemplateMessages(PromptTemplate):
       if content:
         prompt_message = PromptMessage(content, search_path, role, name)
       elif content_file:
-        with open(content_file, "r") as file:
-          file_contents = file.read()
-          prompt_message = PromptMessage(file_contents, search_path, role, name)
+        include_contents = "{% include '" + content_file + "' %}"
+        prompt_message = PromptMessage(include_contents, search_path, role, name)
 
       if prompt_message:
         self.messages.append(prompt_message)
