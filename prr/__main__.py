@@ -41,10 +41,47 @@ def main():
         _parser.add_argument(
             "--service",
             "-s",
-            help="Service to use if none is configured (defaults to DEFAULT_SERVICE environment variable)",
-            default=config["DEFAULT_SERVICE"],
+            help="Service to use if none is configured (defaults to DEFAULT_SERVICE)",
+            default=config.get("DEFAULT_SERVICE"),
             type=str,
         )
+
+        default_temperature = config.get("DEFAULT_TEMPERATURE") or 0.7
+        _parser.add_argument(
+            "--temperature",
+            "-t",
+            help="Temperature (defaults to DEFAULT_TEMPERATURE)",
+            default=default_temperature,
+            type=str,
+        )
+
+        default_max_tokens = config.get("DEFAULT_MAX_TOKENS") or 420
+        _parser.add_argument(
+            "--max_tokens",
+            "-mt",
+            help="Max tokens to use (defaults to DEFAULT_MAX_TOKENS)",
+            default=default_max_tokens,
+            type=str,
+        )
+
+        default_top_p = config.get("DEFAULT_TOP_P") or -1
+        _parser.add_argument(
+            "--top_p",
+            "-tp",
+            help="Sets a cumulative probability threshold for selecting candidate tokens, where only tokens with a cumulative probability higher than the threshold are considered, allowing for flexible control over the diversity of the generated output (defaults to DEFAULT_TOP_P).",
+            default=default_top_p,
+            type=str,
+        )
+
+        default_top_k = config.get("DEFAULT_TOP_K") or -1
+        _parser.add_argument(
+            "--top_k",
+            "-tk",
+            help="Determines the number of top-scoring candidate tokens to consider at each decoding step, effectively limiting the diversity of the generated output (defaults to DEFAULT_TOP_K)",
+            default=default_top_k,
+            type=str,
+        )
+
         _parser.add_argument(
             "--quiet",
             "-q",

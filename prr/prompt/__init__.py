@@ -93,7 +93,7 @@ class PromptOLD:
         # TODO/FIXME: should also include jinja includes
         self.dependency_files = []
 
-        template_loader = jinja2.FileSystemLoader(searchpath=os.path.dirname(path))
+        template_loader = jinja2.FileSystemLoader([os.path.dirname(path), "/"])
         self.template_env = jinja2.Environment(loader=template_loader)
 
         root, extension = os.path.splitext(path)

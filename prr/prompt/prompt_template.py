@@ -7,7 +7,11 @@ class PromptMessage:
     self.role = role
     self.name = name
 
-    template_loader = jinja2.FileSystemLoader(searchpath=self.search_path)
+    template_loader = jinja2.ChoiceLoader([
+      jinja2.FileSystemLoader(search_path),
+      jinja2.FileSystemLoader(['/']),
+    ])
+
     template_env = jinja2.Environment(loader=template_loader)
     self.template = template_env.from_string(self.content_template_string)
 

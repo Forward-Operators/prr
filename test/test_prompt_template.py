@@ -65,8 +65,6 @@ class TestPromptTemplate:
 
     template = PromptTemplateMessages(yaml.safe_load(messages_config))
 
-    remove_temp_file(temp_file_path)
-
     assert template is not None
 
 
@@ -84,3 +82,5 @@ class TestPromptTemplate:
     assert second_message['content'] == 'Wollen Sie meine Kernel kompilieren?'
     assert second_message['role'] == 'user'
     assert second_message['name'] == 'SuperUser'
+
+    remove_temp_file(temp_file_path)
