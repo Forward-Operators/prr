@@ -19,6 +19,7 @@ console = Console(log_time=False, log_path=False)
 class RunPromptCommand:
     def __init__(self, args, prompt_args=None):
         self.args = args
+        print("--------args", args)
         self.prompt_args = prompt_args
         self.prompt_config = None
 

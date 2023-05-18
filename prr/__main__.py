@@ -9,6 +9,8 @@ from prr.config import load_config
 from .utils.run import RunPromptCommand
 from .utils.watch import WatchPromptCommand
 
+from .options import ModelOptions
+
 config = load_config()
 
 
@@ -46,7 +48,7 @@ def main():
             type=str,
         )
 
-        default_temperature = config.get("DEFAULT_TEMPERATURE") or 0.7
+        default_temperature = config.get("DEFAULT_TEMPERATURE") or ModelOptions.defaults['temperature']
         _parser.add_argument(
             "--temperature",
             "-t",
@@ -55,7 +57,7 @@ def main():
             type=str,
         )
 
-        default_max_tokens = config.get("DEFAULT_MAX_TOKENS") or 420
+        default_max_tokens = config.get("DEFAULT_MAX_TOKENS") or ModelOptions.defaults['max_tokens']
         _parser.add_argument(
             "--max_tokens",
             "-mt",
@@ -64,7 +66,7 @@ def main():
             type=str,
         )
 
-        default_top_p = config.get("DEFAULT_TOP_P") or -1
+        default_top_p = config.get("DEFAULT_TOP_P") or ModelOptions.defaults['top_p']
         _parser.add_argument(
             "--top_p",
             "-tp",
@@ -73,7 +75,7 @@ def main():
             type=str,
         )
 
-        default_top_k = config.get("DEFAULT_TOP_K") or -1
+        default_top_k = config.get("DEFAULT_TOP_K") or ModelOptions.defaults['top_k']
         _parser.add_argument(
             "--top_k",
             "-tk",
