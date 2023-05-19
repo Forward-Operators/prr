@@ -62,10 +62,10 @@ services:
     assert services == ['openai/chat/gpt-4', 'anthropic/complete/claude-v1.3']
     
     for service_name in services:
-      assert config.option_for_service(service_name, 'temperature') == ModelOptions.defaults['temperature']
-      assert config.option_for_service(service_name, 'max_tokens') == ModelOptions.defaults['max_tokens']
-      assert config.option_for_service(service_name, 'top_k') == ModelOptions.defaults['top_k']
-      assert config.option_for_service(service_name, 'top_p') == ModelOptions.defaults['top_p']
+      assert config.option_for_service(service_name, 'temperature') == ModelOptions.DEFAULT_OPTIONS['temperature']
+      assert config.option_for_service(service_name, 'max_tokens') == ModelOptions.DEFAULT_OPTIONS['max_tokens']
+      assert config.option_for_service(service_name, 'top_k') == ModelOptions.DEFAULT_OPTIONS['top_k']
+      assert config.option_for_service(service_name, 'top_p') == ModelOptions.DEFAULT_OPTIONS['top_p']
 
   def test_services(self):
     config = PromptConfig()

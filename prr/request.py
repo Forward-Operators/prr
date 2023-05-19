@@ -9,10 +9,8 @@ class ServiceRequest:
 
     def to_dict(self):
         return {
-            "model": self.service_config.config_name(),
+            "model": self.service_config.model,
             "options": self.service_config.options.to_dict(),
-            # rendered prompt is saved to a separate file
-            # 'prompt_content': self.prompt_content,
         }
 
     def prompt_text(self, max_len=0):

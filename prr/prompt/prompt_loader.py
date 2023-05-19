@@ -13,7 +13,7 @@ class PromptConfigLoader:
   
   def load_from_path(self, path):
     self.path = path
-    self.config = PromptConfig(self.__search_path())
+    self.config = PromptConfig(self.__search_path(), os.path.basename(path))
     self.__add_file_dependency(path)
 
     if self.__is_file_yaml(path):
