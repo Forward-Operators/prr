@@ -1,9 +1,10 @@
+from ..services.service_registry import ServiceRegistry
 from .prompt_run import PromptRun
 from .saver import PromptRunSaver
-from ..services.service_registry import ServiceRegistry
 
 service_registry = ServiceRegistry()
 service_registry.register_all_services()
+
 
 # high-level class to run prompts based on configuration
 class Runner:
@@ -32,6 +33,8 @@ class Runner:
         results = {}
 
         for service_name in self.configured_services():
-            results[service_name] = self.run_service(service_name, service_options_overrides, save_run)
+            results[service_name] = self.run_service(
+                service_name, service_options_overrides, save_run
+            )
 
         return results

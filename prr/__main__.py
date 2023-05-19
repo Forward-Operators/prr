@@ -8,10 +8,10 @@ from prr.utils.config import load_config
 
 from .commands.run import RunPromptCommand
 from .commands.watch import WatchPromptCommand
-
 from .prompt.model_options import ModelOptions
 
 config = load_config()
+
 
 def main():
     parser = argparse.ArgumentParser(

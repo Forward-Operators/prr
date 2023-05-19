@@ -1,6 +1,7 @@
 from prr.services.providers.anthropic.complete import ServiceAnthropicComplete
 from prr.services.providers.openai.chat import ServiceOpenAIChat
 
+
 # main registry, where services are being... registered
 # and looked up for upon execution
 class ServiceRegistry:

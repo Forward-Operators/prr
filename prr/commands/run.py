@@ -9,11 +9,11 @@ from rich.console import Console
 from rich.panel import Panel
 
 from prr.prompt import Prompt
+from prr.prompt.prompt_loader import PromptConfigLoader
 from prr.runner import Runner
 
-from prr.prompt.prompt_loader import PromptConfigLoader
-
 console = Console(log_time=False, log_path=False)
+
 
 class RunPromptCommand:
     def __init__(self, args, prompt_args=None):
@@ -85,7 +85,9 @@ class RunPromptCommand:
 
             status.update(status="running model", spinner="dots8Bit")
 
-            result, run_save_directory = self.runner.run_service(service_name, self.args, save)
+            result, run_save_directory = self.runner.run_service(
+                service_name, self.args, save
+            )
 
             self.print_run_results(result, run_save_directory)
 

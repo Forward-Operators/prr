@@ -1,8 +1,8 @@
 import openai
 
-from prr.utils.config import load_config
 from prr.runner.request import ServiceRequest
 from prr.runner.response import ServiceResponse
+from prr.utils.config import load_config
 
 config = load_config()
 openai.api_key = config["OPENAI_API_KEY"]

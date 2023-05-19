@@ -3,6 +3,7 @@ from datetime import datetime
 
 import yaml
 
+
 class PromptRunSaver:
     def __init__(self, prompt_config):
         self.prompt_config = prompt_config
@@ -28,9 +29,9 @@ class PromptRunSaver:
         dirname = self.prompt_config.search_path
 
         if self.prompt_config.filename:
-          basename = os.path.basename(self.prompt_config.filename)
+            basename = os.path.basename(self.prompt_config.filename)
         else:
-          basename = "prr"
+            basename = "prr"
 
         root, extension = os.path.splitext(basename)
 

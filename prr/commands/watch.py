@@ -4,10 +4,10 @@ import datetime
 import os
 import time
 
-from prr.prompt import Prompt
 from prr.commands.run import RunPromptCommand
-
+from prr.prompt import Prompt
 from prr.prompt.prompt_loader import PromptConfigLoader
+
 
 def timestamp_for_file(path):
     if os.path.exists(path):

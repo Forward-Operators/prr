@@ -5,11 +5,12 @@ import os
 
 import anthropic
 
-from prr.utils.config import load_config
 from prr.runner.request import ServiceRequest
 from prr.runner.response import ServiceResponse
+from prr.utils.config import load_config
 
 config = load_config()
+
 
 # Anthropic model provider class
 class ServiceAnthropicComplete:
