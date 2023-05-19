@@ -2,7 +2,8 @@ import os
 import sys
 import yaml
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
 
 from prr.prompt.prompt_template import PromptTemplateSimple, PromptTemplateMessages
 from helpers import create_temp_file, remove_temp_file

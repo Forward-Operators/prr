@@ -1,6 +1,6 @@
 import yaml
 
-from ..service_config import ServiceConfig
+from .service_config import ServiceConfig
 from .prompt_template import PromptTemplateSimple, PromptTemplateMessages
 
 class PromptConfig:

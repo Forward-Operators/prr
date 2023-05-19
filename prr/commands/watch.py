@@ -5,7 +5,7 @@ import os
 import time
 
 from prr.prompt import Prompt
-from prr.utils.run import RunPromptCommand
+from prr.commands.run import RunPromptCommand
 
 
 def timestamp_for_file(path):

@@ -8,7 +8,6 @@ from rich import print
 from rich.console import Console
 from rich.panel import Panel
 
-# from prr.config import config
 from prr.prompt import Prompt
 from prr.runner import Runner
 

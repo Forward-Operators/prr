@@ -1,4 +1,4 @@
-from prr.config import load_config
+from prr.utils.config import load_config
 
 ALLOWED_OPTIONS = ["max_tokens", "temperature", "top_k", "top_p"]
 

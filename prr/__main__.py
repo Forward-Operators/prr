@@ -4,12 +4,12 @@ import argparse
 import os
 import sys
 
-from prr.config import load_config
+from prr.utils.config import load_config
 
-from .utils.run import RunPromptCommand
-from .utils.watch import WatchPromptCommand
+from .commands.run import RunPromptCommand
+from .commands.watch import WatchPromptCommand
 
-from .options import ModelOptions
+from .prompt.model_options import ModelOptions
 
 config = load_config()
 

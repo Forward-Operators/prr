@@ -1,4 +1,4 @@
-from .options import ModelOptions
+from .model_options import ModelOptions
 
 class ServiceConfig:
   def __init__(self, name, model, options=None):
