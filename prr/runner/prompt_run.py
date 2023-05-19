@@ -1,6 +1,6 @@
 import time
 
-from .prompt_run_result import PromptRunResult
+from prr.runner.prompt_run_result import PromptRunResult
 
 
 # takes prompt and model config, finds provider, runs the prompt

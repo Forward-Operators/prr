@@ -1,6 +1,6 @@
-from ..services.service_registry import ServiceRegistry
-from .prompt_run import PromptRun
-from .saver import PromptRunSaver
+from prr.runner.prompt_run import PromptRun
+from prr.runner.saver import PromptRunSaver
+from prr.services.service_registry import ServiceRegistry
 
 service_registry = ServiceRegistry()
 service_registry.register_all_services()

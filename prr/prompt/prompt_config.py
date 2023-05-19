@@ -1,7 +1,7 @@
 import yaml
 
-from .prompt_template import PromptTemplateMessages, PromptTemplateSimple
-from .service_config import ServiceConfig
+from prr.prompt.prompt_template import PromptTemplateMessages, PromptTemplateSimple
+from prr.prompt.service_config import ServiceConfig
 
 
 class PromptConfig:

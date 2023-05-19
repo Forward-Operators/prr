@@ -2,9 +2,9 @@ import os
 
 import yaml
 
-from . import Prompt
-from .prompt_config import PromptConfig
-from .prompt_template import (
+from prr.prompt import Prompt
+from prr.prompt.prompt_config import PromptConfig
+from prr.prompt.prompt_template import (
     PromptTemplate,
     PromptTemplateMessages,
     PromptTemplateSimple,

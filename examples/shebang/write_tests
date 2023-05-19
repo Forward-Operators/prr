@@ -1,4 +1,4 @@
-#!/workspaces/prr/prr script
+#!/usr/bin/env prr script
 
 Write tests using pytest for the code below:
 

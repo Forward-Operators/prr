@@ -1,4 +1,4 @@
-from .model_options import ModelOptions
+from prr.prompt.model_options import ModelOptions
 
 
 class ServiceConfig:
