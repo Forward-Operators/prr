@@ -1,9 +1,9 @@
 from google.cloud import aiplatform
 from vertexai.preview.language_models import ChatModel, InputOutputTextPair
 
-from prr.config import load_config
-from prr.request import ServiceRequest
-from prr.response import ServiceResponse
+from prr.utils.config import load_config
+from prr.runner.request import ServiceRequest
+from prr.runner.response import ServiceResponse
 
 config = load_config()
 
