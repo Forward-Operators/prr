@@ -1,3 +1,4 @@
+import os
 import jinja2
 
 class PromptMessage:
@@ -6,14 +7,18 @@ class PromptMessage:
     self.search_path = search_path
     self.role = role
     self.name = name
-
+    self.file_dependencies = []
+    
     template_loader = jinja2.ChoiceLoader([
       jinja2.FileSystemLoader(search_path),
       jinja2.FileSystemLoader(['/']),
     ])
 
-    template_env = jinja2.Environment(loader=template_loader)
-    self.template = template_env.from_string(self.content_template_string)
+    self.template_env = jinja2.Environment(loader=template_loader)
+    self.__add_dependency_files_from_jinja_template(content_template_string)
+
+    self.template = self.template_env.from_string(self.content_template_string)
+
 
   def render_text(self, args=[]):
     return self.template.render({"prompt_args": args})
@@ -29,6 +34,13 @@ class PromptMessage:
 
     return _message
 
+  def __add_dependency_files_from_jinja_template(self, jinja_template_content):
+    parsed_content = self.template_env.parse(jinja_template_content)
+    referenced_templates = jinja2.meta.find_referenced_templates(parsed_content)
+
+    self.file_dependencies.extend(referenced_templates)
+
+
 # base class
 class PromptTemplate:
   def __init__(self):
@@ -41,6 +53,15 @@ class PromptTemplate:
 
   def render_messages(self, args=[]):
     return [message.render_message(args) for message in self.messages]
+
+  def file_dependencies(self):
+    _dependencies = []
+    for message in self.messages:
+      for dependency in message.file_dependencies:
+        if dependency not in _dependencies:
+          _dependencies.append(dependency)
+
+    return _dependencies
 
 # just a text/template file or prompt.contents from config
 class PromptTemplateSimple(PromptTemplate):

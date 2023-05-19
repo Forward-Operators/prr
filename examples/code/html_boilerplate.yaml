@@ -1,6 +1,6 @@
 version: 1
 prompt:
-  content_file: 'html_boilerplate'
+  content_file: '_html_boilerplate'
 services:
   gpt4_temp7:
     model: 'openai/chat/gpt-4'

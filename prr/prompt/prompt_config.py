@@ -73,6 +73,15 @@ class PromptConfig:
 
   def option_for_service(self, service_name, option_name):
     return self.options_for_service(service_name).option(option_name)
+  
+  def file_dependencies(self):
+    _dependencies = []
+    for message in self.template.messages:
+      for dependency in message.file_dependencies:
+        if dependency not in _dependencies:
+          _dependencies.append(dependency)
+
+    return _dependencies
 
   ####################################################
 

@@ -7,6 +7,7 @@ import time
 from prr.prompt import Prompt
 from prr.commands.run import RunPromptCommand
 
+from prr.prompt.prompt_loader import PromptConfigLoader
 
 def timestamp_for_file(path):
     if os.path.exists(path):
@@ -34,9 +35,10 @@ class WatchPromptCommand:
             self.file_timestamps = self.current_timestamps()
 
     def setup_files_to_monitor(self):
-        prompt = Prompt(self.args["prompt_path"], self.prompt_args)
-        self.files = [prompt.path]
-        self.files.extend(prompt.dependency_files)
+        loader = PromptConfigLoader()
+        prompt_config = loader.load_from_path(self.args["prompt_path"])
+
+        self.files = loader.file_dependencies
         self.update_timestamps()
 
     def files_changed(self):
