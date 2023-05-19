@@ -10,10 +10,10 @@ config = load_config()
 aiplatform.init(
     # your Google Cloud Project ID or number
     # environment default used is not set
-    project=config["GOOGLE_PROJECT"],
+    project=config.get("GOOGLE_PROJECT"),
     # the Vertex AI region you will use
     # defaults to us-central1
-    location=config["GOOGLE_LOCATION"],
+    location=config.get("GOOGLE_LOCATION"),
     # custom google.auth.credentials.Credentials
     # environment default creds used if not set
     # credentials=config[my_credentials],
