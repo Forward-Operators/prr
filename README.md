@@ -77,8 +77,21 @@ ANTHROPIC_API_KEY="sk-ant-..."
 DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
 ```
 
-You can also use DEFAULT_SERVICE to specify the model you want to use by default, but otherwise you're good to go!
+#### For Google PaLM, you need to install the following dependencies:
+You need to install [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) and you need to have access to a Vertex AI with Generative AI enabled.
+`prr` assumes you're logged in into your Google Cloud account and have access to the project you want to use.
 
+```sh
+gcloud auth login
+```
+
+```sh
+gcloud config set project <your-project-id>
+```
+
+```sh
+gcloud auth application-default login
+```
 
 ### Run a prompt from a simple text file containing just a prompt
 
