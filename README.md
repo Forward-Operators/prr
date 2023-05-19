@@ -2,7 +2,7 @@
 
 Welcome to **prr - The Prompt Runner**!
 
-**prr** is a simple toolchain designed to help you run prompts across multiple Large Language Models (LLMs), whether they are hosted locally or accessible through APIs. Easily refine your parameters, prompts and model choices to achieve the best results while itearting smoothly with quick feedback loop.
+**prr** is a simple toolchain designed to help you run prompts across multiple Large Language Models (LLMs), whether they are hosted locally or accessible through APIs. Easily refine your parameters, prompts and model choices to achieve the best results while iterating smoothly with a quick feedback loop.
 
 **prr** is released as an open-source project under the MIT License.
 
@@ -56,6 +56,14 @@ As this is early stage work, there's lots improvements that can be done in the f
 
 
 ## Getting started
+
+### Video Guides
+
+#### Installation & setup
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=4L_Rc_kifeo" target="_blank">
+ <img src="http://img.youtube.com/vi/4L_Rc_kifeo/maxresdefault.jpg" alt="Watch the video" width="640" />
+</a>
 
 Here's a quick run through on what you need to know to use `prr` effectively.
 
