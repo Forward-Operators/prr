@@ -6,6 +6,9 @@ class ServiceConfig:
     self.model = model # full model path, e.g. "openai/chat/gpt-5"        
     self.options = ModelOptions(options or {})
 
+  def process_option_overrides(self, option_overrides):
+    self.options.update_options(option_overrides)
+
   # which model to use with the service
   # like gpt-4.5-turbo or claude-v1.3-100k
   def model_name(self):

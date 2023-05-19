@@ -1,7 +1,7 @@
+from prr.config import load_config
+
 ALLOWED_OPTIONS = ["max_tokens", "temperature", "top_k", "top_p"]
 
-# user-level defaults
-# TODO/FIXME: make it user-configurable in ~/.prr*
 DEFAULT_OPTIONS = {
   "max_tokens": 4000,
   "temperature": 0.7,
@@ -9,16 +9,19 @@ DEFAULT_OPTIONS = {
   "top_p": -1
 }
 
-class ModelOptions:
-    defaults = DEFAULT_OPTIONS
+config = load_config()
 
+class ModelOptions:
     def __init__(self, options={}):
+        self.__init_defaults()
+
         self.options_set = []
-        self.update_options(ModelOptions.defaults)
+        self.update_options(self.defaults)
         self.update_options(options)
 
     def update_options(self, options):
         for key in options.keys():
+          if options[key] != None:
             if key in ALLOWED_OPTIONS:
                 if key not in self.options_set:
                     self.options_set.append(key)
@@ -41,3 +44,21 @@ class ModelOptions:
             dict[key] = self.option(key)
 
         return dict
+
+    def __config_key_for_option_key(self, option_key):
+      return f"DEFAULT_{option_key.upper()}"
+    
+    def __init_defaults(self):
+      self.defaults = DEFAULT_OPTIONS.copy()
+
+      for option_key in ALLOWED_OPTIONS:
+        config_key = self.__config_key_for_option_key(option_key)
+        defaults_value = config.get(config_key)
+        
+        if defaults_value:
+          if option_key == "temperature":
+            target_value = float(defaults_value)
+          else:
+            target_value = int(defaults_value)
+
+          self.defaults[option_key] = target_value

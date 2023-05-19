@@ -71,7 +71,11 @@ class RunPromptCommand:
                 self.console.log(f"💾 {run_save_directory}")
 
     def run_prompt_on_service(self, service_name, save=False):
-        options = self.prompt_config.options_for_service(service_name)
+        # TODO/FIXME: doing all this here just to get the actual options
+        #             calculated after command line, defaults, config, etc
+        service_config = self.prompt_config.service_with_name(service_name)
+        service_config.process_option_overrides(self.args)
+        options = service_config.options
 
         with self.console.status(
             f":robot: [bold green]{service_name}[/bold green]"
@@ -83,7 +87,7 @@ class RunPromptCommand:
 
             status.update(status="running model", spinner="dots8Bit")
 
-            result, run_save_directory = self.runner.run_service(service_name, save)
+            result, run_save_directory = self.runner.run_service(service_name, self.args, save)
 
             self.print_run_results(result, run_save_directory)
 
