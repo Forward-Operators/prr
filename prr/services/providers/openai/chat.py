@@ -5,7 +5,7 @@ from prr.runner.response import ServiceResponse
 from prr.utils.config import load_config
 
 config = load_config()
-openai.api_key = config["OPENAI_API_KEY"]
+openai.api_key = config.get("OPENAI_API_KEY", None)
 
 
 # OpenAI model provider class

@@ -18,7 +18,13 @@ class ServiceAnthropicComplete:
     service = "complete"
 
     def run(self, prompt, service_config):
-        client = anthropic.Client(config["ANTHROPIC_API_KEY"])
+        self.service_config = service_config
+        options = self.service_config.options
+        self.prompt = prompt
+
+        prompt_text = self.prompt_text()
+
+        client = anthropic.Client(config.get("ANTHROPIC_API_KEY", None))
 
         options = service_config.options
 

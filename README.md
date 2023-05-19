@@ -2,7 +2,7 @@
 
 Welcome to **prr - The Prompt Runner**!
 
-**prr** is a simple toolchain designed to help you run prompts across multiple Large Language Models (LLMs), whether they are hosted locally or accessible through APIs. Easily refine your parameters, prompts and model choices to achieve the best results while itearting smoothly with quick feedback loop.
+**prr** is a simple toolchain designed to help you run prompts across multiple Large Language Models (LLMs), whether they are hosted locally or accessible through APIs. Easily refine your parameters, prompts and model choices to achieve the best results while iterating smoothly with a quick feedback loop.
 
 **prr** is released as an open-source project under the MIT License.
 
@@ -59,10 +59,39 @@ As this is early stage work, there's lots improvements that can be done in the f
 
 Here's a quick run through on what you need to know to use `prr` effectively.
 
+Start with our video guides, or follow detailed manual below.
+
+### Video Guides
+
+#### Installation & setup
+
+Install prr and set up the API keys as well as default options.
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=4L_Rc_kifeo" target="_blank">
+ <img src="http://img.youtube.com/vi/4L_Rc_kifeo/maxresdefault.jpg" alt="Watch the video"  />
+</a>
+
+#### Running basic prompts
+
+Let's generate an HTML boilerplate with various LLMs.
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=sCjtQp36kgc" target="_blank">
+ <img src="http://img.youtube.com/vi/sCjtQp36kgc/maxresdefault.jpg" alt="Watch the video"  />
+</a>
+
+#### Prompt configuration
+
+Let's configure a bunch of models to run our prompt on. This time, we're asking the LLMs to generate a React boilerplate code.
+
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=bD3_Scwtako" target="_blank">
+ <img src="http://img.youtube.com/vi/bD3_Scwtako/maxresdefault.jpg" alt="Watch the video"  />
+</a>
+
+
 ### Installation & configuration
 Install it via `pip` 
 ```sh
-$ pip install prr
+$ pip install -U prr
 ```
 
 Check `.env.example` - and save it as `~/.prr_rc`. Fill in your API keys for OpenAI, Anthropic and others:
@@ -77,8 +106,21 @@ ANTHROPIC_API_KEY="sk-ant-..."
 DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
 ```
 
-You can also use DEFAULT_SERVICE to specify the model you want to use by default, but otherwise you're good to go!
+#### For Google PaLM, you need to install the following dependencies:
+You need to install [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) and you need to have access to a Vertex AI with Generative AI enabled.
+`prr` assumes you're logged in into your Google Cloud account and have access to the project you want to use.
 
+```sh
+gcloud auth login
+```
+
+```sh
+gcloud config set project <your-project-id>
+```
+
+```sh
+gcloud auth application-default login
+```
 
 ### Run a prompt from a simple text file containing just a prompt
 
