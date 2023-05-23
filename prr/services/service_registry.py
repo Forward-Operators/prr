@@ -1,8 +1,8 @@
 from prr.services.providers.anthropic.complete import ServiceAnthropicComplete
+from prr.services.providers.bigcode.starcoder import ServiceBigcodeStarcoder
 from prr.services.providers.google.chat import ServiceGoogleChat
 from prr.services.providers.google.complete import ServiceGoogleComplete
 from prr.services.providers.openai.chat import ServiceOpenAIChat
-from prr.services.providers.bigcode.starcoder import ServiceBigcodeStarcoder
 
 
 # main registry, where services are being... registered
