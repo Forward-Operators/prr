@@ -23,7 +23,6 @@ class ServiceBigcodeStarcoder:
 
     def run(self, prompt, service_config):
         self.service_config = service_config
-        options = self.service_config.options
         self.prompt = prompt
 
         client = Client(
