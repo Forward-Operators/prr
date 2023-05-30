@@ -31,9 +31,9 @@ Everyone is welcome to contribute!
 As this is early stage work, there's lots improvements that can be done in the future and you're welcome to contribute!
 
 - [x] Get rix of Python 3.10 dependency
-- [ ] Clean basic code smells
+- [x] Clean basic code smells
 - [ ] Improve support for OpenAI and Anthropic
-- [ ] Add support for other LLM providers
+- [x] Add support for other LLM providers
 - [ ] Add support for locally hosted models
 - [ ] Pass model-related options to templating engine to allow for model-specific prompts
 - [ ] Add support for testing against expectations (elapsed_time, tokens_used)
@@ -122,6 +122,14 @@ gcloud config set project <your-project-id>
 gcloud auth application-default login
 ```
 
+
+### Code completion
+Using Starcoder model you can get code completion for a variety of languages. Here's a quick example of how to use it (check out the content of `examples/code/completion.yaml`):
+
+```sh
+$ prr run ./examples/code/completion.yaml
+```
+
 ### Run a prompt from a simple text file containing just a prompt
 
 Let's create a simple text file and call it `dingo` with the following content:
@@ -181,7 +189,7 @@ If you refer to another template within your template, changes to that file will
 If your prompt is often saved and you're worried of running it too often, you can use `-c` option that's specific to `watch` command which enables defined number of seconds cooldown after every run, before it proceeds to execute on your changes again.
 
 ```
-$ ./prr watch -c 15 ./subconcepts-of-buddhism
+$ prr watch -c 15 ./subconcepts-of-buddhism
 ```
 
 
@@ -418,6 +426,8 @@ stats:
 
 * OpenAI/chat - https://platform.openai.com/docs/guides/chat
 * Anthropic/complete - https://console.anthropic.com/docs/api
+* Google Vertex AI PaLM - https://cloud.google.com/vertex-ai/docs/generative-ai/learn/overview
+* Starcoder - https://huggingface.co/bigcode/starcoder
 
 ## Development
 
@@ -450,6 +460,11 @@ OPENAI_API_KEY="sk-..."
 ANTHROPIC_API_KEY="sk-ant-..."
 
 DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
+# https://console.cloud.google.com
+GOOGLE_PROJECT="gcp-project-id"
+GOOGLE_LOCATION="us-central1"
+# https://huggingface.co/settings/tokens
+HF_TOKEN="hf_..."
 ```
 
 You can also use DEFAULT_SERVICE to specify the model you want to use by default, but otherwise you're good to go!

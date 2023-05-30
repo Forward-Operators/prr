@@ -15,6 +15,8 @@ rich = "^13.3.5"
 Jinja2 = "^3.1.2"
 pyyaml = "^6.0"
 google-cloud-aiplatform = "^1.25.0"
+huggingface-hub = "^0.14.1"
+text-generation = "^0.5.2"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.12.0"
