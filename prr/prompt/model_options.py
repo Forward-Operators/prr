@@ -1,10 +1,6 @@
 from prr.utils.config import load_config
 
-ALLOWED_OPTIONS = ["max_tokens", "temperature", "top_k", "top_p"]
-
-
 config = load_config()
-
 
 class ModelOptions:
     DEFAULT_OPTIONS = {"max_tokens": 4000, "temperature": 0.7, "top_k": -1, "top_p": -1}
@@ -13,23 +9,34 @@ class ModelOptions:
         self.__init_defaults()
 
         self.options_set = []
-        self.update_options(self.defaults)
+        self.update_options(self.defaults, True)
         self.update_options(options)
 
-    def update_options(self, options):
+    def select(self, option_keys):
+        _options = {}
+
+        for key in option_keys:
+            if key in self.options_set:
+                _options[key] = self.option(key)
+
+        return ModelOptions(_options)
+
+    def update_options(self, options, defaults=False):
         for key in options.keys():
             if options[key] != None:
-                if key in ALLOWED_OPTIONS:
-                    if key not in self.options_set:
-                        self.options_set.append(key)
+                if key not in self.options_set and not defaults:
+                    self.options_set.append(key)
 
-                    setattr(self, key, options[key])
+                setattr(self, key, options[key])
 
     def description(self):
         return " ".join([f"{key}={self.option(key)}" for key in self.options_set])
 
     def option(self, key):
+      if hasattr(self, key) and key in self.options_set:
         return getattr(self, key)
+
+      return None
 
     def __repr__(self):
         return self.description()
@@ -48,7 +55,7 @@ class ModelOptions:
     def __init_defaults(self):
         self.defaults = ModelOptions.DEFAULT_OPTIONS.copy()
 
-        for option_key in ALLOWED_OPTIONS:
+        for option_key in ModelOptions.DEFAULT_OPTIONS.keys():
             config_key = self.__config_key_for_option_key(option_key)
             defaults_value = config.get(config_key)
 

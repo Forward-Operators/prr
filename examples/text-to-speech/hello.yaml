@@ -1,0 +1,8 @@
+version: 1
+prompt:
+  content: "Heeeelloooo Wooooorld!"
+services:
+  models:
+    - 'elevenlabs/tts/eleven_monolingual_v1'
+  options:
+    voice: "Rachel"

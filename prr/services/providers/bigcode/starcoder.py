@@ -5,6 +5,8 @@ from prr.runner.request import ServiceRequest
 from prr.runner.response import ServiceResponse
 from prr.utils.config import load_config
 
+from prr.services.service_base import ServiceBaseUnstructuredPrompt
+
 config = load_config()
 
 HF_TOKEN = config.get("HF_TOKEN", None)
@@ -17,34 +19,26 @@ FIM_SUFFIX = "<fim_suffix>"
 FIM_INDICATOR = "<FILL_HERE>"
 
 
-class ServiceBigcodeStarcoder:
+client = Client(
+    API_URL,
+    headers={"Authorization": f"Bearer {HF_TOKEN}"},
+)
+
+class ServiceBigcodeStarcoder(ServiceBaseUnstructuredPrompt):
     provider = "bigcode"
     service = "starcoder"
+    options = ["temperature", "max_tokens", "top_p", "repetition_penalty"]
 
-    def run(self, prompt, service_config):
-        self.service_config = service_config
-        self.prompt = prompt
-
-        client = Client(
-            API_URL,
-            headers={"Authorization": f"Bearer {HF_TOKEN}"},
-        )
-
-        options = self.service_config.options
-
-        prompt_text = prompt.template_text()
-
-        service_request = ServiceRequest(service_config, prompt_text)
-
+    def run(self):
         response = client.generate(
-            prompt_text,
-            temperature=options.temperature,
-            max_new_tokens=options.max_tokens,
-            top_p=options.top_p,
-            # repetition_penalty=options.repetition_penalty,
+            self.request.prompt_content,
+            temperature=self.options('temperature'),
+            max_new_tokens=self.options('max_tokens'),
+            top_p=self.options('top_p'),
+            repetition_penalty=self.options('repetition_penalty')
         )
 
-        service_response = ServiceResponse(
+        self.response = ServiceResponse(
             response.generated_text,
             {
                 "tokens_used": response.details.generated_tokens,
@@ -52,4 +46,4 @@ class ServiceBigcodeStarcoder:
             },
         )
 
-        return service_request, service_response
+        return self.request, self.response

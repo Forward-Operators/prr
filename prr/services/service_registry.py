@@ -3,7 +3,7 @@ from prr.services.providers.bigcode.starcoder import ServiceBigcodeStarcoder
 from prr.services.providers.google.chat import ServiceGoogleChat
 from prr.services.providers.google.complete import ServiceGoogleComplete
 from prr.services.providers.openai.chat import ServiceOpenAIChat
-
+from prr.services.providers.elevenlabs.tts import ServiceElevenLabsTTS
 
 # main registry, where services are being... registered
 # and looked up for upon execution
@@ -13,7 +13,7 @@ class ServiceRegistry:
 
     def register(self, service_class):
         key = f"{service_class.provider}/{service_class.service}"
-        self.services[key] = service_class()
+        self.services[key] = service_class
 
     def register_all_services(self):
         self.register(ServiceOpenAIChat)
@@ -21,6 +21,7 @@ class ServiceRegistry:
         self.register(ServiceBigcodeStarcoder)
         self.register(ServiceGoogleComplete)
         self.register(ServiceGoogleChat)
+        self.register(ServiceElevenLabsTTS)
 
     def service_for_service_config(self, service_config):
         key = service_config.service_key()

@@ -5,72 +5,60 @@ import os
 
 import anthropic
 
-from prr.runner.request import ServiceRequest
 from prr.runner.response import ServiceResponse
 from prr.utils.config import load_config
+from prr.services.service_base import ServiceBaseUnstructuredPrompt
+
 
 config = load_config()
-
+client = anthropic.Client(config.get("ANTHROPIC_API_KEY", None))
 
 # Anthropic model provider class
 class ServiceAnthropicComplete:
     provider = "anthropic"
     service = "complete"
+    options = ["max_tokens", "temperature", "top_k", "top_p"]
 
     def run(self, prompt, service_config):
-        self.service_config = service_config
-        options = self.service_config.options
-        self.prompt = prompt
-
-        prompt_text = self.prompt_text()
-
-        client = anthropic.Client(config.get("ANTHROPIC_API_KEY", None))
-
-        options = service_config.options
-
-        prompt_text = self.prompt_text_from_template(prompt.template)
-
-        service_request = ServiceRequest(service_config, prompt_text)
-
-        response = client.completion(
-            prompt=prompt_text,
+        result = client.completion(
+            prompt=self.request.prompt_content,
             stop_sequences=[anthropic.HUMAN_PROMPT],
-            model=service_config.model_name(),
-            max_tokens_to_sample=options.max_tokens,
-            temperature=options.temperature,
-            top_p=options.top_p,
-            top_k=options.top_k,
+            model=self.service_config.model_name(),
+            max_tokens_to_sample=self.options('max_tokens'),
+            temperature=self.options('temperature'),
+            top_p=self.options('top_p'),
+            top_k=self.options('top_k'),
         )
 
-        completion_tokens = anthropic.count_tokens(response["completion"])
+        completion_tokens = anthropic.count_tokens(result["completion"])
         prompt_tokens = anthropic.count_tokens(prompt_text)
         total_tokens = prompt_tokens + completion_tokens
 
-        service_response = ServiceResponse(
-            response["completion"],
+        self.response = ServiceResponse(
+            result["completion"],
             {
                 "tokens_used": total_tokens,
                 "prompt_tokens": anthropic.count_tokens(prompt_text),
                 "completion_tokens": completion_tokens,
                 "total_tokens": total_tokens,
-                "truncated": response["truncated"],
-                "stop_reason": response["stop_reason"],
-                "log_id": response["log_id"],
+                "truncated": result["truncated"],
+                "stop_reason": result["stop_reason"],
+                "log_id": result["log_id"],
             },
         )
 
-        return service_request, service_response
+        return self.request, self.response
 
-    def prompt_text_from_template(self, template):
+    def render_prompt(self):
         prompt_text = ""
 
         # prefer messages from template if they exist
-        if template.messages:
-            for message in template.messages:
+        if self.prompt.template.messages:
+            for message in self.prompt.template.messages:
                 if message.role != "assistant":
                     prompt_text += " " + message.render_text()
 
         else:
-            prompt_text = template.render_text()
+            prompt_text = self.prompt.template.render_text()
 
         return f"{anthropic.HUMAN_PROMPT} {prompt_text}{anthropic.AI_PROMPT}"

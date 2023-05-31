@@ -34,7 +34,7 @@ class RunPromptCommand:
         response = result.response
 
         if self.args["quiet"]:
-            print(response.response_content)
+            sys.stdout.buffer.write(response.response_content)
         else:
             if self.args["abbrev"]:
                 self.console.log(
@@ -46,7 +46,7 @@ class RunPromptCommand:
                 self.console.log(
                     "Completion:  "
                     + "[green]"
-                    + response.response_abbrev(25).strip()
+                    + response.response_text(25).strip()
                     + f"[/green] ({len(response.response_content)} chars)"
                 )
             else:
@@ -54,7 +54,7 @@ class RunPromptCommand:
                     Panel("[yellow]" + request.prompt_text().strip() + "[/yellow]")
                 )
                 self.console.log(
-                    Panel("[green]" + response.response_content.strip() + "[/green]")
+                    Panel("[green]" + str(response.response_text()).strip() + "[/green]")
                 )
 
             completion = f"[blue]Completion length[/blue]: {len(response.response_content)} bytes"
@@ -78,16 +78,20 @@ class RunPromptCommand:
         with self.console.status(
             f":robot: [bold green]{service_name}[/bold green]"
         ) as status:
+            self.runner.prepare_service_run(
+                service_name, self.args
+            )
+
+            request_options = self.runner.current_run_request_options()
+
             self.console.log(
-                f"\n🤖 [bold]{service_name}[/bold] {options.description()}",
+                f"\n🤖 [bold]{service_name}[/bold] {request_options.description()}",
                 style="frame",
             )
 
             status.update(status="running model", spinner="dots8Bit")
 
-            result, run_save_directory = self.runner.run_service(
-                service_name, self.args, save
-            )
+            result, run_save_directory = self.runner.run(service_name, save)
 
             self.print_run_results(result, run_save_directory)
 

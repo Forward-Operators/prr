@@ -1,9 +1,10 @@
 from google.cloud import aiplatform
 from vertexai.preview.language_models import TextGenerationModel
 
-from prr.runner.request import ServiceRequest
 from prr.runner.response import ServiceResponse
 from prr.utils.config import load_config
+from prr.services.service_base import ServiceBaseUnstructuredPrompt
+
 
 config = load_config()
 
@@ -20,41 +21,32 @@ aiplatform.init(
 )
 
 
-class ServiceGoogleComplete:
+class ServiceGoogleComplete(ServiceBaseUnstructuredPrompt):
     provider = "google"
     service = "complete"
+    options = ["max_tokens", "temperature", "top_k", "top_p"]
 
-    def run(self, prompt, service_config):
-        self.service_config = service_config
-        options = self.service_config.options
-        self.prompt = prompt
-
-        prompt_text = self.prompt_text()
-
+    def run(self):
         client = TextGenerationModel.from_pretrained(self.service_config.model_name())
 
-        service_request = ServiceRequest(self.service_config, prompt_text)
-
-        options = self.service_config.options
-
-        response = client.predict(
+        result = client.predict(
             prompt_text,
-            max_output_tokens=options.max_tokens,
-            temperature=options.temperature,
-            top_k=options.top_k,
-            top_p=options.top_p,
+            max_output_tokens=self.options('max_tokens'),
+            temperature=self.options('temperature'),
+            top_k=self.options('top_k'),
+            top_p=self.options('top_p'),
         )
 
-        service_response = ServiceResponse(
-            str(response),
+        self.response = ServiceResponse(
+            str(result),
             {
-                "details": response,
+                "details": result,
             },
         )
 
-        return service_request, service_response
+        return self.request, self.response
 
-    def prompt_text(self):
+    def render_prompt(self):
         messages = self.prompt.messages
 
         prompt_text = ""

@@ -1,9 +1,9 @@
 from google.cloud import aiplatform
 from vertexai.preview.language_models import ChatModel, InputOutputTextPair
 
-from prr.runner.request import ServiceRequest
 from prr.runner.response import ServiceResponse
 from prr.utils.config import load_config
+from prr.services.service_base import ServiceBaseUnstructuredPrompt
 
 config = load_config()
 
@@ -20,20 +20,13 @@ aiplatform.init(
 )
 
 
-class ServiceGoogleChat:
+class ServiceGoogleChat(ServiceBaseUnstructuredPrompt):
     provider = "google"
     service = "chat"
+    options = ["max_tokens", "temperature", "top_k", "top_p"]
 
-    def run(self, prompt, service_config):
-        self.service_config = service_config
-        options = self.service_config.options
-        self.prompt = prompt
-
-        messages = self.messages_from_prompt()
-
+    def run(self):
         model = ChatModel.from_pretrained(self.service_config.model_name())
-
-        service_request = ServiceRequest(self.service_config, {"messages": messages})
 
         parameters = {
             "temperature": options.temperature,
@@ -51,9 +44,9 @@ class ServiceGoogleChat:
             f"""{self.message_from_messages()}""", **parameters
         )
 
-        service_response = ServiceResponse(response.text, {})
+        self.response = ServiceResponse(response.text, {})
 
-        return service_request, service_response
+        return self.request, self.response
 
     def messages_from_prompt(self):
         messages = self.prompt.messages
