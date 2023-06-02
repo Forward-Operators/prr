@@ -103,6 +103,8 @@ OPENAI_API_KEY="sk-..."
 # https://console.anthropic.com/account/keys
 ANTHROPIC_API_KEY="sk-ant-..."
 
+ELEVEN_LABS_API_KEY="9db0...."
+
 DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
 ```
 
@@ -121,6 +123,8 @@ gcloud config set project <your-project-id>
 ```sh
 gcloud auth application-default login
 ```
+
+
 
 
 ### Code completion
@@ -428,6 +432,7 @@ stats:
 * Anthropic/complete - https://console.anthropic.com/docs/api
 * Google Vertex AI PaLM - https://cloud.google.com/vertex-ai/docs/generative-ai/learn/overview
 * Starcoder - https://huggingface.co/bigcode/starcoder
+* Eleven Labs - https://beta.elevenlabs.io
 
 ## Development
 

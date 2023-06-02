@@ -30,19 +30,19 @@ class ServiceBigcodeStarcoder(ServiceBaseUnstructuredPrompt):
     options = ["temperature", "max_tokens", "top_p", "repetition_penalty"]
 
     def run(self):
-        response = client.generate(
+        completion = client.generate(
             self.request.prompt_content,
-            temperature=self.options('temperature'),
-            max_new_tokens=self.options('max_tokens'),
-            top_p=self.options('top_p'),
-            repetition_penalty=self.options('repetition_penalty')
+            temperature=self.option('temperature'),
+            max_new_tokens=self.option('max_tokens'),
+            top_p=self.option('top_p'),
+            repetition_penalty=self.option('repetition_penalty')
         )
 
         self.response = ServiceResponse(
-            response.generated_text,
+            completion.generated_text,
             {
-                "tokens_used": response.details.generated_tokens,
-                "stop_reason": response.details.finish_reason,
+                "tokens_used": completion.details.generated_tokens,
+                "stop_reason": str(completion.details.finish_reason),
             },
         )
 

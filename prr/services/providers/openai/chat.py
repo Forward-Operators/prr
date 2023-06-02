@@ -12,10 +12,11 @@ openai.api_key = config.get("OPENAI_API_KEY", None)
 class ServiceOpenAIChat(ServiceBaseStructuredPrompt):
     provider = "openai"
     service = "chat"
+
+    # options we take into account
     options = ["max_tokens", "temperature"]
     
     def run(self):
-        print ("------ PROMPT CONTENT", self.request.prompt_content)
         completion = openai.ChatCompletion.create(
             model=self.service_config.model_name(),
             messages=self.request.prompt_content,

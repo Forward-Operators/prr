@@ -25,11 +25,11 @@ class PromptMessage:
 
         self.template = self.template_env.from_string(self.content_template_string)
 
-    def render_text(self, args=[]):
-        return self.template.render({"prompt_args": args})
+    def render_text(self, prompt_args=None):
+        return self.template.render({"prompt_args": prompt_args})
 
-    def render_message(self, args=[]):
-        _message = {"role": self.role, "content": self.render_text(args)}
+    def render_message(self, prompt_args=None):
+        _message = {"role": self.role, "content": self.render_text(prompt_args)}
 
         if self.name:
             _message.update({"name": self.name})
@@ -48,12 +48,12 @@ class PromptTemplate:
     def __init__(self):
         self.messages = []
 
-    def render_text(self, args=[]):
+    def render_text(self, args=None):
         rendered_texts = [message.render_text(args) for message in self.messages]
 
         return "\n".join(rendered_texts)
 
-    def render_messages(self, args=[]):
+    def render_messages(self, args=None):
         return [message.render_message(args) for message in self.messages]
 
     def file_dependencies(self):

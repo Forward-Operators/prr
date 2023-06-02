@@ -6,5 +6,5 @@ do
 	echo RUNNING $example_prompt
 	echo "-----------------------------"
 
-	python -m prr run --abbrev --max_tokens 1234 --temperature 0.98 $example_prompt
+	python -m prr run --abbrev --max_tokens 1234 --temperature 0.98 -l $example_prompt
 done

@@ -5,11 +5,14 @@ config = load_config()
 class ModelOptions:
     DEFAULT_OPTIONS = {"max_tokens": 4000, "temperature": 0.7, "top_k": -1, "top_p": -1}
 
-    def __init__(self, options={}):
+    def __init__(self, options={}, use_defaults=True):
         self.__init_defaults()
 
         self.options_set = []
-        self.update_options(self.defaults, True)
+
+        if use_defaults:
+          self.update_options(self.defaults)
+
         self.update_options(options)
 
     def select(self, option_keys):
@@ -17,22 +20,22 @@ class ModelOptions:
 
         for key in option_keys:
             if key in self.options_set:
-                _options[key] = self.option(key)
+                _options[key] = self.value(key)
 
-        return ModelOptions(_options)
+        return ModelOptions(_options, False)
 
-    def update_options(self, options, defaults=False):
+    def update_options(self, options):
         for key in options.keys():
             if options[key] != None:
-                if key not in self.options_set and not defaults:
+                if key not in self.options_set:
                     self.options_set.append(key)
 
                 setattr(self, key, options[key])
 
     def description(self):
-        return " ".join([f"{key}={self.option(key)}" for key in self.options_set])
+        return " ".join([f"{key}={self.value(key)}" for key in self.options_set])
 
-    def option(self, key):
+    def value(self, key):
       if hasattr(self, key) and key in self.options_set:
         return getattr(self, key)
 
@@ -45,7 +48,7 @@ class ModelOptions:
         dict = {}
 
         for key in self.options_set:
-            dict[key] = self.option(key)
+            dict[key] = self.value(key)
 
         return dict
 

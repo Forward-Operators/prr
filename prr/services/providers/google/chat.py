@@ -20,7 +20,7 @@ aiplatform.init(
 )
 
 
-class ServiceGoogleChat(ServiceBaseUnstructuredPrompt):
+class ServiceGoogleChat(ServiceBaseStructuredPrompt):
     provider = "google"
     service = "chat"
     options = ["max_tokens", "temperature", "top_k", "top_p"]
@@ -29,12 +29,13 @@ class ServiceGoogleChat(ServiceBaseUnstructuredPrompt):
         model = ChatModel.from_pretrained(self.service_config.model_name())
 
         parameters = {
-            "temperature": options.temperature,
-            "max_output_tokens": options.max_tokens,
-            "top_p": options.top_p,
-            "top_k": options.top_k,
+            "temperature": self.option('temperature'),
+            "max_output_tokens": self.option('max_tokens'),
+            "top_p": self.option('top_p'),
+            "top_k": self.option('top_k'),
         }
 
+        # TODO: examples (use 'assistant' role for that)
         chat = model.start_chat(
             context=f"""{self.context_from_messages()}""",
             examples=[],
@@ -48,50 +49,23 @@ class ServiceGoogleChat(ServiceBaseUnstructuredPrompt):
 
         return self.request, self.response
 
-    def messages_from_prompt(self):
-        messages = self.prompt.messages
+    # define render prompt to change how the prompt is rendered
+    def render_prompt(self):
+        _output = {
+          "context": "",
+          "messages": []
+        }
 
-        # prefer messages in prompt if they exist
-        if messages:
-            return messages
+        # TODO: this should not reach so deep
+        if self.request.prompt.template.messages:
+            for message in self.prompt.template.messages:
+                if message.role == "system":
+                    _output["context"] += "\n" + message.render_text()
+                elif message.role == "user":
+                    _msg = {}
+                    _msg['author'] = message.role
+                    _msg['content'] = message.render_text()
 
-        return [{"role": "user", "content": self.prompt.text()}]
+                    _output.messages.append(_msg)
 
-    def context_from_messages(self):
-        messages = self.prompt.messages
-
-        if messages:
-            for message in messages:
-                if message["role"] == "system":
-                    context = message["content"]
-        else:
-            context = None
-
-        return context
-
-    def examples_from_messages(self):
-        messages = self.prompt.messages
-
-        if messages:
-            examples = []
-            for message in messages:
-                if message["role"] == "examples":
-                    examples.append(
-                        InputOutputTextPair(message["input"], message["output"])
-                    )
-        else:
-            examples = []
-
-        return examples
-
-    def message_from_messages(self):
-        messages = self.prompt.messages
-
-        if messages:
-            for message in messages:
-                if message["role"] == "user":
-                    message = message["content"]
-        else:
-            message = None
-
-        return message
+        return _output

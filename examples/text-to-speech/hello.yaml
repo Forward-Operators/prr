@@ -1,6 +1,6 @@
 version: 1
 prompt:
-  content: "Heeeelloooo Wooooorld!"
+  content: "Good Morning, Warsaw!"
 services:
   models:
     - 'elevenlabs/tts/eleven_monolingual_v1'
