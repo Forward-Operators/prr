@@ -3,7 +3,8 @@ from vertexai.preview.language_models import ChatModel, InputOutputTextPair
 
 from prr.utils.response import ServiceResponse
 from prr.utils.config import load_config
-from prr.services.service_base import ServiceBaseUnstructuredPrompt
+
+from prr.services.service_base import ServiceBase
 
 config = load_config()
 
@@ -20,7 +21,7 @@ aiplatform.init(
 )
 
 
-class ServiceGoogleChat(ServiceBaseStructuredPrompt):
+class ServiceGoogleChat(ServiceBase):
     provider = "google"
     service = "chat"
     options = ["max_tokens", "temperature", "top_k", "top_p"]
@@ -35,37 +36,43 @@ class ServiceGoogleChat(ServiceBaseStructuredPrompt):
             "top_k": self.option('top_k'),
         }
 
-        # TODO: examples (use 'assistant' role for that)
+        # TODO: support examples
         chat = model.start_chat(
-            context=f"""{self.context_from_messages()}""",
+            context=self.request.prompt_content['context'],
             examples=[],
         )
 
         response = chat.send_message(
-            f"""{self.message_from_messages()}""", **parameters
+            self.request.prompt_content['messages'], **parameters
         )
 
         self.response = ServiceResponse(response.text, {})
 
         return self.request, self.response
 
+    def render_message(self, message):
+      return {
+        "author": "bot" if message.is_assistant() else "user",
+        "content": message.render_text(self.prompt_args)
+      }
+
     # define render prompt to change how the prompt is rendered
     def render_prompt(self):
-        _output = {
-          "context": "",
-          "messages": []
-        }
+        context_messages = []
+        chat_messages = []
 
         # TODO: this should not reach so deep
-        if self.request.prompt.template.messages:
+        if self.prompt.template.messages:
             for message in self.prompt.template.messages:
-                if message.role == "system":
-                    _output["context"] += "\n" + message.render_text()
-                elif message.role == "user":
-                    _msg = {}
-                    _msg['author'] = message.role
-                    _msg['content'] = message.render_text()
+                if message.is_system():
+                    context_messages.append(message)
+                else:
+                    chat_messages.append(message)
 
-                    _output.messages.append(_msg)
+        context_text = "\n".join([m.render_text(self.prompt_args) for m in context_messages])
+        messages = [self.render_message(m) for m in chat_messages]
 
-        return _output
+        return {
+            "context": context_text,
+            "messages": messages,
+        }
