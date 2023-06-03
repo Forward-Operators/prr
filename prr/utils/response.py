@@ -9,13 +9,13 @@ class ServiceResponse:
 
     def response_text(self, length_limit=None):
         if self.is_response_content_text():
-          _str = str(self.response_content)
+            _str = str(self.response_content)
 
-          if length_limit != None and len(_str) > length_limit:
-              _str = _str[0:length_limit] + "..."
+            if length_limit != None and len(_str) > length_limit:
+                _str = _str[0:length_limit] + "..."
 
-          return _str.replace("\n", " ").replace("  ", " ")
-        
+            return _str.replace("\n", " ").replace("  ", " ")
+
         return f"[{len(self.response_content)} bytes of data]"
 
     def __repr__(self):

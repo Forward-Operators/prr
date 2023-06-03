@@ -1,11 +1,10 @@
 from huggingface_hub import Repository
 from text_generation import Client
 
+from prr.services.service_base import ServiceBase
+from prr.utils.config import load_config
 from prr.utils.request import ServiceRequest
 from prr.utils.response import ServiceResponse
-from prr.utils.config import load_config
-
-from prr.services.service_base import ServiceBase
 
 config = load_config()
 
@@ -24,6 +23,7 @@ client = Client(
     headers={"Authorization": f"Bearer {HF_TOKEN}"},
 )
 
+
 class ServiceBigcodeStarcoder(ServiceBase):
     provider = "bigcode"
     service = "starcoder"
@@ -32,10 +32,10 @@ class ServiceBigcodeStarcoder(ServiceBase):
     def run(self):
         completion = client.generate(
             self.request.prompt_content,
-            temperature=self.option('temperature'),
-            max_new_tokens=self.option('max_tokens'),
-            top_p=self.option('top_p'),
-            repetition_penalty=self.option('repetition_penalty')
+            temperature=self.option("temperature"),
+            max_new_tokens=self.option("max_tokens"),
+            top_p=self.option("top_p"),
+            repetition_penalty=self.option("repetition_penalty"),
         )
 
         self.response = ServiceResponse(

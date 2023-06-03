@@ -75,7 +75,7 @@ class PromptRunSaver:
         fileoptions = "wb"
 
         if isinstance(response.response_content, str):
-          fileoptions = "w"
+            fileoptions = "w"
 
         with open(completion_file, fileoptions) as f:
             f.write(response.response_content)

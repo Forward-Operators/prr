@@ -5,13 +5,13 @@ import os
 
 import anthropic
 
-from prr.utils.response import ServiceResponse
-from prr.utils.config import load_config
 from prr.services.service_base import ServiceBase
-
+from prr.utils.config import load_config
+from prr.utils.response import ServiceResponse
 
 config = load_config()
 client = anthropic.Client(config.get("ANTHROPIC_API_KEY", None))
+
 
 # Anthropic model provider class
 class ServiceAnthropicComplete(ServiceBase):
@@ -24,10 +24,10 @@ class ServiceAnthropicComplete(ServiceBase):
             prompt=self.request.prompt_content,
             stop_sequences=[anthropic.HUMAN_PROMPT],
             model=self.service_config.model_name(),
-            max_tokens_to_sample=self.option('max_tokens'),
-            temperature=self.option('temperature'),
-            top_p=self.option('top_p'),
-            top_k=self.option('top_k'),
+            max_tokens_to_sample=self.option("max_tokens"),
+            temperature=self.option("temperature"),
+            top_p=self.option("top_p"),
+            top_k=self.option("top_k"),
         )
 
         completion_tokens = anthropic.count_tokens(result["completion"])
@@ -57,16 +57,16 @@ class ServiceAnthropicComplete(ServiceBase):
         # prefer messages from template if they exist
         if self.prompt.template.messages:
             for message in self.prompt.template.messages:
-              if current_role == "human":
-                if message.is_assistant():
-                    current_role = "assistant"
-                    prompt_text += anthropic.AI_PROMPT
-              else:
-                if message.is_user() or message.is_system():
-                    current_role = "human"
-                    prompt_text += anthropic.HUMAN_PROMPT
+                if current_role == "human":
+                    if message.is_assistant():
+                        current_role = "assistant"
+                        prompt_text += anthropic.AI_PROMPT
+                else:
+                    if message.is_user() or message.is_system():
+                        current_role = "human"
+                        prompt_text += anthropic.HUMAN_PROMPT
 
-              prompt_text += " " + message.render_text(self.prompt_args)
+                prompt_text += " " + message.render_text(self.prompt_args)
 
         prompt_text += anthropic.AI_PROMPT
 

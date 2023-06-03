@@ -56,15 +56,15 @@ class RunPromptCommand:
             )
 
     def print_basic_stats(self, result):
-      response = result.response
+        response = result.response
 
-      completion = f"[blue]Completion length[/blue]: {len(response.response_content)} bytes"
-      tokens_used = f"[blue]Tokens used[/blue]: {response.tokens_used()}"
-      elapsed_time = (
-          f"[blue]Elapsed time[/blue]: {round(result.elapsed_time, 2)}s"
-      )
+        completion = (
+            f"[blue]Completion length[/blue]: {len(response.response_content)} bytes"
+        )
+        tokens_used = f"[blue]Tokens used[/blue]: {response.tokens_used()}"
+        elapsed_time = f"[blue]Elapsed time[/blue]: {round(result.elapsed_time, 2)}s"
 
-      self.console.log(f"{completion} {tokens_used} {elapsed_time}")
+        self.console.log(f"{completion} {tokens_used} {elapsed_time}")
 
     def print_run_parameters(self, service_name, request):
         self.console.log(
@@ -79,9 +79,9 @@ class RunPromptCommand:
         if self.args["quiet"]:
             # just print out the output verbatim
             if isinstance(response.response_content, str):
-              print(response.response_content)
+                print(response.response_content)
             else:
-              sys.stdout.buffer.write(response.response_content)
+                sys.stdout.buffer.write(response.response_content)
         else:
             self.print_completion(response)
             self.print_basic_stats(result)
@@ -97,9 +97,7 @@ class RunPromptCommand:
         with self.console.status(
             f":robot: [bold green]{service_name}[/bold green]"
         ) as status:
-            self.runner.prepare_service_run(
-                service_name, self.args
-            )
+            self.runner.prepare_service_run(service_name, self.args)
 
             request = self.runner.current_run_request()
 
@@ -138,6 +136,6 @@ class RunPromptCommand:
 
         for service_name in services_to_run:
             if len(services_to_run) > 1:
-              self.console.log("")
+                self.console.log("")
 
             self.run_prompt_on_service(service_name, self.args["log"])

@@ -20,15 +20,16 @@ class Runner:
 
         service = service_registry.service_for_service_config(service_config)
 
-        self.current_run = PromptRun(self.prompt_config, self.prompt_args, service, service_config)
-
+        self.current_run = PromptRun(
+            self.prompt_config, self.prompt_args, service, service_config
+        )
 
     def current_run_request(self):
         return self.current_run.service.request
 
     def current_run_request_options(self):
         return self.current_run_request().options
-        
+
     def run(self, service_name, save_run=False):
         result = self.current_run.run()
 

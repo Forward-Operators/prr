@@ -2,6 +2,7 @@ from prr.utils.config import load_config
 
 config = load_config()
 
+
 class ModelOptions:
     DEFAULT_OPTIONS = {"max_tokens": 4000, "temperature": 0.7, "top_k": -1, "top_p": -1}
 
@@ -11,7 +12,7 @@ class ModelOptions:
         self.options_set = []
 
         if use_defaults:
-          self.update_options(self.defaults)
+            self.update_options(self.defaults)
 
         self.update_options(options)
 
@@ -36,10 +37,10 @@ class ModelOptions:
         return " ".join([f"{key}={self.value(key)}" for key in self.options_set])
 
     def value(self, key):
-      if hasattr(self, key) and key in self.options_set:
-        return getattr(self, key)
+        if hasattr(self, key) and key in self.options_set:
+            return getattr(self, key)
 
-      return None
+        return None
 
     def __repr__(self):
         return self.description()

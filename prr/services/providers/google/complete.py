@@ -1,10 +1,9 @@
 from google.cloud import aiplatform
 from vertexai.preview.language_models import TextGenerationModel
 
-from prr.utils.response import ServiceResponse
-from prr.utils.config import load_config
-
 from prr.services.service_base import ServiceBase
+from prr.utils.config import load_config
+from prr.utils.response import ServiceResponse
 
 config = load_config()
 
@@ -20,6 +19,7 @@ aiplatform.init(
     # credentials=config[my_credentials],
 )
 
+
 class ServiceGoogleComplete(ServiceBase):
     provider = "google"
     service = "complete"
@@ -30,10 +30,10 @@ class ServiceGoogleComplete(ServiceBase):
 
         result = client.predict(
             prompt_text,
-            max_output_tokens=self.option('max_tokens'),
-            temperature=self.option('temperature'),
-            top_k=self.option('top_k'),
-            top_p=self.option('top_p'),
+            max_output_tokens=self.option("max_tokens"),
+            temperature=self.option("temperature"),
+            top_k=self.option("top_k"),
+            top_p=self.option("top_p"),
         )
 
         self.response = ServiceResponse(

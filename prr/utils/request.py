@@ -1,5 +1,6 @@
 import yaml
 
+
 # request we're sending to the service - prompts rendered, options parsed
 class ServiceRequest:
     def __init__(self, service_config, rendered_prompt_content, options):

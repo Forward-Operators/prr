@@ -1,12 +1,12 @@
 import openai
 
-from prr.utils.response import ServiceResponse
-from prr.utils.config import load_config
-
 from prr.services.service_base import ServiceBase
+from prr.utils.config import load_config
+from prr.utils.response import ServiceResponse
 
 config = load_config()
 openai.api_key = config.get("OPENAI_API_KEY", None)
+
 
 # OpenAI model provider class
 class ServiceOpenAIChat(ServiceBase):
@@ -15,13 +15,13 @@ class ServiceOpenAIChat(ServiceBase):
 
     # options we take into account
     options = ["max_tokens", "temperature"]
-    
+
     def run(self):
         completion = openai.ChatCompletion.create(
             model=self.service_config.model_name(),
             messages=self.request.prompt_content,
-            temperature=self.option('temperature'),
-            max_tokens=self.option('max_tokens'),
+            temperature=self.option("temperature"),
+            max_tokens=self.option("max_tokens"),
         )
 
         usage = completion.usage
@@ -45,4 +45,4 @@ class ServiceOpenAIChat(ServiceBase):
         return self.request, self.response
 
     def render_prompt(self):
-      return self.prompt.render_messages(self.prompt_args)
+        return self.prompt.render_messages(self.prompt_args)

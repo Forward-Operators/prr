@@ -1,12 +1,14 @@
 import os
 import sys
 
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", "..")))
+sys.path.append(
+    os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", "..", ".."))
+)
 
 from prr.prompt.model_options import ModelOptions
 from prr.prompt.prompt_config import PromptConfig
-
 from prr.services.providers.google.chat import ServiceGoogleChat
+
 
 class TestGoogleChat:
     def test_render_basic_prompt(self):
@@ -26,27 +28,18 @@ services:
 
         assert config is not None
 
-        service_config = config.service_with_name('sergey')
+        service_config = config.service_with_name("sergey")
 
-        service = ServiceGoogleChat(
-          config, 
-          None, 
-          service_config)
+        service = ServiceGoogleChat(config, None, service_config)
 
         assert service is not None
 
         rendered_prompt = service.render_prompt()
 
         assert rendered_prompt == {
-          'context': '', 
-          'messages': [
-            {
-              'author': 'user', 
-              'content': 'foo bar'
-            }
-          ]
+            "context": "",
+            "messages": [{"author": "user", "content": "foo bar"}],
         }
-
 
     def test_render_longer_prompt(self):
         config = PromptConfig()
@@ -70,32 +63,19 @@ services:
 
         assert config is not None
 
-        service_config = config.service_with_name('bison')
+        service_config = config.service_with_name("bison")
 
-        service = ServiceGoogleChat(
-          config, 
-          None, 
-          service_config)
+        service = ServiceGoogleChat(config, None, service_config)
 
         assert service is not None
 
         rendered_prompt = service.render_prompt()
 
         assert rendered_prompt == {
-          'context': 'You, Claude, are a little Chihuahua dog. That is all you need to know.', 
-          'messages': [
-            {
-              'author': 'user', 
-              'content': 'Also, you walk like a duck.'
-            }, 
-            {
-              'author': 'bot', 
-              'content': 'What the hell is goin on?'
-            }, 
-            {
-              'author': 'user', 
-              'content': 'Bark, bark, bark!'
-            }
-          ]
+            "context": "You, Claude, are a little Chihuahua dog. That is all you need to know.",
+            "messages": [
+                {"author": "user", "content": "Also, you walk like a duck."},
+                {"author": "bot", "content": "What the hell is goin on?"},
+                {"author": "user", "content": "Bark, bark, bark!"},
+            ],
         }
-

@@ -1,10 +1,9 @@
 from google.cloud import aiplatform
 from vertexai.preview.language_models import ChatModel, InputOutputTextPair
 
-from prr.utils.response import ServiceResponse
-from prr.utils.config import load_config
-
 from prr.services.service_base import ServiceBase
+from prr.utils.config import load_config
+from prr.utils.response import ServiceResponse
 
 config = load_config()
 
@@ -30,20 +29,20 @@ class ServiceGoogleChat(ServiceBase):
         model = ChatModel.from_pretrained(self.service_config.model_name())
 
         parameters = {
-            "temperature": self.option('temperature'),
-            "max_output_tokens": self.option('max_tokens'),
-            "top_p": self.option('top_p'),
-            "top_k": self.option('top_k'),
+            "temperature": self.option("temperature"),
+            "max_output_tokens": self.option("max_tokens"),
+            "top_p": self.option("top_p"),
+            "top_k": self.option("top_k"),
         }
 
         # TODO: support examples
         chat = model.start_chat(
-            context=self.request.prompt_content['context'],
+            context=self.request.prompt_content["context"],
             examples=[],
         )
 
         response = chat.send_message(
-            self.request.prompt_content['messages'], **parameters
+            self.request.prompt_content["messages"], **parameters
         )
 
         self.response = ServiceResponse(response.text, {})
@@ -51,10 +50,10 @@ class ServiceGoogleChat(ServiceBase):
         return self.request, self.response
 
     def render_message(self, message):
-      return {
-        "author": "bot" if message.is_assistant() else "user",
-        "content": message.render_text(self.prompt_args)
-      }
+        return {
+            "author": "bot" if message.is_assistant() else "user",
+            "content": message.render_text(self.prompt_args),
+        }
 
     # define render prompt to change how the prompt is rendered
     def render_prompt(self):
@@ -69,7 +68,9 @@ class ServiceGoogleChat(ServiceBase):
                 else:
                     chat_messages.append(message)
 
-        context_text = "\n".join([m.render_text(self.prompt_args) for m in context_messages])
+        context_text = "\n".join(
+            [m.render_text(self.prompt_args) for m in context_messages]
+        )
         messages = [self.render_message(m) for m in chat_messages]
 
         return {
