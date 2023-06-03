@@ -81,7 +81,7 @@ class PromptConfig:
         _dependencies = []
         for message in self.template.messages:
             for dependency in message.file_dependencies:
-                if dependency not in _dependencies:
+                if dependency != None and dependency not in _dependencies:
                     _dependencies.append(dependency)
 
         return _dependencies

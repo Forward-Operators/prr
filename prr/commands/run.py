@@ -78,7 +78,10 @@ class RunPromptCommand:
 
         if self.args["quiet"]:
             # just print out the output verbatim
-            sys.stdout.buffer.write(response.response_content)
+            if isinstance(response.response_content, str):
+              print(response.response_content)
+            else:
+              sys.stdout.buffer.write(response.response_content)
         else:
             self.print_completion(response)
             self.print_basic_stats(result)
