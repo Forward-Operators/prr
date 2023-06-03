@@ -5,16 +5,16 @@ import os
 
 import anthropic
 
-from prr.runner.response import ServiceResponse
+from prr.utils.response import ServiceResponse
 from prr.utils.config import load_config
-from prr.services.service_base import ServiceBaseUnstructuredPrompt
+from prr.services.service_base import ServiceBase
 
 
 config = load_config()
 client = anthropic.Client(config.get("ANTHROPIC_API_KEY", None))
 
 # Anthropic model provider class
-class ServiceAnthropicComplete(ServiceBaseUnstructuredPrompt):
+class ServiceAnthropicComplete(ServiceBase):
     provider = "anthropic"
     service = "complete"
     options = ["max_tokens", "temperature", "top_k", "top_p"]
@@ -51,15 +51,23 @@ class ServiceAnthropicComplete(ServiceBaseUnstructuredPrompt):
 
     # define render prompt to change how the prompt is rendered
     def render_prompt(self):
-        prompt_text = ""
+        prompt_text = anthropic.HUMAN_PROMPT
+        current_role = "human"
 
         # prefer messages from template if they exist
         if self.prompt.template.messages:
             for message in self.prompt.template.messages:
-                if message.role != "assistant":
-                    prompt_text += "\n" + message.render_text()
+              if current_role == "human":
+                if message.is_assistant():
+                    current_role = "assistant"
+                    prompt_text += anthropic.AI_PROMPT
+              else:
+                if message.is_user() or message.is_system():
+                    current_role = "human"
+                    prompt_text += anthropic.HUMAN_PROMPT
 
-        else:
-            prompt_text = self.prompt.template.render_text()
+              prompt_text += " " + message.render_text(self.prompt_args)
 
-        return f"{anthropic.HUMAN_PROMPT}{prompt_text}{anthropic.AI_PROMPT}"
+        prompt_text += anthropic.AI_PROMPT
+
+        return prompt_text

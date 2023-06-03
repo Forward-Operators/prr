@@ -1,10 +1,3 @@
-from prr.services.providers.anthropic.complete import ServiceAnthropicComplete
-from prr.services.providers.bigcode.starcoder import ServiceBigcodeStarcoder
-from prr.services.providers.google.chat import ServiceGoogleChat
-from prr.services.providers.google.complete import ServiceGoogleComplete
-from prr.services.providers.openai.chat import ServiceOpenAIChat
-from prr.services.providers.elevenlabs.tts import ServiceElevenLabsTTS
-
 # main registry, where services are being... registered
 # and looked up for upon execution
 class ServiceRegistry:
@@ -16,6 +9,13 @@ class ServiceRegistry:
         self.services[key] = service_class
 
     def register_all_services(self):
+        from prr.services.providers.anthropic.complete import ServiceAnthropicComplete
+        from prr.services.providers.bigcode.starcoder import ServiceBigcodeStarcoder
+        from prr.services.providers.google.chat import ServiceGoogleChat
+        from prr.services.providers.google.complete import ServiceGoogleComplete
+        from prr.services.providers.openai.chat import ServiceOpenAIChat
+        from prr.services.providers.elevenlabs.tts import ServiceElevenLabsTTS
+        
         self.register(ServiceOpenAIChat)
         self.register(ServiceAnthropicComplete)
         self.register(ServiceBigcodeStarcoder)

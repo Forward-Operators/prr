@@ -1,6 +1,6 @@
 from elevenlabs import generate, set_api_key
 
-from prr.runner.response import ServiceResponse
+from prr.utils.response import ServiceResponse
 from prr.utils.config import load_config
 
 from prr.services.service_base import ServiceBaseUnstructuredPrompt

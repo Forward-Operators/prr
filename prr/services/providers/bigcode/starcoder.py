@@ -1,11 +1,11 @@
 from huggingface_hub import Repository
 from text_generation import Client
 
-from prr.runner.request import ServiceRequest
-from prr.runner.response import ServiceResponse
+from prr.utils.request import ServiceRequest
+from prr.utils.response import ServiceResponse
 from prr.utils.config import load_config
 
-from prr.services.service_base import ServiceBaseUnstructuredPrompt
+from prr.services.service_base import ServiceBase
 
 config = load_config()
 
@@ -24,7 +24,7 @@ client = Client(
     headers={"Authorization": f"Bearer {HF_TOKEN}"},
 )
 
-class ServiceBigcodeStarcoder(ServiceBaseUnstructuredPrompt):
+class ServiceBigcodeStarcoder(ServiceBase):
     provider = "bigcode"
     service = "starcoder"
     options = ["temperature", "max_tokens", "top_p", "repetition_penalty"]

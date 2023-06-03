@@ -132,7 +132,7 @@ class PromptConfig:
             _services = self.config_content.get("services")
 
             if _services:
-                options_for_all_services = _services.get("options")
+                options_for_all_services = _services.get("options") or {}
 
                 #
                 # if we have models + prompt-level model options

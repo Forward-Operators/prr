@@ -25,6 +25,15 @@ class PromptMessage:
 
         self.template = self.template_env.from_string(self.content_template_string)
 
+    def is_system(self):
+        return self.role == "system"
+
+    def is_user(self):
+        return self.role == "user"
+
+    def is_assistant(self):
+        return self.role == "assistant"
+
     def render_text(self, prompt_args=None):
         return self.template.render({"prompt_args": prompt_args})
 

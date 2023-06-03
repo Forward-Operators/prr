@@ -1,4 +1,4 @@
-from prr.runner.request import ServiceRequest
+from prr.utils.request import ServiceRequest
 
 
 class ServiceBase:
@@ -10,19 +10,14 @@ class ServiceBase:
         self.request = ServiceRequest(
           self.service_config, 
           self.render_prompt(), 
-          self.request_options()
+          self.render_options()
         )
 
-    def request_options(self):
+    def render_options(self):
         return self.service_config.options.select(self.__class__.options)
+
+    def render_prompt(self):
+      return self.prompt.render_text(self.prompt_args)
 
     def option(self, option_name):
         return self.request.options.value(option_name)
-
-class ServiceBaseUnstructuredPrompt(ServiceBase):
-    def render_prompt(self):
-        return self.prompt.render_text(self.prompt_args)
-
-class ServiceBaseStructuredPrompt(ServiceBase):
-    def render_prompt(self):
-        return self.prompt.render_messages(self.prompt_args)

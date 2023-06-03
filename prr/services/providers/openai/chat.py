@@ -1,15 +1,15 @@
 import openai
 
-from prr.runner.response import ServiceResponse
+from prr.utils.response import ServiceResponse
 from prr.utils.config import load_config
 
-from prr.services.service_base import ServiceBaseStructuredPrompt
+from prr.services.service_base import ServiceBase
 
 config = load_config()
 openai.api_key = config.get("OPENAI_API_KEY", None)
 
 # OpenAI model provider class
-class ServiceOpenAIChat(ServiceBaseStructuredPrompt):
+class ServiceOpenAIChat(ServiceBase):
     provider = "openai"
     service = "chat"
 
@@ -43,3 +43,6 @@ class ServiceOpenAIChat(ServiceBaseStructuredPrompt):
         )
 
         return self.request, self.response
+
+    def render_prompt(self):
+      return self.prompt.render_messages(self.prompt_args)
