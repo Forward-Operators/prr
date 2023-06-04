@@ -70,5 +70,8 @@ class SavedRunsCollection:
 
     return [SavedRun(os.path.join(self.runs_directory_path, run_subdir)) for run_subdir in run_subdirs]
 
+  def latest(self):
+    return self.all()[-1]
+
   def run(self, run_id):
     return SavedRun(os.path.join(self.runs_directory_path, str(int(run_id))))

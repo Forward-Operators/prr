@@ -9,6 +9,7 @@
             background-color: #F5F5F5;
             color: #050505;
             font-family: 'Courier New', Courier, monospace;
+            margin: 0;
         }
 
         h1 {
@@ -16,14 +17,21 @@
         }
 
         h2 {
+          font-family: 'Courier New', Courier, monospace;
           font-weight: 500;
-          margin-top: 40px;
+          background-color: rgba(0, 0, 0, 0.05);
+          padding-left: 10px;
+          padding-top: 3px;
+          padding-bottom: 3px;
+          border-top-right-radius: 8px;
+          border-bottom-right-radius: 8px;
         }
 
         div.prompt-text, div.completion-text {
           white-space: pre-wrap;
           font-family: 'Courier New', Courier, monospace;
           border: 1px solid rgba(128, 128, 128, 0.2);
+          background-color: white;
           border-radius: 5px;
           font-size: 20px;
         }
@@ -32,13 +40,14 @@
           display: flex;
           flex-wrap: wrap;
           padding: 0;
+          margin: 0;
           margin-top: 10px;
           margin-bottom: 10px;
         }
 
         dt, dd {
           padding: 4px 8px;
-          border-radius: 25px;
+          border-radius: 8px;
           background-color: rgba(128, 128, 128, 0.05);
           margin-top: 5px;
           margin-bottom: 5px;
@@ -58,7 +67,7 @@
         }
 
         dd {
-          font-weight: 500;
+          font-weight: 600;
         }
 
         dd.temperature, dt.temperature {
@@ -77,8 +86,6 @@
           background-color: rgba(255, 0, 0, 0.10);
         }
         
-        div.service-description { width: 80%; }
-        .response-details { width: 80%; }
 
         div.service-description .service-name { 
           font-weight: bold;
@@ -86,52 +93,65 @@
         }
 
         div#run-list {
-          background-color: rgba(0, 255, 0, 0.3);
+          background-color: rgba(0, 0, 0, 0.05);
           color: white;
           width: 1%;
           text-align: center;
+          padding-left: 4px;
+          padding-right: 4px;
+        }
+
+        div#run-list a, div#service-list a {
+          text-decoration: none;
+          color: black;
+        }
+
+        div#run-list a:hover, div#service-list a:hover {
+          text-decoration: underline;
+        }
+
+        div#run-list a.current, div#service-list a.current {
+          font-weight: bold;
         }
 
         div#service-list {
-          background-color: rgba(128, 0, 128, 0.3);
+          padding-left: 20px;
+          background-color: rgba(0, 0, 0, 0.05);
           width: 100vw;
         }
 
         div#run-list-and-content {
           display: flex;
-          background-color: yellow;
+        }
+
+        div#run {
+          padding-top: 10px;
+          background-color: rgba(255, 255, 255, 0.05);
         }
 </style>
 </head>
 <body>
   <div>
     <div id="service-list">
-      {% for service_name in all_service_names %}
-        <span>
-          <a href="/runs/{{ id }}/{{ service_name }}">{{ service_name }}</a>
-        </span>
+      {% for _service_name in all_service_names %}
+        <a class="{{'current' if service_name == _service_name }}" href="/runs/{{ id }}/{{ _service_name }}">{{ _service_name }}</a>
       {% endfor %}
     </div>
     <div id="run-list-and-content">
       <div id="run-list">
         {% for run_id in all_run_ids %}
-          <div>
-            <a href="/runs/{{ run_id }}/{{ service_name }}">{{ run_id }}</a>
-          </div>
+          <a class="{{'current' if run_id == id }}" href="/runs/{{ run_id }}/{{ service_name }}">{{ run_id }}</a>
         {% endfor %}
       </div>
       <div id="run">
-        <h1>prr run #{{ id }} of chihuahua.yaml</h1>
+        <h1>{{ prompt_file }} 🤖 {{ run_details.request.model }}</h1>
 
         <div class="service-description">
-          <span class="service-name">📋 {{ service_name }}</span>
-          <span class="model-name">anthropic/complete/claude-v1</span>
-      
           <dl class="model-options">
-            <dt class="max_tokens">max_tokens</dt>
-            <dd class="max_tokens">1234</dd>
-            <dt class="temperature">temperature</dt>
-            <dd class="temperature">0</dd>
+            {% for key, value in run_details.request.options.items() %}
+              <dt class="{{ key }}">{{ key }}</dt>
+              <dd class="{{ key }}">{{ value }}</dd>
+            {% endfor %}
           </dl>
         </div>
         
@@ -145,34 +165,20 @@
       
       <h2>🔍 Response details</h2> 
       
-      <pre>{{ run_details }}</pre>
-      
       <dl class="response-details">
-        <dt class="completion_tokens">completion_tokens</dt>
-        <dd class="completion_tokens">31</dd>
-        <dt>log_id</dt>
-          <dd>b52dafa11ebc6b0385d0adf5423a412a</dd>
-        <dt>prompt_tokens</dt>
-          <dd>58</dd>
-        <dt class="stop_reason">stop_reason</dt>
-          <dd class="stop_reason">stop_sequence
-        <dt class="tokens_used">tokens_used</dt>
-          <dd class="tokens_used">89</dd>
-        <dt>total_tokens</dt>
-          <dd>89</dd>
-        <dt>truncated</dt>
-          <dd>false</dd>
+        {% for key, value in run_details.response.items() %}
+          <dt class="{{ key }}">{{ key }}</dt>
+          <dd class="{{ key }}">{{ value }}</dd>
+        {% endfor %}
       </dl>
       
       <h2>📈 Stats</h2> 
       
-      <dl>
-        <dt>elapsed_time</dt>
-        <dd>1.30</dd>
-        <dt>start_time</dt>
-        <dd>2023-05-28 12:34:56.213</dd>
-        <dt>end_time</dt>
-        <dd>2023-05-28 12:34:57.513</dd>
+      <dl class="stats">
+          {% for key, value in run_details.stats.items() %}
+            <dt class="{{ key }}">{{ key }}</dt>
+            <dd class="{{ key }}">{{ value }}</dd>
+          {% endfor %}
       </dl>
       
       </div>

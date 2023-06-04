@@ -2,7 +2,7 @@ import os
 import sys
 
 from fastapi import FastAPI, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -16,24 +16,14 @@ templates = Jinja2Templates(directory="templates")
 
 # app.mount("/static", StaticFiles(directory="static"), name="static")
 
-@app.get("/", response_class=HTMLResponse)
-async def root(request: Request):
-    collection = SavedRunsCollection("/workspaces/prr/examples/configured/chihuahua.yaml")
-    runs = collection.all()
-
-    available_run_ids = [run.id() for run in runs]
-
-    return templates.TemplateResponse("runs.html", {
-      'request': request,
-      'available_run_ids': available_run_ids
-    })
-
-
-@app.get("/runs/{id}/{service_name}", response_class=HTMLResponse)
-async def get_run(request: Request, id: int, service_name: str):
-    collection = SavedRunsCollection("/workspaces/prr/examples/configured/chihuahua.yaml")
+def render_run(id, request, collection, service_name=None):
     run = collection.run(id)
-    service = run.service(service_name)
+
+    if not service_name:
+      service = run.services()[0]
+    else:
+      service = run.service(service_name)
+
     all_run_ids = [_run.id() for _run in collection.all()]
     all_service_names = [_service.name() for _service in run.services()]
 
@@ -46,17 +36,31 @@ async def get_run(request: Request, id: int, service_name: str):
       "output_content": service.prompt_content(),
       "run_details": service.run_details(),
       "all_run_ids": sorted(all_run_ids, key=int, reverse=True),
-      "all_service_names": all_service_names
+      "all_service_names": all_service_names,
+      "prompt_file": "chihuahua.yaml"
     }
 
     return templates.TemplateResponse("run.html", args)
 
+@app.get("/", response_class=RedirectResponse)
+async def root(request: Request):
+    return RedirectResponse("/runs/latest", status_code=302)
 
-@app.get("/runs/{id}", response_class=HTMLResponse)
-async def get_services(request: Request, id: int):
+@app.get("/runs/latest", response_class=HTMLResponse)
+async def get_latest_run(request: Request):
+    collection = SavedRunsCollection("/workspaces/prr/examples/configured/chihuahua.yaml")    
+    id = collection.latest().id()
+    service = collection.latest().services()[0]
+
+    return render_run(id, request, collection, service.name())
+
+@app.get("/runs/{_id}/{service_name}", response_class=HTMLResponse)
+async def get_run(request: Request, _id: str, service_name: str):
     collection = SavedRunsCollection("/workspaces/prr/examples/configured/chihuahua.yaml")
-    run = collection.run(id)
-    service_names = [service.name() for service in run.services()]
 
-    args = {"request": request, "id": str(id), "services": service_names}
-    return templates.TemplateResponse("services.html", args)
+    if _id == "latest":
+      id = collection.latest().id()
+    else:
+      id = _id
+    
+    return render_run(id, request, collection, service_name)
