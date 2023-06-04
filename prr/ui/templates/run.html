@@ -14,17 +14,23 @@
 
         h1 {
           font-weight: 800;
+          padding-left: 10px;
         }
 
         h2 {
-          font-family: 'Courier New', Courier, monospace;
+          font-family: Courier;
           font-weight: 500;
+          font-size: 20px;
           background-color: rgba(0, 0, 0, 0.05);
-          padding-left: 10px;
+          color: rgba(96, 96, 96, 1);
+          text-shadow: 1px 1px 1px white;
+          padding-right: 10px;
           padding-top: 3px;
           padding-bottom: 3px;
           border-top-right-radius: 8px;
           border-bottom-right-radius: 8px;
+          margin: 0;
+          text-align: center;
         }
 
         div.prompt-text, div.completion-text {
@@ -34,6 +40,7 @@
           background-color: white;
           border-radius: 5px;
           font-size: 20px;
+          padding-left: 10px;
         }
 
         dl {
@@ -155,15 +162,15 @@
           </dl>
         </div>
         
-        <h2>📝 Prompt</h2>
+        <h2>PROMPT</h2>
         
         <div class="prompt-text">{{ prompt_content }} </div>
       
-      <h2>💬 Output</h2>
+      <h2>OUTPUT</h2>
       
       <div class="completion-text">{{ output_content }}</div>
       
-      <h2>🔍 Response details</h2> 
+      <h2>RESPONSE</h2> 
       
       <dl class="response-details">
         {% for key, value in run_details.response.items() %}
@@ -172,7 +179,7 @@
         {% endfor %}
       </dl>
       
-      <h2>📈 Stats</h2> 
+      <h2>STATS</h2> 
       
       <dl class="stats">
           {% for key, value in run_details.stats.items() %}
