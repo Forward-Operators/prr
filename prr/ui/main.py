@@ -14,7 +14,7 @@ app = FastAPI()
 
 templates = Jinja2Templates(directory="templates")
 
-# app.mount("/static", StaticFiles(directory="static"), name="static")
+app.mount("/static", StaticFiles(directory="static"), name="static")
 
 def render_args_for_run(run, service):
   return {
@@ -70,9 +70,11 @@ def render_diff(request, collection, run_id=None, service_name=None, run_id2=Non
 
     if run_id2 == None:
       run2 = collection.latest_minus_one()
+    else:
+      run2 = run_from_collection(collection, run_id2)
 
-      if run2:
-        run_id2 = run2.id()
+    if run2:
+      run_id2 = run2.id()
 
     if service_name2 == None:
       service_name2 = run2.services()[0].name()
@@ -81,7 +83,7 @@ def render_diff(request, collection, run_id=None, service_name=None, run_id2=Non
     
     args = render_args(request, collection, run, service, run2, service2)
 
-    return templates.TemplateResponse("run.html", args)
+    return templates.TemplateResponse("diff.html", args)
 
 @app.get("/", response_class=RedirectResponse)
 async def root(request: Request):
@@ -108,4 +110,4 @@ async def compare_latest(request: Request, run_id: str, service_name: str):
 async def compare(request: Request, run_id: str, service_name: str, run_id2: str, service_name2: str):
     collection = SavedRunsCollection("/workspaces/prr/examples/configured/chihuahua.yaml")
 
-    return render_diff(request, collection, run_id, service_name)
+    return render_diff(request, collection, run_id, service_name, run_id2, service_name2)

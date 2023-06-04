@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chihuahua.yaml#{{ primary.run_id }}/{{ service_name }}</title>
+    <script src="/static/diff_match_patch.js"></script>
+    <style>
+        body {
+            background-color: #F5F5F5;
+            color: #050505;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 0;
+        }
+
+        .hidden {
+          display: none;
+        }
+
+        h1 {
+          font-weight: 800;
+          padding-left: 10px;
+          margin: 0;
+        }
+
+        h2 {
+          font-family: Courier;
+          font-weight: 500;
+          font-size: 20px;
+          background-color: rgba(0, 0, 0, 0.05);
+          color: rgba(96, 96, 96, 1);
+          text-shadow: 1px 1px 1px white;
+          padding-right: 10px;
+          padding-top: 3px;
+          padding-bottom: 3px;
+          margin: 0;
+          text-align: center;
+        }
+
+        div#prompt-text, div#output-text, div#output-text-diff, div#prompt-text-diff {
+          white-space: pre-wrap;
+          font-family: 'Courier New', Courier, monospace;
+          border: 1px solid rgba(128, 128, 128, 0.2);
+          background-color: white;
+          border-radius: 5px;
+          font-size: 20px;
+          padding: 20px;
+        }
+
+        dl {
+          display: flex;
+          flex-wrap: wrap;
+          padding: 0;
+          margin: 0;
+        }
+
+        dt, dd {
+          padding: 4px 8px;
+          border-radius: 8px;
+          background-color: rgba(128, 128, 128, 0.05);
+          margin-top: 5px;
+          margin-bottom: 5px;
+        }
+
+        dt {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+          margin-right: 0;
+          margin-left: 10px;
+        }
+
+        dd {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          margin-left: 0;
+        }
+
+        dd {
+          font-weight: 600;
+        }
+
+        dd.temperature, dt.temperature {
+          background-color: rgba(0, 255, 0, 0.10);
+        }
+
+        dd.max_tokens, dt.max_tokens {
+          background-color: rgba(0, 0, 255, 0.10);
+        }
+        
+        dd.tokens_used, dt.tokens_used, dd.completion_tokens, dt.completion_tokens {
+          background-color: rgba(0, 0, 255, 0.10);
+        }
+
+        dd.stop_reason, dt.stop_reason {
+          background-color: rgba(255, 0, 0, 0.10);
+        }
+        
+        div.service-description, div.response-description {
+          display: flex;
+          justify-content: space-around;
+        }
+
+        div.service-description .service-name { 
+          font-weight: bold;
+          font-size: 21px;
+        }
+
+        div.run-list {
+          background-color: rgba(0, 0, 0, 0.05);
+          color: white;
+          width: 1%;
+          text-align: center;
+          padding-left: 4px;
+          padding-right: 4px;
+        }
+
+        div.run-list a, div.service-list a {
+          text-decoration: none;
+          color: black;
+        }
+
+        div.run-list a:hover, div.service-list a:hover {
+          text-decoration: underline;
+        }
+
+        div.run-list a.current, div.service-list a.current {
+          font-weight: bold;
+        }
+
+        div.service-list {
+          padding-left: 20px;
+          background-color: rgba(0, 0, 0, 0.05);
+          width: 100vw;
+        }
+
+        div#run-list-and-content {
+          display: flex;
+        }
+
+        div#run {
+          padding-top: 10px;
+          background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        div.run-list#secondary-run-list, div.service-list#secondary-service-list {
+          background-color: rgba(0, 0, 0, 0.15);
+          color: black;
+        }
+
+        div.run-list#secondary-run-list a, div.service-list#secondary-service-list a {
+          color: black;
+        }
+
+        div#menu {
+          width: 98%;
+          text-align: right;
+          margin: 0px;
+          padding-right: 30px;
+        }
+
+        div#service-names {
+          width: 100%;
+          display: flex;
+          font-weight: 600;
+          justify-content: space-around;
+        }
+
+        div#run-details-comparison {
+          width: 100%;
+          display: flex;
+        }
+
+        div#run-details-comparison > div, div#run-details-response-comparison > div {
+          width: 50%;
+        }
+
+        div#run-details-comparison div.model-name {
+          font-weight: 900;
+          width: 100%;
+          text-align: center;
+          margin-top: 7px;
+          margin-bottom: 7px;
+          font-size: 18px;
+        }
+
+        div#run-details-response-comparison {
+          width: 100%;
+          display: flex;
+        }
+</style>
+</head>
+<body>

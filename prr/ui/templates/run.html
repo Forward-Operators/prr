@@ -1,158 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>chihuahua.yaml#{{ primary.run_id }}/{{ service_name }}</title>
-    <style>
-        body {
-            background-color: #F5F5F5;
-            color: #050505;
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-        }
+{% include "header.html" %}
 
-        h1 {
-          font-weight: 800;
-          padding-left: 10px;
-          margin: 0;
-        }
-
-        h2 {
-          font-family: Courier;
-          font-weight: 500;
-          font-size: 20px;
-          background-color: rgba(0, 0, 0, 0.05);
-          color: rgba(96, 96, 96, 1);
-          text-shadow: 1px 1px 1px white;
-          padding-right: 10px;
-          padding-top: 3px;
-          padding-bottom: 3px;
-          margin: 0;
-          text-align: center;
-        }
-
-        div.prompt-text, div.completion-text {
-          white-space: pre-wrap;
-          font-family: 'Courier New', Courier, monospace;
-          border: 1px solid rgba(128, 128, 128, 0.2);
-          background-color: white;
-          border-radius: 5px;
-          font-size: 20px;
-          padding: 20px;
-        }
-
-        dl {
-          display: flex;
-          flex-wrap: wrap;
-          padding: 0;
-          margin: 0;
-          margin-top: 10px;
-          margin-bottom: 10px;
-        }
-
-        dt, dd {
-          padding: 4px 8px;
-          border-radius: 8px;
-          background-color: rgba(128, 128, 128, 0.05);
-          margin-top: 5px;
-          margin-bottom: 5px;
-        }
-
-        dt {
-          border-top-right-radius: 0;
-          border-bottom-right-radius: 0;
-          margin-right: 0;
-          margin-left: 10px;
-        }
-
-        dd {
-          border-top-left-radius: 0;
-          border-bottom-left-radius: 0;
-          margin-left: 0;
-        }
-
-        dd {
-          font-weight: 600;
-        }
-
-        dd.temperature, dt.temperature {
-          background-color: rgba(0, 255, 0, 0.10);
-        }
-
-        dd.max_tokens, dt.max_tokens {
-          background-color: rgba(0, 0, 255, 0.10);
-        }
-        
-        dd.tokens_used, dt.tokens_used, dd.completion_tokens, dt.completion_tokens {
-          background-color: rgba(0, 0, 255, 0.10);
-        }
-
-        dd.stop_reason, dt.stop_reason {
-          background-color: rgba(255, 0, 0, 0.10);
-        }
-        
-
-        div.service-description .service-name { 
-          font-weight: bold;
-          font-size: 21px;
-        }
-
-        div.run-list {
-          background-color: rgba(0, 0, 0, 0.05);
-          color: white;
-          width: 1%;
-          text-align: center;
-          padding-left: 4px;
-          padding-right: 4px;
-        }
-
-        div.run-list a, div.service-list a {
-          text-decoration: none;
-          color: black;
-        }
-
-        div.run-list a:hover, div.service-list a:hover {
-          text-decoration: underline;
-        }
-
-        div.run-list a.current, div.service-list a.current {
-          font-weight: bold;
-        }
-
-        div.service-list {
-          padding-left: 20px;
-          background-color: rgba(0, 0, 0, 0.05);
-          width: 100vw;
-        }
-
-        div#run-list-and-content {
-          display: flex;
-        }
-
-        div#run {
-          padding-top: 10px;
-          background-color: rgba(255, 255, 255, 0.05);
-        }
-
-        div.run-list#secondary-run-list, div.service-list#secondary-service-list {
-          background-color: rgba(0, 0, 0, 0.15);
-          color: black;
-        }
-
-        div.run-list#secondary-run-list a, div.service-list#secondary-service-list a {
-          color: black;
-        }
-
-        div#menu {
-          width: 98%;
-          text-align: right;
-          margin: 0px;
-          padding-right: 30px;
-        }
-</style>
-</head>
-<body>
   <div>
     <div class="service-list" id="primary-service-list">
       {% for _service_name in all_service_names %}
@@ -166,7 +13,6 @@
         {% endfor %}
       </div>
       <div id="run">
-        {% if not secondary %}
           <div id="menu">
             <div>
               <a href="/compare/{{ primary.run_id }}/{{ primary.service_name }}">
@@ -174,7 +20,6 @@
               </a>
             </div>
           </div>
-        {% endif %}
 
         <h1>{{ primary.prompt_file }} 🤖 {{ primary.run_details.request.model }}</h1>
 
@@ -189,13 +34,11 @@
         
         <h2>PROMPT</h2>
         
-        <div class="prompt-text">{{ primary.prompt_content }} </div>
-        <div class="prompt-text">{{ secondary.prompt_content }} </div>
+      <div id="prompt-text">{{ primary.prompt_content }} </div>
       
       <h2>OUTPUT</h2>
       
-      <div class="completion-text">{{ primary.output_content }}</div>
-      <div class="completion-text">{{ secondary.output_content }}</div>
+      <div id="output-text">{{ primary.output_content }}</div>
       
       <h2>RESPONSE</h2> 
       
@@ -209,35 +52,15 @@
       <h2>STATS</h2> 
       
       <dl class="stats">
-          {% for key, value in primary.run_details.stats.items() %}
-            <dt class="{{ key }}">{{ key }}</dt>
-            <dd class="{{ key }}">{{ value }}</dd>
-          {% endfor %}
+        {% for key, value in primary.run_details.stats.items() %}
+          <dt class="{{ key }}">{{ key }}</dt>
+          <dd class="{{ key }}">{{ value }}</dd>
+        {% endfor %}
       </dl>
       
       </div>
-
-      {% if secondary %}
-        <div class="run-list" id="secondary-run-list">
-          {% for this_run_id in all_run_ids %}
-            <a class="{{'current' if this_run_id == secondary.run_id }}" href="/compare/{{ primary.run_id}}/{{ primary.service_name }}/{{ this_run_id }}/{{ primary.service_name }}">{{ this_run_id }}</a>
-          {% endfor %}
-        </div>
-      {% endif %}
     </div>
-
-    {% if secondary %}
-    <div class="service-list" id="secondary-service-list">
-      {% for _service_name in all_service_names %}
-      <a class="{{'current' if secondary.service_name == _service_name }}" href="/compare/{{ primary.run_id }}/{{ primary.service_name }}/{{ primary.run_id }}/{{ secondary.service_name }}">{{ _service_name }}</a>
-        {% endfor %}
-      </div>
-    {% endif %}
   </div>
 
-  <script>
-      // Your JavaScript code goes here
-      console.log('Welcome to My WCAG Compliant Page');
-  </script>
-</body>
-</html>
+
+{% include "footer.html" %}

@@ -1,0 +1,131 @@
+{% include "header.html" %}
+
+<div>
+      <div class="service-list" id="primary-service-list">
+        {% for _service_name in all_service_names %}
+          <a class="{{'current' if primary.service_name == _service_name }}" href="/runs/{{ primary.run_id }}/{{ _service_name }}">{{ _service_name }}</a>
+        {% endfor %}
+      </div>
+      <div id="run-list-and-content">
+        <div class="run-list" id="primary-run-list">
+          {% for this_run_id in all_run_ids %}
+            <a class="{{'current' if this_run_id == primary.run_id }}" href="/runs/{{ this_run_id }}/{{ primary.service_name }}">{{ this_run_id }}</a>
+          {% endfor %}
+        </div>
+        <div id="run">
+          <div id="service-names">
+            <div>
+              {{ primary.service_name }}
+            </div>
+            <div>
+              {{ secondary.service_name }}
+            </div>
+          </div>
+
+          <h2>RUN COMPARISON</h2>
+
+          <div id="run-details-comparison">
+            <div id="run-details-comparison-primary">
+              <div class="model-name">{{ primary.run_details.request.model }}</div>
+              <div class="service-description">
+                <dl class="model-options">
+                  {% for key, value in primary.run_details.request.options.items() %}
+                    <dt class="{{ key }}">{{ key }}</dt>
+                    <dd class="{{ key }}">{{ value }}</dd>
+                  {% endfor %}
+                </dl>
+              </div>    
+            </div>
+            <div id="run-details-comparison-secondary">
+              <div class="model-name">{{ secondary.run_details.request.model }}</div>
+              <div class="service-description">
+                <dl class="model-options">
+                  {% for key, value in secondary.run_details.request.options.items() %}
+                    <dt class="{{ key }}">{{ key }}</dt>
+                    <dd class="{{ key }}">{{ value }}</dd>
+                  {% endfor %}
+                </dl>
+              </div>    
+            </div>
+          </div>
+
+          
+          <h2>PROMPT</h2>
+          
+          <div id="primary-prompt-text" class="hidden">{{ primary.prompt_content }} </div>
+          <div id="secondary-prompt-text" class="hidden">{{ secondary.prompt_content }} </div>
+          <div id="prompt-text-diff"></div>
+        
+          <h2>OUTPUT</h2>
+        
+          <div id="primary-output-text" class="hidden">{{ primary.output_content }} </div>
+          <div id="secondary-output-text" class="hidden">{{ secondary.output_content }} </div>
+          <div id="output-text-diff"></div>
+        
+          <h2>RESPONSE</h2> 
+        
+          <div id="run-details-response-comparison">
+            <div id="run-details-response-comparison-primary">
+              <div class="response-description">
+                <dl class="response-details">
+                  {% for key, value in primary.run_details.response.items() %}
+                    <dt class="{{ key }}">{{ key }}</dt>
+                    <dd class="{{ key }}">{{ value }}</dd>
+                  {% endfor %}
+                </dl>
+                    </div>    
+            </div>
+            <div id="run-details-response-comparison-secondary">
+              <div class="response-description">
+                <dl class="response-details">
+                  {% for key, value in secondary.run_details.response.items() %}
+                    <dt class="{{ key }}">{{ key }}</dt>
+                    <dd class="{{ key }}">{{ value }}</dd>
+                  {% endfor %}
+                </dl>
+              </div>    
+            </div>
+          </div>
+          
+          <h2>STATS</h2> 
+          
+          <dl class="stats">
+              {% for key, value in primary.run_details.stats.items() %}
+                <dt class="{{ key }}">{{ key }}</dt>
+                <dd class="{{ key }}">{{ value }}</dd>
+              {% endfor %}
+          </dl>
+          
+          </div>
+
+          <div class="run-list" id="secondary-run-list">
+            {% for this_run_id in all_run_ids %}
+              <a class="{{'current' if this_run_id == secondary.run_id }}" href="/compare/{{ primary.run_id}}/{{ primary.service_name }}/{{ this_run_id }}/{{ primary.service_name }}">{{ this_run_id }}</a>
+            {% endfor %}
+          </div>
+      </div>
+
+      <div class="service-list" id="secondary-service-list">
+        {% for _service_name in all_service_names %}
+        <a class="{{'current' if secondary.service_name == _service_name }}" href="/compare/{{ primary.run_id }}/{{ primary.service_name }}/{{ primary.run_id }}/{{ _service_name }}">{{ _service_name }}</a>
+          {% endfor %}
+        </div>
+      </div>
+
+      <script>
+        function diff(primaryID, secondaryID, outputID) {
+          var dmp = new diff_match_patch();
+          var primaryText = document.getElementById(primaryID).innerText;
+          var secondaryText = document.getElementById(secondaryID).innerText;
+
+          var d = dmp.diff_main(secondaryText, primaryText);
+          dmp.diff_cleanupSemantic(d);
+          const diff = dmp.diff_prettyHtml(d);
+          document.getElementById(outputID).innerHTML = diff;
+        }
+
+        diff('primary-prompt-text', 'secondary-prompt-text', 'prompt-text-diff')
+        diff('primary-output-text', 'secondary-output-text', 'output-text-diff')
+      </script>
+    
+  {% include "footer.html" %}
