@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chihuahua.yaml#{{ id }}/{{ service_name }}</title>
+    <style>
+        body {
+            background-color: #F5F5F5;
+            color: #050505;
+            font-family: 'Courier New', Courier, monospace;
+            margin: 2vw;
+        }
+
+        h1 {
+          font-weight: 800;
+        }
+
+        h2 {
+          font-weight: 500;
+          margin-top: 40px;
+        }
+
+        div.prompt-text, div.completion-text {
+          white-space: pre-wrap;
+          font-family: 'Courier New', Courier, monospace;
+          border: 1px solid rgba(128, 128, 128, 0.2);
+          border-radius: 5px;
+          font-size: 20px;
+        }
+
+        dl {
+          display: flex;
+          flex-wrap: wrap;
+          padding: 0;
+          margin-top: 10px;
+          margin-bottom: 10px;
+        }
+
+        dt, dd {
+          padding: 4px 8px;
+          border-radius: 25px;
+          background-color: rgba(128, 128, 128, 0.05);
+          margin-top: 5px;
+          margin-bottom: 5px;
+        }
+
+        dt {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+          margin-right: 0;
+          margin-left: 10px;
+        }
+
+        dd {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          margin-left: 0;
+        }
+
+        dd {
+          font-weight: 500;
+        }
+
+        dd.temperature, dt.temperature {
+          background-color: rgba(0, 255, 0, 0.10);
+        }
+
+        dd.max_tokens, dt.max_tokens {
+          background-color: rgba(0, 0, 255, 0.10);
+        }
+        
+        dd.tokens_used, dt.tokens_used, dd.completion_tokens, dt.completion_tokens {
+          background-color: rgba(0, 0, 255, 0.10);
+        }
+
+        dd.stop_reason, dt.stop_reason {
+          background-color: rgba(255, 0, 0, 0.10);
+        }
+        
+        div.service-description { width: 80%; }
+        .response-details { width: 80%; }
+
+        div.service-description .service-name { 
+          font-weight: bold;
+          font-size: 21px;
+        }
+    </style>
+</head>
+<body>
+    <h1>prr run #{{ id }} of chihuahua.yaml</h1>
+
+    <div class="service-description">
+      <span class="service-name">📋 {{ service_name }}</span>
+      <span class="model-name">anthropic/complete/claude-v1</span>
+
+      <dl class="model-options">
+        <dt class="max_tokens">max_tokens</dt>
+        <dd class="max_tokens">1234</dd>
+        <dt class="temperature">temperature</dt>
+        <dd class="temperature">0</dd>
+      </dl>
+    </div>
+    
+    <h2>📝 Prompt</h2>
+    
+    <div class="prompt-text">{{ prompt_content }} </div>
+
+  <h2>💬 Output</h2>
+
+  <div class="completion-text">{{ output_content }}</div>
+
+  <h2>🔍 Response details</h2> 
+
+  <pre>{{ run_details }}</pre>
+  
+  <dl class="response-details">
+    <dt class="completion_tokens">completion_tokens</dt>
+    <dd class="completion_tokens">31</dd>
+    <dt>log_id</dt>
+      <dd>b52dafa11ebc6b0385d0adf5423a412a</dd>
+    <dt>prompt_tokens</dt>
+      <dd>58</dd>
+    <dt class="stop_reason">stop_reason</dt>
+      <dd class="stop_reason">stop_sequence
+    <dt class="tokens_used">tokens_used</dt>
+      <dd class="tokens_used">89</dd>
+    <dt>total_tokens</dt>
+      <dd>89</dd>
+    <dt>truncated</dt>
+      <dd>false</dd>
+  </dl>
+
+  <h2>📈 Stats</h2> 
+  
+  <dl>
+    <dt>elapsed_time</dt>
+    <dd>1.30</dd>
+    <dt>start_time</dt>
+    <dd>2023-05-28 12:34:56.213</dd>
+    <dt>end_time</dt>
+    <dd>2023-05-28 12:34:57.513</dd>
+  </dl>
+
+
+    <script>
+        // Your JavaScript code goes here
+        console.log('Welcome to My WCAG Compliant Page');
+    </script>
+</body>
+</html>

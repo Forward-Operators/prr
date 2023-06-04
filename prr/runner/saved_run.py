@@ -28,6 +28,9 @@ class SavedServiceRun:
   def run_details_content(self):
     return self.read_file(["run.yaml"])
 
+
+
+
 class SavedRun:
   def __init__(self, run_subdir_path):
     self.run_subdir_path = run_subdir_path
@@ -39,6 +42,10 @@ class SavedRun:
   def id(self):
     return os.path.basename(self.run_subdir_path)
 
+  def service(self, service_name):
+    service_subdir = os.path.join(self.run_subdir_path, service_name)
+    return SavedServiceRun(service_subdir)
+
 
 class SavedRunsCollection:
   def __init__(self, runs_directory_path):
@@ -49,7 +56,6 @@ class SavedRunsCollection:
       directory = os.path.dirname(runs_directory_path)
       base = os.path.basename(runs_directory_path)
       base_name, extension = os.path.splitext(base)
-      directory = os.path.dirname(runs_directory_path)
       runs_directory_path = os.path.join(directory, base_name)
 
     if runs_directory_path.endswith('.runs'):
@@ -60,4 +66,9 @@ class SavedRunsCollection:
   def all(self):
     run_subdirs = os.listdir(self.runs_directory_path)
 
+    run_subdirs = sorted(run_subdirs, key=int)
+
     return [SavedRun(os.path.join(self.runs_directory_path, run_subdir)) for run_subdir in run_subdirs]
+
+  def run(self, run_id):
+    return SavedRun(os.path.join(self.runs_directory_path, str(int(run_id))))
