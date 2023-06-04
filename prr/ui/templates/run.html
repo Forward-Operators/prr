@@ -9,7 +9,6 @@
             background-color: #F5F5F5;
             color: #050505;
             font-family: 'Courier New', Courier, monospace;
-            margin: 2vw;
         }
 
         h1 {
@@ -85,67 +84,104 @@
           font-weight: bold;
           font-size: 21px;
         }
-    </style>
+
+        div#run-list {
+          background-color: rgba(0, 255, 0, 0.3);
+          color: white;
+          width: 1%;
+          text-align: center;
+        }
+
+        div#service-list {
+          background-color: rgba(128, 0, 128, 0.3);
+          width: 100vw;
+        }
+
+        div#run-list-and-content {
+          display: flex;
+          background-color: yellow;
+        }
+</style>
 </head>
 <body>
-    <h1>prr run #{{ id }} of chihuahua.yaml</h1>
-
-    <div class="service-description">
-      <span class="service-name">📋 {{ service_name }}</span>
-      <span class="model-name">anthropic/complete/claude-v1</span>
-
-      <dl class="model-options">
-        <dt class="max_tokens">max_tokens</dt>
-        <dd class="max_tokens">1234</dd>
-        <dt class="temperature">temperature</dt>
-        <dd class="temperature">0</dd>
-      </dl>
+  <div>
+    <div id="service-list">
+      {% for service_name in all_service_names %}
+        <span>
+          <a href="/runs/{{ id }}/{{ service_name }}">{{ service_name }}</a>
+        </span>
+      {% endfor %}
     </div>
-    
-    <h2>📝 Prompt</h2>
-    
-    <div class="prompt-text">{{ prompt_content }} </div>
+    <div id="run-list-and-content">
+      <div id="run-list">
+        {% for run_id in all_run_ids %}
+          <div>
+            <a href="/runs/{{ run_id }}/{{ service_name }}">{{ run_id }}</a>
+          </div>
+        {% endfor %}
+      </div>
+      <div id="run">
+        <h1>prr run #{{ id }} of chihuahua.yaml</h1>
 
-  <h2>💬 Output</h2>
+        <div class="service-description">
+          <span class="service-name">📋 {{ service_name }}</span>
+          <span class="model-name">anthropic/complete/claude-v1</span>
+      
+          <dl class="model-options">
+            <dt class="max_tokens">max_tokens</dt>
+            <dd class="max_tokens">1234</dd>
+            <dt class="temperature">temperature</dt>
+            <dd class="temperature">0</dd>
+          </dl>
+        </div>
+        
+        <h2>📝 Prompt</h2>
+        
+        <div class="prompt-text">{{ prompt_content }} </div>
+      
+      <h2>💬 Output</h2>
+      
+      <div class="completion-text">{{ output_content }}</div>
+      
+      <h2>🔍 Response details</h2> 
+      
+      <pre>{{ run_details }}</pre>
+      
+      <dl class="response-details">
+        <dt class="completion_tokens">completion_tokens</dt>
+        <dd class="completion_tokens">31</dd>
+        <dt>log_id</dt>
+          <dd>b52dafa11ebc6b0385d0adf5423a412a</dd>
+        <dt>prompt_tokens</dt>
+          <dd>58</dd>
+        <dt class="stop_reason">stop_reason</dt>
+          <dd class="stop_reason">stop_sequence
+        <dt class="tokens_used">tokens_used</dt>
+          <dd class="tokens_used">89</dd>
+        <dt>total_tokens</dt>
+          <dd>89</dd>
+        <dt>truncated</dt>
+          <dd>false</dd>
+      </dl>
+      
+      <h2>📈 Stats</h2> 
+      
+      <dl>
+        <dt>elapsed_time</dt>
+        <dd>1.30</dd>
+        <dt>start_time</dt>
+        <dd>2023-05-28 12:34:56.213</dd>
+        <dt>end_time</dt>
+        <dd>2023-05-28 12:34:57.513</dd>
+      </dl>
+      
+      </div>
+    </div>
+  </div>
 
-  <div class="completion-text">{{ output_content }}</div>
-
-  <h2>🔍 Response details</h2> 
-
-  <pre>{{ run_details }}</pre>
-  
-  <dl class="response-details">
-    <dt class="completion_tokens">completion_tokens</dt>
-    <dd class="completion_tokens">31</dd>
-    <dt>log_id</dt>
-      <dd>b52dafa11ebc6b0385d0adf5423a412a</dd>
-    <dt>prompt_tokens</dt>
-      <dd>58</dd>
-    <dt class="stop_reason">stop_reason</dt>
-      <dd class="stop_reason">stop_sequence
-    <dt class="tokens_used">tokens_used</dt>
-      <dd class="tokens_used">89</dd>
-    <dt>total_tokens</dt>
-      <dd>89</dd>
-    <dt>truncated</dt>
-      <dd>false</dd>
-  </dl>
-
-  <h2>📈 Stats</h2> 
-  
-  <dl>
-    <dt>elapsed_time</dt>
-    <dd>1.30</dd>
-    <dt>start_time</dt>
-    <dd>2023-05-28 12:34:56.213</dd>
-    <dt>end_time</dt>
-    <dd>2023-05-28 12:34:57.513</dd>
-  </dl>
-
-
-    <script>
-        // Your JavaScript code goes here
-        console.log('Welcome to My WCAG Compliant Page');
-    </script>
+  <script>
+      // Your JavaScript code goes here
+      console.log('Welcome to My WCAG Compliant Page');
+  </script>
 </body>
 </html>

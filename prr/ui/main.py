@@ -34,6 +34,8 @@ async def get_run(request: Request, id: int, service_name: str):
     collection = SavedRunsCollection("/workspaces/prr/examples/configured/chihuahua.yaml")
     run = collection.run(id)
     service = run.service(service_name)
+    all_run_ids = [_run.id() for _run in collection.all()]
+    all_service_names = [_service.name() for _service in run.services()]
 
     args = {
       "request": request, 
@@ -43,6 +45,8 @@ async def get_run(request: Request, id: int, service_name: str):
       "prompt_content": service.prompt_content(),
       "output_content": service.prompt_content(),
       "run_details": service.run_details(),
+      "all_run_ids": sorted(all_run_ids, key=int, reverse=True),
+      "all_service_names": all_service_names
     }
 
     return templates.TemplateResponse("run.html", args)
