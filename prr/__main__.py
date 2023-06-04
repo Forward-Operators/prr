@@ -6,6 +6,7 @@ import sys
 
 from prr.commands.run import RunPromptCommand
 from prr.commands.watch import WatchPromptCommand
+from prr.commands.export import ExportPromptCommand
 from prr.prompt.model_options import ModelOptions
 from prr.utils.config import load_config
 
@@ -29,6 +30,9 @@ def main():
     )
     script_parser = sub_parsers.add_parser(
         "script", help="prompt script mode for use with #!/usr/bin/prr"
+    )
+    export_parser = sub_parsers.add_parser(
+        "export", help="export run to an html file"
     )
 
     def add_common_args(_parser):
@@ -89,11 +93,16 @@ def main():
             action="store_true",
             default=False,
         )
+
         _parser.add_argument("prompt_path", help="Path to prompt to run")
 
     add_common_args(run_parser)
     add_common_args(watch_parser)
     add_common_args(script_parser)
+
+    export_parser.add_argument(
+        "prompt_path", help="Path to prompt to export"
+    )
 
     watch_parser.add_argument(
         "--cooldown", "-c", type=int, help="How much to wait after a re-run", default=5
@@ -115,6 +124,10 @@ def main():
     if parsed_args["command"] == "watch":
         command = WatchPromptCommand(parsed_args)
         command.watch_prompt()
+
+    if parsed_args["command"] == "export":
+        command = ExportPromptCommand(parsed_args)
+        command.export_prompt()
 
 
 if __name__ == "__main__":

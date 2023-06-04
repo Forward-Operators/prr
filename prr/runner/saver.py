@@ -70,7 +70,7 @@ class PromptRunSaver:
                     yaml.dump(prompt_content, f, default_flow_style=False)
 
     def save_completion(self, run_directory, response):
-        completion_file = os.path.join(run_directory, f"completion")
+        completion_file = os.path.join(run_directory, f"output")
 
         with open(completion_file, "w") as f:
             f.write(response.response_content)
