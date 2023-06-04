@@ -73,5 +73,12 @@ class SavedRunsCollection:
   def latest(self):
     return self.all()[-1]
 
+  def latest_minus_one(self):
+    if len(self.all()) > 1:
+      return self.all()[-2]
+    
+    return None
+
   def run(self, run_id):
-    return SavedRun(os.path.join(self.runs_directory_path, str(int(run_id))))
+    print("------------ RUN_ID", run_id)
+    return SavedRun(os.path.join(self.runs_directory_path, run_id))

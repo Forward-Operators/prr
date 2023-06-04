@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>chihuahua.yaml#{{ id }}/{{ service_name }}</title>
+    <title>chihuahua.yaml#{{ primary.run_id }}/{{ service_name }}</title>
     <style>
         body {
             background-color: #F5F5F5;
@@ -28,8 +28,6 @@
           padding-right: 10px;
           padding-top: 3px;
           padding-bottom: 3px;
-          border-top-right-radius: 8px;
-          border-bottom-right-radius: 8px;
           margin: 0;
           text-align: center;
         }
@@ -100,7 +98,7 @@
           font-size: 21px;
         }
 
-        div#run-list {
+        div.run-list {
           background-color: rgba(0, 0, 0, 0.05);
           color: white;
           width: 1%;
@@ -109,20 +107,20 @@
           padding-right: 4px;
         }
 
-        div#run-list a, div#service-list a {
+        div.run-list a, div.service-list a {
           text-decoration: none;
           color: black;
         }
 
-        div#run-list a:hover, div#service-list a:hover {
+        div.run-list a:hover, div.service-list a:hover {
           text-decoration: underline;
         }
 
-        div#run-list a.current, div#service-list a.current {
+        div.run-list a.current, div.service-list a.current {
           font-weight: bold;
         }
 
-        div#service-list {
+        div.service-list {
           padding-left: 20px;
           background-color: rgba(0, 0, 0, 0.05);
           width: 100vw;
@@ -136,27 +134,53 @@
           padding-top: 10px;
           background-color: rgba(255, 255, 255, 0.05);
         }
+
+        div.run-list#secondary-run-list, div.service-list#secondary-service-list {
+          background-color: rgba(0, 0, 0, 0.15);
+          color: black;
+        }
+
+        div.run-list#secondary-run-list a, div.service-list#secondary-service-list a {
+          color: black;
+        }
+
+        div#menu {
+          width: 98%;
+          text-align: right;
+          margin: 0px;
+          padding-right: 30px;
+        }
 </style>
 </head>
 <body>
   <div>
-    <div id="service-list">
+    <div class="service-list" id="primary-service-list">
       {% for _service_name in all_service_names %}
-        <a class="{{'current' if service_name == _service_name }}" href="/runs/{{ id }}/{{ _service_name }}">{{ _service_name }}</a>
+        <a class="{{'current' if primary.service_name == _service_name }}" href="/runs/{{ primary.run_id }}/{{ _service_name }}">{{ _service_name }}</a>
       {% endfor %}
     </div>
     <div id="run-list-and-content">
-      <div id="run-list">
-        {% for run_id in all_run_ids %}
-          <a class="{{'current' if run_id == id }}" href="/runs/{{ run_id }}/{{ service_name }}">{{ run_id }}</a>
+      <div class="run-list" id="primary-run-list">
+        {% for this_run_id in all_run_ids %}
+          <a class="{{'current' if this_run_id == primary.run_id }}" href="/runs/{{ this_run_id }}/{{ primary.service_name }}">{{ this_run_id }}</a>
         {% endfor %}
       </div>
       <div id="run">
-        <h1>{{ prompt_file }} 🤖 {{ run_details.request.model }}</h1>
+        {% if not secondary %}
+          <div id="menu">
+            <div>
+              <a href="/compare/{{ primary.run_id }}/{{ primary.service_name }}">
+                Compare
+              </a>
+            </div>
+          </div>
+        {% endif %}
+
+        <h1>{{ primary.prompt_file }} 🤖 {{ primary.run_details.request.model }}</h1>
 
         <div class="service-description">
           <dl class="model-options">
-            {% for key, value in run_details.request.options.items() %}
+            {% for key, value in primary.run_details.request.options.items() %}
               <dt class="{{ key }}">{{ key }}</dt>
               <dd class="{{ key }}">{{ value }}</dd>
             {% endfor %}
@@ -165,16 +189,18 @@
         
         <h2>PROMPT</h2>
         
-        <div class="prompt-text">{{ prompt_content }} </div>
+        <div class="prompt-text">{{ primary.prompt_content }} </div>
+        <div class="prompt-text">{{ secondary.prompt_content }} </div>
       
       <h2>OUTPUT</h2>
       
-      <div class="completion-text">{{ output_content }}</div>
+      <div class="completion-text">{{ primary.output_content }}</div>
+      <div class="completion-text">{{ secondary.output_content }}</div>
       
       <h2>RESPONSE</h2> 
       
       <dl class="response-details">
-        {% for key, value in run_details.response.items() %}
+        {% for key, value in primary.run_details.response.items() %}
           <dt class="{{ key }}">{{ key }}</dt>
           <dd class="{{ key }}">{{ value }}</dd>
         {% endfor %}
@@ -183,14 +209,30 @@
       <h2>STATS</h2> 
       
       <dl class="stats">
-          {% for key, value in run_details.stats.items() %}
+          {% for key, value in primary.run_details.stats.items() %}
             <dt class="{{ key }}">{{ key }}</dt>
             <dd class="{{ key }}">{{ value }}</dd>
           {% endfor %}
       </dl>
       
       </div>
+
+      {% if secondary %}
+        <div class="run-list" id="secondary-run-list">
+          {% for this_run_id in all_run_ids %}
+            <a class="{{'current' if this_run_id == secondary.run_id }}" href="/compare/{{ primary.run_id}}/{{ primary.service_name }}/{{ this_run_id }}/{{ primary.service_name }}">{{ this_run_id }}</a>
+          {% endfor %}
+        </div>
+      {% endif %}
     </div>
+
+    {% if secondary %}
+    <div class="service-list" id="secondary-service-list">
+      {% for _service_name in all_service_names %}
+      <a class="{{'current' if secondary.service_name == _service_name }}" href="/compare/{{ primary.run_id }}/{{ primary.service_name }}/{{ primary.run_id }}/{{ secondary.service_name }}">{{ _service_name }}</a>
+        {% endfor %}
+      </div>
+    {% endif %}
   </div>
 
   <script>
