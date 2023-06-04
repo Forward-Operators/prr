@@ -33,7 +33,7 @@ def render_run(id, request, collection, service_name=None):
       "service_name": service_name, 
       "service": service,
       "prompt_content": service.prompt_content(),
-      "output_content": service.prompt_content(),
+      "output_content": service.output_content(),
       "run_details": service.run_details(),
       "all_run_ids": sorted(all_run_ids, key=int, reverse=True),
       "all_service_names": all_service_names,
