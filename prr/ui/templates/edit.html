@@ -1,0 +1,77 @@
+{% include "_header.html" %}
+<div id="main">
+  {% include "_menu.html" %}
+
+  <div class="file-list">
+    {% for file_id, file in files.items() %}
+      <div class="{{'current' if file_id == current_file_id }}">
+        <a href="/edit/{{ file_id }}">{{ file.name }}</a>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    window.editor_contents = {{ file_content|tojson }};
+
+    function onEdit() {
+
+      var editor = monaco.editor.getModels()[0];
+      // console.log('onEdit editor', editor)
+      var config = editor.getValue();
+
+      if (window.editor_contents == config) {
+        return;
+      }
+
+      // console.log(config)
+      // var configJson = JSON.parse(config);
+      // console.log('onEdit configJson', configJson)
+      // var configYaml = jsyaml.dump(configJson);
+      // console.log('onEdit configYaml', configYaml)
+      // document.getElementById('config').value = configYaml;
+
+      fetch('/edit/{{ current_file_id }}', {
+        method: 'POST', // Specify the method
+        headers: {
+          'Content-Type': 'application/json' // Set the data type
+        },
+        body: JSON.stringify({
+          content: config
+        })
+      })
+      .then(response => response.json()) // Parse the response as JSON
+      .then(data => {
+          console.log('Success:', data); // Log the response data
+      })
+      .catch((error) => {
+          console.error('Error:', error); // Log any errors
+      });
+    }
+  </script>
+
+  <div 
+    id="editor" 
+    style="width: 100vw;height: 100vh;resize: vertical;overflow: auto"
+  ></div>
+
+  <script src="/static/monaco-editor/min/vs/loader.js"></script>
+  <script>
+    require.config({ paths: { vs: '/static/monaco-editor/min/vs' } });
+    require(['vs/editor/editor.main'], function () {
+      var editor = monaco.editor.create(document.getElementById('editor'), {
+        value: {{ file_content|tojson }},
+        language: 'yaml',
+        minimap: {
+          enabled: false,
+        },
+        automaticLayout: true,
+        fontSize: "18px",
+        theme: 'vs-dark'
+      });
+    });
+
+    setInterval(onEdit, 2000);
+
+  </script>
+</div>
+{% include "_footer.html" %}

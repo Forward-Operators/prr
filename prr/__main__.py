@@ -6,12 +6,15 @@ import sys
 
 from prr.commands.run import RunPromptCommand
 from prr.commands.watch import WatchPromptCommand
+from prr.commands.ui import UIPromptCommand
 from prr.prompt.model_options import ModelOptions
 from prr.utils.config import load_config
 
 config = load_config()
 
-
+def check_if_prompt_exists(prompt_path):
+    return os.path.exists(prompt_path) or os.path.exists(prompt_path + ".yaml")
+    
 def main():
     parser = argparse.ArgumentParser(
         description="Run a prompt against configured models.",
@@ -29,6 +32,9 @@ def main():
     )
     script_parser = sub_parsers.add_parser(
         "script", help="prompt script mode for use with #!/usr/bin/prr"
+    )
+    ui_parser = sub_parsers.add_parser(
+        "ui", help="launch a web UI to analyze saved runs"
     )
 
     def add_common_args(_parser):
@@ -89,11 +95,16 @@ def main():
             action="store_true",
             default=False,
         )
+
         _parser.add_argument("prompt_path", help="Path to prompt to run")
 
     add_common_args(run_parser)
     add_common_args(watch_parser)
     add_common_args(script_parser)
+
+    ui_parser.add_argument(
+        "prompt_path", help="Path to prompt to analyze"
+    )
 
     watch_parser.add_argument(
         "--cooldown", "-c", type=int, help="How much to wait after a re-run", default=5
@@ -102,9 +113,17 @@ def main():
     args, prompt_args = parser.parse_known_args()
     parsed_args = vars(args)
 
+    if parsed_args["command"] == "ui":
+        command = UIPromptCommand(parsed_args)
+        command.start()
+
+    if not check_if_prompt_exists(parsed_args["prompt_path"]):
+        raise Exception(f"Prompt file {parsed_args['prompt_path']} does not exist")
+
     if parsed_args["command"] == "script":
         parsed_args["quiet"] = True
         parsed_args["abbrev"] = False
+
         command = RunPromptCommand(parsed_args, prompt_args)
         command.run_prompt()
 
@@ -115,6 +134,7 @@ def main():
     if parsed_args["command"] == "watch":
         command = WatchPromptCommand(parsed_args, prompt_args)
         command.watch_prompt()
+
 
 
 if __name__ == "__main__":

@@ -1,21 +1,8 @@
 version: 1
 prompt:
-  # more advanced prompt definition. 
-  # you can use either one of the two options
-  #  - content_file
-  #  - messages
-  # 
-  # using content_file will make prr read the content
-  # of that template and render it into simple text to use.
-  # content_file: '_long_prompt_about_chihuahua'
-  #
-  # using 'messages' key instead give you finer control
-  # over what messages are sent with what roles.
-  # this mimics https://platform.openai.com/docs/guides/chat
-  # structures currently
   messages:
     - role: 'system'
-      content: 'You, Henry, are a little Chihuahua dog. That is all you need to know.'
+      content: 'You are store assistant.'
     - role: 'assistant'
       content: 'What the hell is goin on?'
       name: 'Henry'

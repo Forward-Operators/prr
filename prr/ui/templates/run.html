@@ -1,0 +1,67 @@
+{% include "_header.html" %}
+
+{% from "_run_helpers.html" import primary_service_list with context %}
+{% from "_run_helpers.html" import primary_run_list with context %}
+{% from "_run_helpers.html" import render_request_table with context %}
+{% from "_run_helpers.html" import render_response_table with context %}
+{% from "_run_helpers.html" import render_response_stats_table with context %}
+
+<div id="main">
+  {{ primary_service_list(all_service_names, run.service_name, run.run_id) }}
+
+  <div id="run-list-and-content">
+
+    {{ primary_run_list(all_runs, run.service_name, run.run_id) }}
+
+    <div id="run">
+      {% include "_menu.html" %}
+
+      {% if run.state == 'in-progress' %}
+        <div id="full-screen-error-message">
+          <h2>
+            this run is still in progress...
+          </h2>
+        </div>
+      {% else %}
+        <h2>PROMPT RUN REPORT</h2>
+
+        <div class="section-wrapper">
+          <section>
+            {{ render_request_table(run) }}
+          </section>
+        </div>
+
+        <h2>STATS</h2>
+
+        <div class="section-wrapper">
+          <section>
+            {{ render_response_stats_table(run) }}
+          </section>
+        </div>  
+  
+        <h2>PROMPT</h2>
+        
+        <div class="text-container">
+          <div id="primary-prompt-text">{{ run.prompt_content }}</div>
+        </div>
+      
+        <h2>OUTPUT</h2>
+      
+        <div class="text-container">
+          <div id="primary-output-text">{{ run.output_content }}</div>
+        </div>
+      
+        {% if run.run_details %}
+          <h2>RESPONSE DETAILS</h2> 
+        
+          <div class="section-wrapper">
+            <section>
+              {{ render_response_table(run.run_details.response) }}
+            </section>      
+          </div>
+        {% endif %}  
+      {% endif %}  
+    </div>
+</div>
+
+{% include "_footer.html" %}

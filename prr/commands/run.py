@@ -105,7 +105,16 @@ class RunPromptCommand:
             self.print_prompt(request)
 
             status.update(status="running model", spinner="dots8Bit")
-            result, run_save_directory = self.runner.run(service_name, save)
+
+            if save:
+              self.runner.run_collection.mark_run_as_in_progress()
+
+            result, run_save_directory = self.runner.run_service(
+                service_name, self.args, save, False
+            )
+
+            if save:
+              self.runner.run_collection.mark_run_as_done()
 
             self.print_run_results(result, run_save_directory)
 

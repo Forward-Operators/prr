@@ -1,0 +1,21 @@
+{% include "_header.html" %}
+
+<div id="main">
+  {{ primary_service_list(all_service_names, run.service_name, run.run_id ) }}
+
+  <div id="run-list-and-content">
+
+  {{ primary_run_list(all_runs, run.service_name, run.run_id) }}
+
+  <div id="run">
+    {% include "_menu.html" %}
+
+    <div id="full-screen-error-message">
+      <h2>
+        {{ error_message }}
+      </h2>
+    </div>
+  </div>
+</div>
+
+{% include "_footer.html" %}

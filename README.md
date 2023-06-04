@@ -494,6 +494,10 @@ We'd love your help in making Prr even better! To contribute, please follow thes
 $ pytest
 ```
 
+## Acknowledgements
+
+We're using [https://github.com/google/diff-match-patch](https://github.com/google/diff-match-patch) library.
+
 ## License
 
 **prr** - Prompt Runner is released under the [MIT License](/LICENSE).

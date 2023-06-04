@@ -1,7 +1,7 @@
 import os
 
 import jinja2
-
+from jinja2 import meta
 
 class PromptMessage:
     def __init__(
