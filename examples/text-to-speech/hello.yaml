@@ -5,4 +5,6 @@ services:
   models:
     - 'elevenlabs/tts/eleven_monolingual_v1'
   options:
+    # voice-id or voice name
+    # voice: "jcdui923190dijsc"
     voice: "Rachel"
