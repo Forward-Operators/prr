@@ -1,66 +1,61 @@
 {% include "header.html" %}
 
-  <div>
-    <div class="service-list" id="primary-service-list">
-      {% for _service_name in all_service_names %}
-        <a class="{{'current' if primary.service_name == _service_name }}" href="/runs/{{ primary.run_id }}/{{ _service_name }}">{{ _service_name }}</a>
+{% from "header.html" import render_pills with context %}
+
+<div>
+  <div class="service-list" id="primary-service-list">
+    {% for _service_name in all_service_names %}
+      <a class="{{'current' if primary.service_name == _service_name }}" href="/runs/{{ primary.run_id }}/{{ _service_name }}">{{ _service_name }}</a>
+    {% endfor %}
+  </div>
+  <div id="run-list-and-content">
+    <div class="run-list" id="primary-run-list">
+      {% for this_run_id in all_run_ids %}
+        <a class="{{'current' if this_run_id == primary.run_id }}" href="/runs/{{ this_run_id }}/{{ primary.service_name }}">{{ this_run_id }}</a>
       {% endfor %}
     </div>
-    <div id="run-list-and-content">
-      <div class="run-list" id="primary-run-list">
-        {% for this_run_id in all_run_ids %}
-          <a class="{{'current' if this_run_id == primary.run_id }}" href="/runs/{{ this_run_id }}/{{ primary.service_name }}">{{ this_run_id }}</a>
-        {% endfor %}
+    <div id="run">
+      <div id="menu">
+        <a href="/compare/{{ primary.run_id }}/{{ primary.service_name }}">
+          Compare &raquo;
+        </a>
       </div>
-      <div id="run">
-          <div id="menu">
-            <div>
-              <a href="/compare/{{ primary.run_id }}/{{ primary.service_name }}">
-                Compare
-              </a>
-            </div>
-          </div>
 
-        <h1>{{ primary.prompt_file }} 🤖 {{ primary.run_details.request.model }}</h1>
+      <h2>PROMPT RUN REPORT</h2>
 
-        <div class="service-description">
-          <dl class="model-options">
-            {% for key, value in primary.run_details.request.options.items() %}
-              <dt class="{{ key }}">{{ key }}</dt>
-              <dd class="{{ key }}">{{ value }}</dd>
-            {% endfor %}
-          </dl>
+      <section>
+        <div class="service-name">
+          {{ primary.service_name }}
         </div>
-        
-        <h2>PROMPT</h2>
-        
-      <div id="prompt-text">{{ primary.prompt_content }} </div>
+        <div class="model-name">{{ primary.run_details.request.model }}</div>
+        <div class="service-description">
+          {{ render_pills(primary.run_details.request.options.items()) }}
+        </div>    
+      </section>
+
       
+      <h2>PROMPT</h2>
+      
+      <div id="primary-prompt-text">{{ primary.prompt_content }} </div>
+    
       <h2>OUTPUT</h2>
-      
-      <div id="output-text">{{ primary.output_content }}</div>
-      
+    
+      <div id="primary-output-text">{{ primary.output_content }} </div>
+    
       <h2>RESPONSE</h2> 
-      
-      <dl class="response-details">
-        {% for key, value in primary.run_details.response.items() %}
-          <dt class="{{ key }}">{{ key }}</dt>
-          <dd class="{{ key }}">{{ value }}</dd>
-        {% endfor %}
-      </dl>
+    
+      <section>
+        <div class="response-description">
+          {{ render_pills(primary.run_details.response.items()) }}
+        </div>
+      </section>
       
       <h2>STATS</h2> 
       
-      <dl class="stats">
-        {% for key, value in primary.run_details.stats.items() %}
-          <dt class="{{ key }}">{{ key }}</dt>
-          <dd class="{{ key }}">{{ value }}</dd>
-        {% endfor %}
-      </dl>
+      <section id="stats">
+        {{ render_pills(primary.run_details.stats.items()) }}
+      </section>
       
-      </div>
     </div>
-  </div>
-
-
-{% include "footer.html" %}
+</div>
+{% include "footer.html" %}          

@@ -6,11 +6,14 @@
     <title>chihuahua.yaml#{{ primary.run_id }}/{{ service_name }}</title>
     <script src="/static/diff_match_patch.js"></script>
     <style>
+        html { height: 100%; }
+
         body {
-            background-color: #F5F5F5;
             color: #050505;
+            background-color: rgba(255, 255, 255, 0.05);
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
+            height: 100%;
         }
 
         .hidden {
@@ -29,80 +32,73 @@
           font-size: 20px;
           background-color: rgba(0, 0, 0, 0.05);
           color: rgba(96, 96, 96, 1);
-          text-shadow: 1px 1px 1px white;
           padding-right: 10px;
-          padding-top: 3px;
           padding-bottom: 3px;
+          padding-top: 22px;
+          padding-bottom: 10px;
           margin: 0;
           text-align: center;
         }
 
-        div#prompt-text, div#output-text, div#output-text-diff, div#prompt-text-diff {
+        section {
+          padding-top: 5px;
+          background-color: rgba(0, 0, 0, 0.05);
+        }
+
+        div#primary-prompt-text, div#primary-output-text, div#output-text-diff, div#prompt-text-diff {
           white-space: pre-wrap;
           font-family: 'Courier New', Courier, monospace;
-          border: 1px solid rgba(128, 128, 128, 0.2);
+          box-shadow: 0px 1px rgba(128, 128, 128, 0.2);
           background-color: white;
-          border-radius: 5px;
           font-size: 20px;
           padding: 20px;
+          width: 95%;
         }
 
-        dl {
+        div.pills {
           display: flex;
           flex-wrap: wrap;
-          padding: 0;
-          margin: 0;
+          justify-content: center;
         }
 
-        dt, dd {
-          padding: 4px 8px;
-          border-radius: 8px;
-          background-color: rgba(128, 128, 128, 0.05);
-          margin-top: 5px;
-          margin-bottom: 5px;
+        div.pill {
+          margin: 3px;
+          border-radius: 3px;
+          padding-left: 4px;
+          padding-right: 4px;
+          background-color: rgba(255, 255, 255, 0.4);
+          height: 21px;
+          justify-items: center;
         }
 
-        dt {
-          border-top-right-radius: 0;
-          border-bottom-right-radius: 0;
-          margin-right: 0;
-          margin-left: 10px;
+        div.pill .key {
+          float: left;
         }
 
-        dd {
-          border-top-left-radius: 0;
-          border-bottom-left-radius: 0;
-          margin-left: 0;
+        div.pill .value {
+          font-weight: bold;
+          margin-left: 2px;
         }
 
-        dd {
-          font-weight: 600;
+        div.pill.temperature {
+          background-color: rgba(0, 255, 0, 0.15);
         }
 
-        dd.temperature, dt.temperature {
-          background-color: rgba(0, 255, 0, 0.10);
-        }
-
-        dd.max_tokens, dt.max_tokens {
-          background-color: rgba(0, 0, 255, 0.10);
+        div.pill.max_tokens {
+          background-color: rgba(0, 0, 255, 0.15);
         }
         
-        dd.tokens_used, dt.tokens_used, dd.completion_tokens, dt.completion_tokens {
-          background-color: rgba(0, 0, 255, 0.10);
+        div.pill.tokens_used, div.pill.completion_tokens, div.pill.prompt_tokens, div.pill.total_tokens {
+          background-color: rgba(0, 0, 255, 0.15);
         }
 
-        dd.stop_reason, dt.stop_reason {
-          background-color: rgba(255, 0, 0, 0.10);
+        div.pill.stop_reason, div.pill.truncated {
+          background-color: rgba(255, 0, 0, 0.15);
         }
-        
+
         div.service-description, div.response-description {
           display: flex;
           justify-content: space-around;
-        }
-
-        div.service-description .service-name { 
-          font-weight: bold;
-          font-size: 21px;
         }
 
         div.run-list {
@@ -129,17 +125,18 @@
 
         div.service-list {
           padding-left: 20px;
-          background-color: rgba(0, 0, 0, 0.05);
+          background-color: rgba(0, 0, 0, 0.1);
           width: 100vw;
         }
 
         div#run-list-and-content {
           display: flex;
+          background-color: rgba(0, 0, 0, 0.05);
         }
 
         div#run {
-          padding-top: 10px;
           background-color: rgba(255, 255, 255, 0.05);
+          width: 100%;
         }
 
         div.run-list#secondary-run-list, div.service-list#secondary-service-list {
@@ -151,31 +148,40 @@
           color: black;
         }
 
+        div.service-list#secondary-service-list {
+          position: fixed;
+          bottom: 0;
+          left: 0;
+        }
+
         div#menu {
           width: 98%;
           text-align: right;
           margin: 0px;
           padding-right: 30px;
+          background-color: rgba(0, 0, 0, 0.05);
         }
 
-        div#service-names {
+        div#menu a {
+          text-decoration: none;
+        }
+
+        div#menu a:hover {
+          text-decoration: underline;
+        }
+
+        div.run-comparison {
           width: 100%;
           display: flex;
-          font-weight: 600;
           justify-content: space-around;
         }
 
-        div#run-details-comparison {
-          width: 100%;
-          display: flex;
+        div.run-comparison > div {
+          width: 45%;
         }
 
-        div#run-details-comparison > div, div#run-details-response-comparison > div {
-          width: 50%;
-        }
-
-        div#run-details-comparison div.model-name {
-          font-weight: 900;
+        div.model-name, div.service-name {
+          font-weight: 500;
           width: 100%;
           text-align: center;
           margin-top: 7px;
@@ -183,10 +189,25 @@
           font-size: 18px;
         }
 
-        div#run-details-response-comparison {
-          width: 100%;
-          display: flex;
+        div.service-name { 
+          font-weight: bold;
+          font-size: 21px;
+        }
+
+        section#stats {
+          padding-bottom: 30px;
         }
 </style>
 </head>
 <body>
+
+{% macro render_pills(items) %}
+  <div class="pills">
+    {% for key, value in items %}
+      <div class="pill {{ key }}">
+        <span class="key">{{ key }}</span>
+        <span class="value">{{ value }}</span>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
