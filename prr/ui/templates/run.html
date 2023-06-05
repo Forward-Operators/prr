@@ -1,19 +1,17 @@
-{% include "header.html" %}
+{% include "_header.html" %}
 
-{% from "header.html" import render_pills with context %}
+{% from "_header.html" import render_pills with context %}
+{% from "_header.html" import primary_service_list with context %}
+{% from "_header.html" import primary_run_list with context %}
+{% from "_header.html" import render_stats with context %}
 
 <div>
-  <div class="service-list" id="primary-service-list">
-    {% for _service_name in all_service_names %}
-      <a class="{{'current' if primary.service_name == _service_name }}" href="/runs/{{ primary.run_id }}/{{ _service_name }}">{{ _service_name }}</a>
-    {% endfor %}
-  </div>
+  {{ primary_service_list(all_service_names, primary.service_name, primary.run_id) }}
+
   <div id="run-list-and-content">
-    <div class="run-list" id="primary-run-list">
-      {% for this_run_id in all_run_ids %}
-        <a class="{{'current' if this_run_id == primary.run_id }}" href="/runs/{{ this_run_id }}/{{ primary.service_name }}">{{ this_run_id }}</a>
-      {% endfor %}
-    </div>
+
+    {{ primary_run_list(all_run_ids, primary.service_name, primary.run_id) }}
+
     <div id="run">
       <div id="menu">
         <a href="/compare/{{ primary.run_id }}/{{ primary.service_name }}">
@@ -36,11 +34,15 @@
       
       <h2>PROMPT</h2>
       
-      <div id="primary-prompt-text">{{ primary.prompt_content }} </div>
+      <div class="text-container">
+        <div id="primary-prompt-text">{{ primary.prompt_content }}</div>
+      </div>
     
       <h2>OUTPUT</h2>
     
-      <div id="primary-output-text">{{ primary.output_content }} </div>
+      <div class="text-container">
+        <div id="primary-output-text">{{ primary.output_content }}</div>
+      </div>
     
       <h2>RESPONSE</h2> 
     
@@ -53,9 +55,9 @@
       <h2>STATS</h2> 
       
       <section id="stats">
-        {{ render_pills(primary.run_details.stats.items()) }}
+        {{ render_stats(primary.run_details.stats) }}
       </section>
       
     </div>
 </div>
-{% include "footer.html" %}          
+{% include "_footer.html" %}

@@ -1,111 +1,107 @@
-{% include "header.html" %}
+{% include "_header.html" %}
 
-{% from "header.html" import render_pills with context %}
+{% from "_header.html" import render_pills with context %}
+{% from "_header.html" import primary_service_list with context %}
+{% from "_header.html" import primary_run_list with context %}
+{% from "_header.html" import secondary_service_list with context %}
+{% from "_header.html" import secondary_run_list with context %}
+{% from "_header.html" import render_stats with context %}
 
 <div>
-      <div class="service-list" id="primary-service-list">
-        {% for _service_name in all_service_names %}
-          <a class="{{'current' if primary.service_name == _service_name }}" href="/runs/{{ primary.run_id }}/{{ _service_name }}">{{ _service_name }}</a>
-        {% endfor %}
-      </div>
-      <div id="run-list-and-content">
-        <div class="run-list" id="primary-run-list">
-          {% for this_run_id in all_run_ids %}
-            <a class="{{'current' if this_run_id == primary.run_id }}" href="/runs/{{ this_run_id }}/{{ primary.service_name }}">{{ this_run_id }}</a>
-          {% endfor %}
+  {{ primary_service_list(all_service_names, primary.service_name, primary.run_id ) }}
+
+  <div id="run-list-and-content">
+
+  {{ primary_run_list(all_run_ids, primary.service_name, primary.run_id) }}
+
+  <div id="run">
+
+    <h2>PROMPT RUN COMPARISON</h2>
+
+    <section>
+      <div class="run-comparison">
+        <div>
+          <div class="service-name">
+            {{ primary.service_name }} (run #{{ primary.run_id }})
+          </div>
+          <div class="model-name">{{ primary.run_details.request.model }}</div>
+          <div class="service-description">
+            {{ render_pills(primary.run_details.request.options.items()) }}
+          </div>    
         </div>
-        <div id="run">
-
-          <h2>PROMPT RUN COMPARISON</h2>
-
-          <section>
-            <div class="run-comparison">
-              <div>
-                <div class="service-name">
-                  {{ primary.service_name }} (run #{{ primary.run_id }})
-                </div>
-                <div class="model-name">{{ primary.run_details.request.model }}</div>
-                <div class="service-description">
-                  {{ render_pills(primary.run_details.request.options.items()) }}
-                </div>    
-              </div>
-              <div>
-                <div class="service-name">
-                  {{ secondary.service_name }} (run #{{ secondary.run_id }})
-                </div>
-                <div class="model-name">{{ secondary.run_details.request.model }}</div>
-                <div class="service-description">
-                  {{ render_pills(secondary.run_details.request.options.items()) }}
-                </div>
-              </div>
-            </div>
-          </section>
-
-          
-          <h2>PROMPT</h2>
-          
-          <div id="primary-prompt-text" class="hidden">{{ primary.prompt_content }} </div>
-          <div id="secondary-prompt-text" class="hidden">{{ secondary.prompt_content }} </div>
-          <div id="prompt-text-diff"></div>
-        
-          <h2>OUTPUT</h2>
-        
-          <div id="primary-output-text" class="hidden">{{ primary.output_content }} </div>
-          <div id="secondary-output-text" class="hidden">{{ secondary.output_content }} </div>
-          <div id="output-text-diff"></div>
-        
-          <h2>RESPONSE</h2> 
-        
-          <section>
-            <div class="run-comparison">
-              <div class="response-description">
-                {{ render_pills(primary.run_details.response.items()) }}
-              </div>
-              <div class="response-description">
-                {{ render_pills(secondary.run_details.response.items()) }}
-              </div>    
-            </div>
-          </section>
-          
-          <h2>STATS</h2> 
-          
-          <section id="stats">
-            <div class="run-comparison">
-              {{ render_pills(primary.run_details.stats.items()) }}
-              {{ render_pills(secondary.run_details.stats.items()) }}
-            </div>
-          </section>
-          
+        <div>
+          <div class="service-name">
+            {{ secondary.service_name }} (run #{{ secondary.run_id }})
           </div>
-
-          <div class="run-list" id="secondary-run-list">
-            {% for this_run_id in all_run_ids %}
-              <a class="{{'current' if this_run_id == secondary.run_id }}" href="/compare/{{ primary.run_id}}/{{ primary.service_name }}/{{ this_run_id }}/{{ primary.service_name }}">{{ this_run_id }}</a>
-            {% endfor %}
+          <div class="model-name">{{ secondary.run_details.request.model }}</div>
+          <div class="service-description">
+            {{ render_pills(secondary.run_details.request.options.items()) }}
           </div>
-      </div>
-
-      <div class="service-list" id="secondary-service-list">
-        {% for _service_name in all_service_names %}
-        <a class="{{'current' if secondary.service_name == _service_name }}" href="/compare/{{ primary.run_id }}/{{ primary.service_name }}/{{ primary.run_id }}/{{ _service_name }}">{{ _service_name }}</a>
-          {% endfor %}
         </div>
       </div>
+    </section>
 
-      <script>
-        function diff(primaryID, secondaryID, outputID) {
-          var dmp = new diff_match_patch();
-          var primaryText = document.getElementById(primaryID).innerText;
-          var secondaryText = document.getElementById(secondaryID).innerText;
-
-          var d = dmp.diff_main(secondaryText, primaryText);
-          dmp.diff_cleanupSemantic(d);
-          const diff = dmp.diff_prettyHtml(d);
-          document.getElementById(outputID).innerHTML = diff;
-        }
-
-        diff('primary-prompt-text', 'secondary-prompt-text', 'prompt-text-diff')
-        diff('primary-output-text', 'secondary-output-text', 'output-text-diff')
-      </script>
     
-  {% include "footer.html" %}
+    <h2>PROMPT</h2>
+    
+    <div id="primary-prompt-text" class="hidden">{{ primary.prompt_content }} </div>
+    <div id="secondary-prompt-text" class="hidden">{{ secondary.prompt_content }} </div>
+    <div class="text-container">
+      <div id="prompt-text-diff"></div>
+    </div>
+  
+    <h2>OUTPUT</h2>
+  
+    <div id="primary-output-text" class="hidden">{{ primary.output_content }} </div>
+    <div id="secondary-output-text" class="hidden">{{ secondary.output_content }} </div>
+    <div class="text-container">
+      <div id="output-text-diff"></div>
+    </div>
+  
+    <h2>RESPONSE</h2> 
+  
+    <section>
+      <div class="run-comparison">
+        <div class="response-description">
+          {{ render_pills(primary.run_details.response.items()) }}
+        </div>
+        <div class="response-description">
+          {{ render_pills(secondary.run_details.response.items()) }}
+        </div>    
+      </div>
+    </section>
+    
+    <h2>STATS</h2> 
+    
+    <section id="stats">
+      <div class="run-comparison">
+        {{ render_stats(primary.run_details.stats) }}
+        {{ render_stats(secondary.run_details.stats) }}
+      </div>
+    </section>
+    
+  </div>
+
+  {{ secondary_run_list(all_run_ids, primary.service_name, primary.run_id, secondary.service_name, secondary.run_id) }}
+</div>
+
+  {{ secondary_service_list(all_service_names, primary.service_name, primary.run_id, secondary.service_name, secondary.run_id) }}
+</div>
+
+<script>
+  function diff(primaryID, secondaryID, outputID) {
+    var dmp = new diff_match_patch();
+    var primaryText = document.getElementById(primaryID).innerText;
+    var secondaryText = document.getElementById(secondaryID).innerText;
+
+    var d = dmp.diff_main(secondaryText, primaryText);
+    dmp.diff_cleanupSemantic(d);
+    const diff = dmp.diff_prettyHtml(d);
+    document.getElementById(outputID).innerHTML = diff;
+  }
+
+  diff('primary-prompt-text', 'secondary-prompt-text', 'prompt-text-diff')
+  diff('primary-output-text', 'secondary-output-text', 'output-text-diff')
+</script>
+
+{% include "_footer.html" %}

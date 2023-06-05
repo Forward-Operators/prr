@@ -91,23 +91,23 @@ async def root(request: Request):
 
 @app.get("/runs/latest", response_class=HTMLResponse)
 async def get_latest_run(request: Request):
-    collection = SavedRunsCollection("/workspaces/prr/examples/configured/chihuahua.yaml")    
+    collection = SavedRunsCollection("/workspaces/prr/examples/configured/retail.yaml")    
     return render_run(request, collection)
 
 @app.get("/runs/{run_id}/{service_name}", response_class=HTMLResponse)
 async def get_run(request: Request, run_id: str, service_name: str):
-    collection = SavedRunsCollection("/workspaces/prr/examples/configured/chihuahua.yaml")
+    collection = SavedRunsCollection("/workspaces/prr/examples/configured/retail.yaml")
 
     return render_run(request, collection, run_id, service_name)
 
 @app.get("/compare/{run_id}/{service_name}", response_class=HTMLResponse)
 async def compare_latest(request: Request, run_id: str, service_name: str):
-    collection = SavedRunsCollection("/workspaces/prr/examples/configured/chihuahua.yaml")
+    collection = SavedRunsCollection("/workspaces/prr/examples/configured/retail.yaml")
 
     return render_diff(request, collection, run_id, service_name)
 
 @app.get("/compare/{run_id}/{service_name}/{run_id2}/{service_name2}", response_class=HTMLResponse)
 async def compare(request: Request, run_id: str, service_name: str, run_id2: str, service_name2: str):
-    collection = SavedRunsCollection("/workspaces/prr/examples/configured/chihuahua.yaml")
+    collection = SavedRunsCollection("/workspaces/prr/examples/configured/retail.yaml")
 
     return render_diff(request, collection, run_id, service_name, run_id2, service_name2)

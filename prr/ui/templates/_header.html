@@ -50,9 +50,14 @@
           font-family: 'Courier New', Courier, monospace;
           box-shadow: 0px 1px rgba(128, 128, 128, 0.2);
           background-color: white;
-          font-size: 20px;
-          padding: 20px;
-          width: 95%;
+          padding: 10px 10px 10px 10px;
+          font-size: 18px;
+          width: 98%;
+        }
+
+        div.text-container {
+          padding: 10px 10px 10px 10px;
+          background-color: rgba(0, 0, 0, 0.05);
         }
 
         div.pills {
@@ -102,31 +107,52 @@
         }
 
         div.run-list {
-          background-color: rgba(0, 0, 0, 0.05);
+          background-color: rgba(148, 148, 148, 1);
           color: white;
-          width: 1%;
+          width: 20px;
           text-align: center;
-          padding-left: 4px;
-          padding-right: 4px;
+          padding: 0;
+          margin: 0;
+          display: flex;
+          flex-direction: column;
         }
 
         div.run-list a, div.service-list a {
           text-decoration: none;
-          color: black;
+          color: white;
+        }
+
+        div.run-list > div {
+          display: block;
+          width: 100%;
+          padding: 0;
+          margin: 0;
+          color: rgba(0, 0, 0, 0.5);
         }
 
         div.run-list a:hover, div.service-list a:hover {
           text-decoration: underline;
         }
 
-        div.run-list a.current, div.service-list a.current {
+        div.run-list div.current, div.service-list div.current {
           font-weight: bold;
+          background-color: white;
+          color: rgba(0, 0, 0, 0.5);
+        }
+
+        div.run-list div.current a, div.service-list div.current a {
+          color: rgba(148, 148, 148, 1);
         }
 
         div.service-list {
-          padding-left: 20px;
-          background-color: rgba(0, 0, 0, 0.1);
-          width: 100vw;
+          background-color: rgba(148, 148, 148, 1);
+          width: 100%;
+          height: 20px;
+          display: flex;
+        }
+
+        div.service-list#primary-service-list div {
+          margin-left: 20px;
         }
 
         div#run-list-and-content {
@@ -139,19 +165,16 @@
           width: 100%;
         }
 
-        div.run-list#secondary-run-list, div.service-list#secondary-service-list {
-          background-color: rgba(0, 0, 0, 0.15);
-          color: black;
-        }
-
-        div.run-list#secondary-run-list a, div.service-list#secondary-service-list a {
-          color: black;
-        }
-
         div.service-list#secondary-service-list {
           position: fixed;
           bottom: 0;
           left: 0;
+          display: flex;
+          flex-direction: row-reverse;
+        }
+
+        div.service-list#secondary-service-list div {
+          margin-right: 20px;
         }
 
         div#menu {
@@ -197,6 +220,10 @@
         section#stats {
           padding-bottom: 30px;
         }
+
+        div.stats {
+          text-align: center;
+        }
 </style>
 </head>
 <body>
@@ -210,4 +237,52 @@
       </div>
     {% endfor %}
   </div>
+{% endmacro %}
+
+{% macro primary_service_list(all_service_names, current_service_name, current_run_id) %}
+  <div class="service-list" id="primary-service-list">
+    {% for _service_name in all_service_names %}
+      <div class="{{'current' if current_service_name == _service_name }}">
+        <a href="/runs/{{ current_run_id }}/{{ _service_name }}">{{ _service_name }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro primary_run_list(all_run_ids, current_service_name, current_run_id) %}
+  <div class="run-list" id="primary-run-list">
+    {% for this_run_id in all_run_ids %}
+      <div class="{{'current' if this_run_id == current_run_id }}">
+        <a href="/runs/{{ this_run_id }}/{{ current_service_name }}">{{ this_run_id }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro secondary_service_list(all_service_names, primary_service_name, primary_run_id, secondary_service_name, secondary_run_id) %}
+  <div class="service-list" id="secondary-service-list">
+    {% for _service_name in all_service_names %}
+      <div class="{{'current' if secondary_service_name == _service_name }}">
+        <a href="/compare/{{ primary_run_id }}/{{ primary_service_name }}/{{ secondary_run_id }}/{{ _service_name }}">{{ _service_name }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro secondary_run_list(all_run_ids, primary_service_name, primary_run_id, secondary_service_name, secondary_run_id) %}
+  <div class="run-list" id="secondary-run-list">
+    {% for this_run_id in all_run_ids %}
+      <div class="{{'current' if this_run_id == secondary_run_id }}">
+        <a href="/compare/{{ primary_run_id }}/{{ primary_service_name }}/{{ this_run_id }}/{{ secondary_service_name }}">{{ this_run_id }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+
+{% macro render_stats(items) %}
+<div class="stats">
+  <span class="key">Elapsed time:</span>
+  <span class="value">{{ "%.2f"|format(items['elapsed_time'])  }}s</span>
+</div>
 {% endmacro %}
