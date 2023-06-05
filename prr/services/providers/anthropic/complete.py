@@ -5,72 +5,69 @@ import os
 
 import anthropic
 
-from prr.runner.request import ServiceRequest
-from prr.runner.response import ServiceResponse
+from prr.services.service_base import ServiceBase
 from prr.utils.config import load_config
+from prr.utils.response import ServiceResponse
 
 config = load_config()
+client = anthropic.Client(config.get("ANTHROPIC_API_KEY", None))
 
 
 # Anthropic model provider class
-class ServiceAnthropicComplete:
+class ServiceAnthropicComplete(ServiceBase):
     provider = "anthropic"
     service = "complete"
+    options = ["max_tokens", "temperature", "top_k", "top_p"]
 
-    def run(self, prompt, service_config):
-        self.service_config = service_config
-        options = self.service_config.options
-        self.prompt = prompt
-
-        prompt_text = self.prompt_text()
-
-        client = anthropic.Client(config.get("ANTHROPIC_API_KEY", None))
-
-        options = service_config.options
-
-        prompt_text = self.prompt_text_from_template(prompt.template)
-
-        service_request = ServiceRequest(service_config, prompt_text)
-
-        response = client.completion(
-            prompt=prompt_text,
+    def run(self):
+        result = client.completion(
+            prompt=self.request.prompt_content,
             stop_sequences=[anthropic.HUMAN_PROMPT],
-            model=service_config.model_name(),
-            max_tokens_to_sample=options.max_tokens,
-            temperature=options.temperature,
-            top_p=options.top_p,
-            top_k=options.top_k,
+            model=self.service_config.model_name(),
+            max_tokens_to_sample=self.option("max_tokens"),
+            temperature=self.option("temperature"),
+            top_p=self.option("top_p"),
+            top_k=self.option("top_k"),
         )
 
-        completion_tokens = anthropic.count_tokens(response["completion"])
-        prompt_tokens = anthropic.count_tokens(prompt_text)
+        completion_tokens = anthropic.count_tokens(result["completion"])
+        prompt_tokens = anthropic.count_tokens(self.request.prompt_content)
         total_tokens = prompt_tokens + completion_tokens
 
-        service_response = ServiceResponse(
-            response["completion"],
+        self.response = ServiceResponse(
+            result["completion"],
             {
                 "tokens_used": total_tokens,
-                "prompt_tokens": anthropic.count_tokens(prompt_text),
+                "prompt_tokens": prompt_tokens,
                 "completion_tokens": completion_tokens,
                 "total_tokens": total_tokens,
-                "truncated": response["truncated"],
-                "stop_reason": response["stop_reason"],
-                "log_id": response["log_id"],
+                "truncated": result["truncated"],
+                "stop_reason": result["stop_reason"],
+                "log_id": result["log_id"],
             },
         )
 
-        return service_request, service_response
+        return self.request, self.response
 
-    def prompt_text_from_template(self, template):
-        prompt_text = ""
+    # define render prompt to change how the prompt is rendered
+    def render_prompt(self):
+        prompt_text = anthropic.HUMAN_PROMPT
+        current_role = "human"
 
         # prefer messages from template if they exist
-        if template.messages:
-            for message in template.messages:
-                if message.role != "assistant":
-                    prompt_text += " " + message.render_text()
+        if self.prompt.template.messages:
+            for message in self.prompt.template.messages:
+                if current_role == "human":
+                    if message.is_assistant():
+                        current_role = "assistant"
+                        prompt_text += anthropic.AI_PROMPT
+                else:
+                    if message.is_user() or message.is_system():
+                        current_role = "human"
+                        prompt_text += anthropic.HUMAN_PROMPT
 
-        else:
-            prompt_text = template.render_text()
+                prompt_text += " " + message.render_text(self.prompt_args)
 
-        return f"{anthropic.HUMAN_PROMPT} {prompt_text}{anthropic.AI_PROMPT}"
+        prompt_text += anthropic.AI_PROMPT
+
+        return prompt_text

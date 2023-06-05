@@ -4,13 +4,19 @@ class ServiceResponse:
         self.data = data
         self.response_content = response_content
 
-    def response_abbrev(self, max_len=25):
-        str = self.response_content
+    def is_response_content_text(self):
+        return isinstance(self.response_content, str)
 
-        if len(self.response_content) > max_len:
-            str = self.response_content[0:max_len] + "..."
+    def response_text(self, length_limit=None):
+        if self.is_response_content_text():
+            _str = str(self.response_content)
 
-        return str.replace("\n", " ").replace("  ", " ")
+            if length_limit != None and len(_str) > length_limit:
+                _str = _str[0:length_limit] + "..."
+
+            return _str.replace("\n", " ").replace("  ", " ")
+
+        return f"[{len(self.response_content)} bytes of data]"
 
     def __repr__(self):
         return " ".join([f"{key}={value}" for key, value in self.data.items()])

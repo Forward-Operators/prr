@@ -1,4 +1,4 @@
-#!/workspaces/prr/prr script
+#!/usr/bin/env -S prr script
 
 Convert content below to JSON. First line are column names.
 

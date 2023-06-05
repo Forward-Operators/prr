@@ -113,7 +113,7 @@ def main():
         command.run_prompt()
 
     if parsed_args["command"] == "watch":
-        command = WatchPromptCommand(parsed_args)
+        command = WatchPromptCommand(parsed_args, prompt_args)
         command.watch_prompt()
 
 

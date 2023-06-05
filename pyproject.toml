@@ -17,6 +17,7 @@ pyyaml = "^6.0"
 google-cloud-aiplatform = "^1.25.0"
 huggingface-hub = "^0.14.1"
 text-generation = "^0.5.2"
+elevenlabs = "^0.2.18"
 
 [tool.poetry.dev-dependencies]
 pre-commit = "^2.12.0"

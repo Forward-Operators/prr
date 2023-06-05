@@ -72,7 +72,12 @@ class PromptRunSaver:
     def save_completion(self, run_directory, response):
         completion_file = os.path.join(run_directory, f"completion")
 
-        with open(completion_file, "w") as f:
+        fileoptions = "wb"
+
+        if isinstance(response.response_content, str):
+            fileoptions = "w"
+
+        with open(completion_file, fileoptions) as f:
             f.write(response.response_content)
 
     def save_run(self, run_directory, result):

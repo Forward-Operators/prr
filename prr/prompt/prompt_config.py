@@ -22,8 +22,11 @@ class PromptConfig:
         # version: 1
         self.version = None
 
-    def template_text(self):
-        return self.template.render_text()
+    def render_text(self, prompt_args=None):
+        return self.template.render_text(prompt_args)
+
+    def render_messages(self, prompt_args=None):
+        return self.template.render_messages(prompt_args)
 
     # raw YAML file
     def load_from_config_contents(self, raw_config_content):
@@ -72,13 +75,13 @@ class PromptConfig:
         return self.service_with_name(service_name).options
 
     def option_for_service(self, service_name, option_name):
-        return self.options_for_service(service_name).option(option_name)
+        return self.options_for_service(service_name).value(option_name)
 
     def file_dependencies(self):
         _dependencies = []
         for message in self.template.messages:
             for dependency in message.file_dependencies:
-                if dependency not in _dependencies:
+                if dependency != None and dependency not in _dependencies:
                     _dependencies.append(dependency)
 
         return _dependencies
@@ -129,7 +132,7 @@ class PromptConfig:
             _services = self.config_content.get("services")
 
             if _services:
-                options_for_all_services = _services.get("options")
+                options_for_all_services = _services.get("options") or {}
 
                 #
                 # if we have models + prompt-level model options

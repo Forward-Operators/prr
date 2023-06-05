@@ -1,9 +1,9 @@
 from google.cloud import aiplatform
 from vertexai.preview.language_models import ChatModel, InputOutputTextPair
 
-from prr.runner.request import ServiceRequest
-from prr.runner.response import ServiceResponse
+from prr.services.service_base import ServiceBase
 from prr.utils.config import load_config
+from prr.utils.response import ServiceResponse
 
 config = load_config()
 
@@ -20,85 +20,60 @@ aiplatform.init(
 )
 
 
-class ServiceGoogleChat:
+class ServiceGoogleChat(ServiceBase):
     provider = "google"
     service = "chat"
+    options = ["max_tokens", "temperature", "top_k", "top_p"]
 
-    def run(self, prompt, service_config):
-        self.service_config = service_config
-        options = self.service_config.options
-        self.prompt = prompt
-
-        messages = self.messages_from_prompt()
-
+    def run(self):
         model = ChatModel.from_pretrained(self.service_config.model_name())
 
-        service_request = ServiceRequest(self.service_config, {"messages": messages})
-
         parameters = {
-            "temperature": options.temperature,
-            "max_output_tokens": options.max_tokens,
-            "top_p": options.top_p,
-            "top_k": options.top_k,
+            "temperature": self.option("temperature"),
+            "max_output_tokens": self.option("max_tokens"),
+            "top_p": self.option("top_p"),
+            "top_k": self.option("top_k"),
         }
 
+        # TODO: support examples
         chat = model.start_chat(
-            context=f"""{self.context_from_messages()}""",
+            context=self.request.prompt_content["context"],
             examples=[],
         )
 
         response = chat.send_message(
-            f"""{self.message_from_messages()}""", **parameters
+            self.request.prompt_content["messages"], **parameters
         )
 
-        service_response = ServiceResponse(response.text, {})
+        self.response = ServiceResponse(response.text, {})
 
-        return service_request, service_response
+        return self.request, self.response
 
-    def messages_from_prompt(self):
-        messages = self.prompt.messages
+    def render_message(self, message):
+        return {
+            "author": "bot" if message.is_assistant() else "user",
+            "content": message.render_text(self.prompt_args),
+        }
 
-        # prefer messages in prompt if they exist
-        if messages:
-            return messages
+    # define render prompt to change how the prompt is rendered
+    def render_prompt(self):
+        context_messages = []
+        chat_messages = []
 
-        return [{"role": "user", "content": self.prompt.text()}]
+        # TODO: this should not reach so deep
+        if self.prompt.template.messages:
+            for message in self.prompt.template.messages:
+                if message.is_system():
+                    context_messages.append(message)
+                else:
+                    chat_messages.append(message)
 
-    def context_from_messages(self):
-        messages = self.prompt.messages
+        context_text = "\n".join(
+            [m.render_text(self.prompt_args) for m in context_messages]
+        )
+        messages = [self.render_message(m) for m in chat_messages]
 
-        if messages:
-            for message in messages:
-                if message["role"] == "system":
-                    context = message["content"]
-        else:
-            context = None
-
-        return context
-
-    def examples_from_messages(self):
-        messages = self.prompt.messages
-
-        if messages:
-            examples = []
-            for message in messages:
-                if message["role"] == "examples":
-                    examples.append(
-                        InputOutputTextPair(message["input"], message["output"])
-                    )
-        else:
-            examples = []
-
-        return examples
-
-    def message_from_messages(self):
-        messages = self.prompt.messages
-
-        if messages:
-            for message in messages:
-                if message["role"] == "user":
-                    message = message["content"]
-        else:
-            message = None
-
-        return message
+        return {
+            "context": context_text,
+            "messages": messages,
+        }

@@ -1,16 +1,17 @@
 import yaml
 
 
-# request we're sending to the service
+# request we're sending to the service - prompts rendered, options parsed
 class ServiceRequest:
-    def __init__(self, service_config, rendered_prompt_content):
+    def __init__(self, service_config, rendered_prompt_content, options):
         self.service_config = service_config
         self.prompt_content = rendered_prompt_content
+        self.options = options
 
     def to_dict(self):
         return {
             "model": self.service_config.model,
-            "options": self.service_config.options.to_dict(),
+            "options": self.options.to_dict(),
         }
 
     def prompt_text(self, max_len=0):

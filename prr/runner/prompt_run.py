@@ -5,21 +5,27 @@ from prr.runner.prompt_run_result import PromptRunResult
 
 # takes prompt and model config, finds provider, runs the prompt
 class PromptRun:
-    def __init__(self, prompt, service, service_config):
+    def __init__(self, prompt, prompt_args, service_class, service_config):
         self.prompt = prompt
-        self.service = service
+        self.prompt_args = prompt_args
+
+        self.service_class = service_class
         self.service_config = service_config
 
+        self.result = PromptRunResult(self.prompt, self.service_config)
+
+        self.service = self.service_class(
+            self.prompt, self.prompt_args, self.service_config
+        )
+
     def run(self):
-        result = PromptRunResult(self.prompt, self.service_config)
+        self.result.before_run()
 
-        result.before_run()
+        request, response = self.service.run()
 
-        request, response = self.service.run(self.prompt, self.service_config)
+        self.result.after_run()
 
-        result.after_run()
+        self.result.update_with_request(request)
+        self.result.update_with_response(response)
 
-        result.update_with_request(request)
-        result.update_with_response(response)
-
-        return result
+        return self.result

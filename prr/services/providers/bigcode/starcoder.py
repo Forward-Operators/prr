@@ -1,9 +1,10 @@
 from huggingface_hub import Repository
 from text_generation import Client
 
-from prr.runner.request import ServiceRequest
-from prr.runner.response import ServiceResponse
+from prr.services.service_base import ServiceBase
 from prr.utils.config import load_config
+from prr.utils.request import ServiceRequest
+from prr.utils.response import ServiceResponse
 
 config = load_config()
 
@@ -17,39 +18,32 @@ FIM_SUFFIX = "<fim_suffix>"
 FIM_INDICATOR = "<FILL_HERE>"
 
 
-class ServiceBigcodeStarcoder:
+client = Client(
+    API_URL,
+    headers={"Authorization": f"Bearer {HF_TOKEN}"},
+)
+
+
+class ServiceBigcodeStarcoder(ServiceBase):
     provider = "bigcode"
     service = "starcoder"
+    options = ["temperature", "max_tokens", "top_p", "repetition_penalty"]
 
-    def run(self, prompt, service_config):
-        self.service_config = service_config
-        self.prompt = prompt
-
-        client = Client(
-            API_URL,
-            headers={"Authorization": f"Bearer {HF_TOKEN}"},
+    def run(self):
+        completion = client.generate(
+            self.request.prompt_content,
+            temperature=self.option("temperature"),
+            max_new_tokens=self.option("max_tokens"),
+            top_p=self.option("top_p"),
+            repetition_penalty=self.option("repetition_penalty"),
         )
 
-        options = self.service_config.options
-
-        prompt_text = prompt.template_text()
-
-        service_request = ServiceRequest(service_config, prompt_text)
-
-        response = client.generate(
-            prompt_text,
-            temperature=options.temperature,
-            max_new_tokens=options.max_tokens,
-            top_p=options.top_p,
-            # repetition_penalty=options.repetition_penalty,
-        )
-
-        service_response = ServiceResponse(
-            response.generated_text,
+        self.response = ServiceResponse(
+            completion.generated_text,
             {
-                "tokens_used": response.details.generated_tokens,
-                "stop_reason": response.details.finish_reason,
+                "tokens_used": completion.details.generated_tokens,
+                "stop_reason": str(completion.details.finish_reason),
             },
         )
 
-        return service_request, service_response
+        return self.request, self.response

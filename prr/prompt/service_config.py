@@ -11,12 +11,12 @@ class ServiceConfig:
         self.options.update_options(option_overrides)
 
     # which model to use with the service
-    # like gpt-4.5-turbo or claude-v1.3-100k
+    # like "gpt-4.5-turbo" or "claude-v1.3-100k"
     def model_name(self):
         return self.model.split("/")[-1]
 
     # which service so use
-    # like openai/chat or anthropic/complete
+    # like "openai/chat" or "anthropic/complete"
     def service_key(self):
         return "/".join(self.model.split("/")[:-1])
 
