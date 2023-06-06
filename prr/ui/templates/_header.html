@@ -115,6 +115,7 @@
           margin: 0;
           display: flex;
           flex-direction: column;
+          z-index: 500;
         }
 
         div.run-list a, div.service-list a, div.file-list a {
@@ -155,7 +156,7 @@
           display: flex;
         }
 
-        div.service-list#primary-service-list div, div.file-list div {
+        div.service-list div, div.file-list div {
           margin-left: 25px;
           padding-left: 5px;
           padding-right: 5px;
@@ -181,10 +182,11 @@
 
         div.service-list#secondary-service-list div {
           margin-right: 20px;
+          box-shadow: 0px 1px grey;
         }
 
         div.run-list#secondary-run-list {
-          padding-top: 20px;
+          padding-top: 25px;
         }
 
         div.run-list div {
@@ -193,6 +195,7 @@
           padding-top: 3px;
           padding-bottom: 3px;
           margin-left: 2px;
+          box-shadow: 0px 1px grey;
         }
 
         div.run-list#secondary-run-list div {
@@ -234,7 +237,9 @@
           right: 0px;
           border-bottom-left-radius: 5px;
           padding-left: 20px;
+          padding-top: 10px;
           z-index: 1000;
+          height: 20px;
         }
 
         div#menu a {

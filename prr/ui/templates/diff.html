@@ -7,7 +7,7 @@
 {% from "_run_helpers.html" import secondary_run_list with context %}
 {% from "_run_helpers.html" import render_stats with context %}
 
-<div>
+<div id="main">
   {{ primary_service_list(all_service_names, primary.service_name, primary.run_id ) }}
 
   <div id="run-list-and-content">
