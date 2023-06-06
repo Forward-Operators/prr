@@ -1,0 +1,58 @@
+{% macro render_pills(items) %}
+  <div class="pills">
+    {% for key, value in items %}
+      <div class="pill {{ key }}">
+        <span class="key">{{ key }}</span>
+        <span class="value">{{ value }}</span>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro primary_service_list(all_service_names, current_service_name, current_run_id) %}
+  <div class="service-list" id="primary-service-list">
+    {% for _service_name in all_service_names %}
+      <div class="{{'current' if current_service_name == _service_name }}">
+        <a href="/runs/{{ current_run_id }}/{{ _service_name }}">{{ _service_name }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro primary_run_list(all_run_ids, current_service_name, current_run_id) %}
+  <div class="run-list" id="primary-run-list">
+    {% for this_run_id in all_run_ids %}
+      <div class="{{'current' if this_run_id == current_run_id }}">
+        <a href="/runs/{{ this_run_id }}/{{ current_service_name }}">{{ this_run_id }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro secondary_service_list(all_service_names, primary_service_name, primary_run_id, secondary_service_name, secondary_run_id) %}
+  <div class="service-list" id="secondary-service-list">
+    {% for _service_name in all_service_names %}
+      <div class="{{'current' if secondary_service_name == _service_name }}">
+        <a href="/compare/{{ primary_run_id }}/{{ primary_service_name }}/{{ secondary_run_id }}/{{ _service_name }}">{{ _service_name }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro secondary_run_list(all_run_ids, primary_service_name, primary_run_id, secondary_service_name, secondary_run_id) %}
+  <div class="run-list" id="secondary-run-list">
+    {% for this_run_id in all_run_ids %}
+      <div class="{{'current' if this_run_id == secondary_run_id }}">
+        <a href="/compare/{{ primary_run_id }}/{{ primary_service_name }}/{{ this_run_id }}/{{ secondary_service_name }}">{{ this_run_id }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+
+{% macro render_stats(items) %}
+<div class="stats">
+  <span class="key">Elapsed time:</span>
+  <span class="value">{{ "%.2f"|format(items['elapsed_time'])  }}s</span>
+</div>
+{% endmacro %}

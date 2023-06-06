@@ -1,11 +1,11 @@
 {% include "_header.html" %}
 
-{% from "_header.html" import render_pills with context %}
-{% from "_header.html" import primary_service_list with context %}
-{% from "_header.html" import primary_run_list with context %}
-{% from "_header.html" import secondary_service_list with context %}
-{% from "_header.html" import secondary_run_list with context %}
-{% from "_header.html" import render_stats with context %}
+{% from "_run_helpers.html" import render_pills with context %}
+{% from "_run_helpers.html" import primary_service_list with context %}
+{% from "_run_helpers.html" import primary_run_list with context %}
+{% from "_run_helpers.html" import secondary_service_list with context %}
+{% from "_run_helpers.html" import secondary_run_list with context %}
+{% from "_run_helpers.html" import render_stats with context %}
 
 <div>
   {{ primary_service_list(all_service_names, primary.service_name, primary.run_id ) }}

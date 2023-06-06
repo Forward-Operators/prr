@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>chihuahua.yaml#{{ primary.run_id }}/{{ service_name }}</title>
+    <title>chihuahua.yaml#{{ primary.run_id if primary }}/{{ service_name if service_name}}</title>
     <script src="/static/diff_match_patch.js"></script>
     <style>
         html { height: 100%; }
@@ -117,7 +117,7 @@
           flex-direction: column;
         }
 
-        div.run-list a, div.service-list a {
+        div.run-list a, div.service-list a, div.file-list a {
           text-decoration: none;
           color: white;
         }
@@ -130,28 +130,32 @@
           color: rgba(0, 0, 0, 0.5);
         }
 
-        div.run-list a:hover, div.service-list a:hover {
+        div.file-list div {
+          margin-left: 20px;
+        }
+
+        div.run-list a:hover, div.service-list a:hover, div.file-list a:hover {
           text-decoration: underline;
         }
 
-        div.run-list div.current, div.service-list div.current {
+        div.run-list div.current, div.service-list div.current, div.file-list div.current {
           font-weight: bold;
           background-color: white;
           color: rgba(0, 0, 0, 0.5);
         }
 
-        div.run-list div.current a, div.service-list div.current a {
+        div.run-list div.current a, div.service-list div.current a, div.file-list div.current a {
           color: rgba(148, 148, 148, 1);
         }
 
-        div.service-list {
+        div.service-list, div.file-list {
           background-color: rgba(148, 148, 148, 1);
           width: 100%;
           height: 20px;
           display: flex;
         }
 
-        div.service-list#primary-service-list div {
+        div.service-list#primary-service-list div, div.file-list div {
           margin-left: 20px;
         }
 
@@ -224,65 +228,11 @@
         div.stats {
           text-align: center;
         }
+
+        div#editor {
+          width: 100vw;
+        }
 </style>
 </head>
 <body>
 
-{% macro render_pills(items) %}
-  <div class="pills">
-    {% for key, value in items %}
-      <div class="pill {{ key }}">
-        <span class="key">{{ key }}</span>
-        <span class="value">{{ value }}</span>
-      </div>
-    {% endfor %}
-  </div>
-{% endmacro %}
-
-{% macro primary_service_list(all_service_names, current_service_name, current_run_id) %}
-  <div class="service-list" id="primary-service-list">
-    {% for _service_name in all_service_names %}
-      <div class="{{'current' if current_service_name == _service_name }}">
-        <a href="/runs/{{ current_run_id }}/{{ _service_name }}">{{ _service_name }}</a>
-      </div>
-    {% endfor %}
-  </div>
-{% endmacro %}
-
-{% macro primary_run_list(all_run_ids, current_service_name, current_run_id) %}
-  <div class="run-list" id="primary-run-list">
-    {% for this_run_id in all_run_ids %}
-      <div class="{{'current' if this_run_id == current_run_id }}">
-        <a href="/runs/{{ this_run_id }}/{{ current_service_name }}">{{ this_run_id }}</a>
-      </div>
-    {% endfor %}
-  </div>
-{% endmacro %}
-
-{% macro secondary_service_list(all_service_names, primary_service_name, primary_run_id, secondary_service_name, secondary_run_id) %}
-  <div class="service-list" id="secondary-service-list">
-    {% for _service_name in all_service_names %}
-      <div class="{{'current' if secondary_service_name == _service_name }}">
-        <a href="/compare/{{ primary_run_id }}/{{ primary_service_name }}/{{ secondary_run_id }}/{{ _service_name }}">{{ _service_name }}</a>
-      </div>
-    {% endfor %}
-  </div>
-{% endmacro %}
-
-{% macro secondary_run_list(all_run_ids, primary_service_name, primary_run_id, secondary_service_name, secondary_run_id) %}
-  <div class="run-list" id="secondary-run-list">
-    {% for this_run_id in all_run_ids %}
-      <div class="{{'current' if this_run_id == secondary_run_id }}">
-        <a href="/compare/{{ primary_run_id }}/{{ primary_service_name }}/{{ this_run_id }}/{{ secondary_service_name }}">{{ this_run_id }}</a>
-      </div>
-    {% endfor %}
-  </div>
-{% endmacro %}
-
-
-{% macro render_stats(items) %}
-<div class="stats">
-  <span class="key">Elapsed time:</span>
-  <span class="value">{{ "%.2f"|format(items['elapsed_time'])  }}s</span>
-</div>
-{% endmacro %}

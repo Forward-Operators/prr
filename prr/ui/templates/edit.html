@@ -1,0 +1,46 @@
+{% include "_header.html" %}
+<div>
+  <div class="file-list">
+    {% for file_id, file in files.items() %}
+      <div class="{{'current' if file_id == current_file_id }}">
+        <a href="/edit/{{ file_id }}">{{ file.name }}</a>
+      </div>
+    {% endfor %}
+  </div>
+
+  <script>
+    function onEdit() {
+      console.log('onEdit')
+      var editor = monaco.editor.getModels()[0];
+      // console.log('onEdit editor', editor)
+      var config = editor.getValue();
+      console.log('onEdit config', config)
+      var configJson = JSON.parse(config);
+      // console.log('onEdit configJson', configJson)
+      var configYaml = jsyaml.dump(configJson);
+      // console.log('onEdit configYaml', configYaml)
+      // document.getElementById('config').value = configYaml;
+    }
+  </script>
+
+  <div 
+    id="editor" 
+    style="width: 100vw;height: 100vh;"
+    onkeyup="onEdit()"
+  ></div>
+
+  <script src="/static/monaco-editor/min/vs/loader.js"></script>
+  <script>
+    require.config({ paths: { vs: '/static/monaco-editor/min/vs' } });
+    require(['vs/editor/editor.main'], function () {
+      var editor = monaco.editor.create(document.getElementById('editor'), {
+        value: {{ file_content|tojson }},
+        language: 'yaml',
+        minimap: {
+          enabled: false,
+        },
+      });
+    });
+  </script>
+</div>
+{% include "_footer.html" %}
