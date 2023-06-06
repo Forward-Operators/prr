@@ -35,12 +35,23 @@ class SavedRun:
   def __init__(self, run_subdir_path):
     self.run_subdir_path = run_subdir_path
 
+    self.state = 'done'
+
+    if self.run_subdir_path.endswith('.in-progress'):
+      self.state = 'in-progress'
+
   def services(self):
     service_subdirs = os.listdir(self.run_subdir_path)
     return [SavedServiceRun(os.path.join(self.run_subdir_path, service_subdir)) for service_subdir in service_subdirs]
 
   def id(self):
-    return os.path.basename(self.run_subdir_path)
+    dir_name = os.path.basename(self.run_subdir_path)
+
+    if dir_name.endswith('.in-progress'):
+      return dir_name.split('.')[0]
+
+    return dir_name
+
 
   def service(self, service_name):
     service_subdir = os.path.join(self.run_subdir_path, service_name)
@@ -66,19 +77,24 @@ class SavedRunsCollection:
   def all(self):
     run_subdirs = os.listdir(self.runs_directory_path)
 
-    run_subdirs = sorted(run_subdirs, key=int)
+    run_subdirs = sorted(run_subdirs, key=lambda x: x.split('.')[0])
 
     return [SavedRun(os.path.join(self.runs_directory_path, run_subdir)) for run_subdir in run_subdirs]
 
   def latest(self):
     return self.all()[-1]
 
-  def latest_minus_one(self):
-    if len(self.all()) > 1:
-      return self.all()[-2]
+  def the_one_before(self, run_id):
+    _all = self.all()
+
+    if run_id == "1":
+      return self.run(run_id)
+
+    for i in range(len(_all)):
+      if int(_all[i].id()) == int(run_id) -1:
+        return _all[i]
     
     return None
 
   def run(self, run_id):
-    print("------------ RUN_ID", run_id)
     return SavedRun(os.path.join(self.runs_directory_path, run_id))

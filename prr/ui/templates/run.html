@@ -10,14 +10,10 @@
 
   <div id="run-list-and-content">
 
-    {{ primary_run_list(all_run_ids, primary.service_name, primary.run_id) }}
+    {{ primary_run_list(all_runs, primary.service_name, primary.run_id) }}
 
     <div id="run">
-      <div id="menu">
-        <a href="/compare/{{ primary.run_id }}/{{ primary.service_name }}">
-          Compare &raquo;
-        </a>
-      </div>
+      {% include "_menu.html" %}
 
       <h2>PROMPT RUN REPORT</h2>
 
@@ -60,4 +56,40 @@
       
     </div>
 </div>
+
+<script>
+  let currentState = ''
+
+  function state2str (data) {
+    return data['all_runs'].map((run) => [run['run_id'], run['state']].join('|')).join(':')
+  }
+
+  function checkState() {
+    console.log('checkState current state:', currentState)
+    fetch('/runs/state', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => response.json()) // Parse the response as JSON
+    .then(data => {
+      if (currentState != ''){
+        if(currentState != state2str(data)) {
+          console.log('we need reload. current state', currentState)
+          console.log('data', state2str(data))
+          window.location.reload()
+        }
+      }
+
+      currentState = state2str(data)
+    })
+    .catch((error) => {
+      console.error('Error:', error); // Log any errors
+    });
+  }
+
+  setInterval(checkState, 1000)
+</script>
+
 {% include "_footer.html" %}

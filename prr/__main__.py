@@ -6,7 +6,7 @@ import sys
 
 from prr.commands.run import RunPromptCommand
 from prr.commands.watch import WatchPromptCommand
-from prr.commands.export import ExportPromptCommand
+from prr.commands.ui import UIPromptCommand
 from prr.prompt.model_options import ModelOptions
 from prr.utils.config import load_config
 
@@ -31,8 +31,8 @@ def main():
     script_parser = sub_parsers.add_parser(
         "script", help="prompt script mode for use with #!/usr/bin/prr"
     )
-    export_parser = sub_parsers.add_parser(
-        "export", help="export run to an html file"
+    ui_parser = sub_parsers.add_parser(
+        "ui", help="launch a web UI to analyze saved runs"
     )
 
     def add_common_args(_parser):
@@ -100,8 +100,8 @@ def main():
     add_common_args(watch_parser)
     add_common_args(script_parser)
 
-    export_parser.add_argument(
-        "prompt_path", help="Path to prompt to export"
+    ui_parser.add_argument(
+        "prompt_path", help="Path to prompt to analyze"
     )
 
     watch_parser.add_argument(
@@ -125,9 +125,9 @@ def main():
         command = WatchPromptCommand(parsed_args)
         command.watch_prompt()
 
-    if parsed_args["command"] == "export":
-        command = ExportPromptCommand(parsed_args)
-        command.export_prompt()
+    if parsed_args["command"] == "ui":
+        command = UIPromptCommand(parsed_args)
+        command.start()
 
 
 if __name__ == "__main__":

@@ -12,9 +12,10 @@
 
   <div id="run-list-and-content">
 
-  {{ primary_run_list(all_run_ids, primary.service_name, primary.run_id) }}
+  {{ primary_run_list(all_runs, primary.service_name, primary.run_id) }}
 
   <div id="run">
+    {% include "_menu.html" %}
 
     <h2>PROMPT RUN COMPARISON</h2>
 
@@ -82,7 +83,7 @@
     
   </div>
 
-  {{ secondary_run_list(all_run_ids, primary.service_name, primary.run_id, secondary.service_name, secondary.run_id) }}
+  {{ secondary_run_list(all_runs, primary.service_name, primary.run_id, secondary.service_name, secondary.run_id) }}
 </div>
 
   {{ secondary_service_list(all_service_names, primary.service_name, primary.run_id, secondary.service_name, secondary.run_id) }}

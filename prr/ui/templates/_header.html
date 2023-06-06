@@ -109,7 +109,7 @@
         div.run-list {
           background-color: rgba(148, 148, 148, 1);
           color: white;
-          width: 20px;
+          width: 25px;
           text-align: center;
           padding: 0;
           margin: 0;
@@ -131,7 +131,7 @@
         }
 
         div.file-list div {
-          margin-left: 20px;
+          margin-left: 25px;
         }
 
         div.run-list a:hover, div.service-list a:hover, div.file-list a:hover {
@@ -151,12 +151,14 @@
         div.service-list, div.file-list {
           background-color: rgba(148, 148, 148, 1);
           width: 100%;
-          height: 20px;
+          height: 25px;
           display: flex;
         }
 
         div.service-list#primary-service-list div, div.file-list div {
-          margin-left: 20px;
+          margin-left: 25px;
+          padding-left: 5px;
+          padding-right: 5px;
         }
 
         div#run-list-and-content {
@@ -181,16 +183,63 @@
           margin-right: 20px;
         }
 
+        div.run-list#secondary-run-list {
+          padding-top: 20px;
+        }
+
+        div.run-list div {
+          border-top-left-radius: 5px;
+          border-bottom-left-radius: 5px;
+          padding-top: 3px;
+          padding-bottom: 3px;
+          margin-left: 2px;
+        }
+
+        div.run-list#secondary-run-list div {
+          border-top-right-radius: 5px;
+          border-bottom-right-radius: 5px;
+          border-top-left-radius: 0px;
+          border-bottom-left-radius: 0px;
+          padding-top: 3px;
+          padding-bottom: 3px;
+          margin-left: 0px;
+          margin-right: 3px;
+        }
+
+        div.service-list div, div.file-list div {
+          border-top-left-radius: 5px;
+          border-top-right-radius: 5px;
+          margin-top: 2px;
+          padding-top: 3px;
+          padding-bottom: 3px;
+        }
+
+        div.service-list#secondary-service-list div {
+          border-bottom-left-radius: 5px;
+          border-bottom-right-radius: 5px;
+          border-top-left-radius: 0px;
+          border-top-right-radius: 0px;
+          margin-top: 0px;
+          margin-right: 24px;
+        }
+
         div#menu {
-          width: 98%;
+          max-width: 30%;
           text-align: right;
           margin: 0px;
           padding-right: 30px;
-          background-color: rgba(0, 0, 0, 0.05);
+          background-color: rgba(148, 148, 148, 1);
+          position: absolute;
+          top: 20px;
+          right: 0px;
+          border-bottom-left-radius: 5px;
+          padding-left: 20px;
+          z-index: 1000;
         }
 
         div#menu a {
           text-decoration: none;
+          color: white;
         }
 
         div#menu a:hover {

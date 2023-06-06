@@ -1,7 +1,9 @@
 import os
 import sys
+import json
+import hashlib
 
-from fastapi import FastAPI, Request, APIRouter
+from fastapi import FastAPI, Request, APIRouter, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
@@ -12,8 +14,14 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".
 
 from prr.runner.saved_run import SavedRunsCollection
 
+from prr.ui.prompt_files import PromptFiles
+
+
+def prompt_path():
+  return os.environ["__PRR_WEB_UI_PROMPT_PATH"]
+
 def collection():
-  return SavedRunsCollection(os.environ["__PRR_WEB_UI_PROMPT_PATH"])
+  return SavedRunsCollection(prompt_path())
 
 def render_args_for_run(run, service):
   return {
@@ -23,18 +31,20 @@ def render_args_for_run(run, service):
     "prompt_content": service.prompt_content(),
     "output_content": service.output_content(),
     "run_details": service.run_details(),
-    "prompt_file": os.path.basename(os.environ["__PRR_WEB_UI_PROMPT_PATH"])
+    "prompt_file": os.path.basename(prompt_path())
   }
 
-def render_args(request, run, service, run2=None, service2=None):
-    all_run_ids = [_run.id() for _run in collection().all()]
+def render_args(action, request, run, service, run2=None, service2=None):
+    all_runs = sorted(collection().all(), key=lambda run: run.id(), reverse=True)
+
     all_service_names = [_service.name() for _service in run.services()]
 
     _args = {
+      "action": action,
       "request": request,
       "primary": render_args_for_run(run, service),
       "secondary": False,
-      "all_run_ids": sorted(all_run_ids, key=int, reverse=True),
+      "all_runs": all_runs,
       "all_service_names": all_service_names,
     }
 
@@ -50,7 +60,7 @@ def service_from_run(run, service_name):
     return run.service(service_name)
 
 def run_from_collection(run_id):
-    if run_id == "latest" or run_id == None:
+    if run_id == None:
       return collection().latest()
 
     return collection().run(run_id)
@@ -59,16 +69,57 @@ def render_run(request, run_id=None, service_name=None):
     run = run_from_collection(run_id)
     service = service_from_run(run, service_name)
 
-    args = render_args(request, run, service)
+    args = render_args('run', request, run, service)
 
     return templates.TemplateResponse("run.html", args)
+
+def render_edit(request, file_id=None):
+    prompt_files = PromptFiles(prompt_path())
+
+    current_file_id = file_id
+
+    if current_file_id == None:
+      current_file_id = hashlib.md5(prompt_path().encode()).hexdigest()
+
+    current_file_path = prompt_files.get_file_path(current_file_id)
+    file_content = prompt_files.get_file_contents(current_file_id)
+
+    args = {
+      "action": "edit",
+      "request": request,
+      "files": prompt_files.files,
+      "current_file_id": current_file_id,
+      "file_content": file_content
+    }
+
+    return templates.TemplateResponse("edit.html", args)
+
+def render_runs_state(request):
+    all_runs = collection().all()
+
+    runs = []
+
+    for run in all_runs:
+      runs.append({ 'run_id': run.id(), 'state': run.state })
+
+    return Response(json.dumps({ 'all_runs': runs }), media_type='application/json')
+
+def render_update(request, data, file_id=None):
+
+    prompt_files = PromptFiles(prompt_path())
+
+    content = data['content']
+
+    prompt_files.update_file(file_id, content)
+
+    return Response('lol', media_type='text/plain')
 
 def render_diff(request, run_id=None, service_name=None, run_id2=None, service_name2=None):
     run = run_from_collection(run_id)
     service = service_from_run(run, service_name)
 
     if run_id2 == None:
-      run2 = collection().latest_minus_one()
+      run2 = collection().the_one_before(run.id())
     else:
       run2 = run_from_collection(run_id2)
 
@@ -80,7 +131,7 @@ def render_diff(request, run_id=None, service_name=None, run_id2=None, service_n
 
     service2 = service_from_run(run2, service_name2)
     
-    args = render_args(request, run, service, run2, service2)
+    args = render_args('diff', request, run, service, run2, service2)
 
     return templates.TemplateResponse("diff.html", args)
 
@@ -93,9 +144,9 @@ app.mount("/static", StaticFiles(directory=static_files_directory_path), name="s
 
 @app.get("/", response_class=RedirectResponse)
 async def root(request: Request):
-    return RedirectResponse("/runs/latest", status_code=302)
+    return RedirectResponse("/runs", status_code=302)
 
-@app.get("/runs/latest", response_class=HTMLResponse)
+@app.get("/runs", response_class=HTMLResponse)
 async def get_latest_run(request: Request):
     return render_run(request)
 
@@ -103,8 +154,29 @@ async def get_latest_run(request: Request):
 async def get_run(request: Request, run_id: str, service_name: str):
     return render_run(request, run_id, service_name)
 
+@app.get("/runs/state", response_class=Response)
+async def get_runs_state(request: Request):
+    return render_runs_state(request)
+
+@app.get("/edit", response_class=HTMLResponse)
+async def edit_index(request: Request):
+    return render_edit(request)
+
+@app.get("/edit/{file_id}", response_class=HTMLResponse)
+async def edit(request: Request, file_id: str):
+    return render_edit(request, file_id)
+
+@app.post("/edit/{file_id}", response_class=HTMLResponse)
+async def update(request: Request, file_id: str):
+    data = await request.json()
+    return render_update(request, data, file_id)
+
+@app.get("/compare", response_class=HTMLResponse)
+async def compare_latest(request: Request):
+    return render_diff(request)
+
 @app.get("/compare/{run_id}/{service_name}", response_class=HTMLResponse)
-async def compare_latest(request: Request, run_id: str, service_name: str):
+async def compare_with_latest_run(request: Request, run_id: str, service_name: str):
     return render_diff(request, run_id, service_name)
 
 @app.get("/compare/{run_id}/{service_name}/{run_id2}/{service_name2}", response_class=HTMLResponse)

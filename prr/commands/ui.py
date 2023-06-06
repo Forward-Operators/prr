@@ -31,13 +31,13 @@ class UIPromptCommand:
     def start(self):
         prompt_path = os.path.abspath(self.args["prompt_path"])
 
-        if os.path.exists(prompt_path) and os.path.access(prompt_path, os.R_OK):
+        if os.path.exists(prompt_path) and os.access(prompt_path, os.R_OK):
           self.console.log(f":magnifying_glass_tilted_left: Reading runs of {prompt_path}")
         else:
           raise Exception(f"Cannot read prompt file {prompt_path}")
 
         # a vital hack
         os.environ["__PRR_WEB_UI_PROMPT_PATH"] = prompt_path
-        
-        uvicorn.run("prr.ui:app", host="0.0.0.0", port=8000, reload=True)
+
+        uvicorn.run("prr.ui:app", host="0.0.0.0", port=8400, reload=True)
 

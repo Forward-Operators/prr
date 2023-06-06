@@ -1,5 +1,7 @@
 {% include "_header.html" %}
 <div>
+  {% include "_menu.html" %}
+
   <div class="file-list">
     {% for file_id, file in files.items() %}
       <div class="{{'current' if file_id == current_file_id }}">
@@ -10,22 +12,38 @@
 
   <script>
     function onEdit() {
-      console.log('onEdit')
       var editor = monaco.editor.getModels()[0];
       // console.log('onEdit editor', editor)
       var config = editor.getValue();
-      console.log('onEdit config', config)
-      var configJson = JSON.parse(config);
+      // console.log(config)
+      // var configJson = JSON.parse(config);
       // console.log('onEdit configJson', configJson)
-      var configYaml = jsyaml.dump(configJson);
+      // var configYaml = jsyaml.dump(configJson);
       // console.log('onEdit configYaml', configYaml)
       // document.getElementById('config').value = configYaml;
+
+      fetch('/edit/{{ current_file_id }}', {
+        method: 'POST', // Specify the method
+        headers: {
+          'Content-Type': 'application/json' // Set the data type
+        },
+        body: JSON.stringify({
+          content: config
+        })
+      })
+      .then(response => response.json()) // Parse the response as JSON
+      .then(data => {
+          console.log('Success:', data); // Log the response data
+      })
+      .catch((error) => {
+          console.error('Error:', error); // Log any errors
+      });
     }
   </script>
 
   <div 
     id="editor" 
-    style="width: 100vw;height: 100vh;"
+    style="width: 100vw;height: 100vh;resize: vertical;overflow: auto"
     onkeyup="onEdit()"
   ></div>
 
@@ -39,8 +57,20 @@
         minimap: {
           enabled: false,
         },
+        automaticLayout: true
       });
     });
+
+    // window.addEventListener('resize', handleWindowResize);
+
+    // function handleWindowResize() {
+    //   // Perform actions or execute code when the window is resized
+    //   console.log('Window resized!');
+    //   // You can access the updated window dimensions using the properties below
+    //   console.log('Window width:', window.innerWidth);
+    //   console.log('Window height:', window.innerHeight);
+    // }
+
   </script>
 </div>
 {% include "_footer.html" %}

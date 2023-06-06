@@ -19,11 +19,11 @@
   </div>
 {% endmacro %}
 
-{% macro primary_run_list(all_run_ids, current_service_name, current_run_id) %}
+{% macro primary_run_list(all_runs, current_service_name, current_run_id) %}
   <div class="run-list" id="primary-run-list">
-    {% for this_run_id in all_run_ids %}
-      <div class="{{'current' if this_run_id == current_run_id }}">
-        <a href="/runs/{{ this_run_id }}/{{ current_service_name }}">{{ this_run_id }}</a>
+    {% for this_run in all_runs %}
+      <div class="{{'current' if this_run.id() == current_run_id }} {{ 'in-progress' if this_run.state == 'in-progress' }}">
+        <a href="/runs/{{ this_run.id() }}/{{ current_service_name }}">{{ this_run.id() }}</a>
       </div>
     {% endfor %}
   </div>
@@ -39,11 +39,11 @@
   </div>
 {% endmacro %}
 
-{% macro secondary_run_list(all_run_ids, primary_service_name, primary_run_id, secondary_service_name, secondary_run_id) %}
+{% macro secondary_run_list(all_runs, primary_service_name, primary_run_id, secondary_service_name, secondary_run_id) %}
   <div class="run-list" id="secondary-run-list">
-    {% for this_run_id in all_run_ids %}
-      <div class="{{'current' if this_run_id == secondary_run_id }}">
-        <a href="/compare/{{ primary_run_id }}/{{ primary_service_name }}/{{ this_run_id }}/{{ secondary_service_name }}">{{ this_run_id }}</a>
+    {% for this_run in all_runs %}
+      <div class="{{'current' if this_run.id() == secondary_run_id }} {{ 'in-progress' if this_run.state == 'in-progress' }}">
+        <a href="/compare/{{ primary_run_id }}/{{ primary_service_name }}/{{ this_run.id() }}/{{ secondary_service_name }}">{{ this_run.id() }}</a>
       </div>
     {% endfor %}
   </div>
