@@ -6,6 +6,7 @@
 {% from "_run_helpers.html" import secondary_service_list with context %}
 {% from "_run_helpers.html" import secondary_run_list with context %}
 {% from "_run_helpers.html" import render_stats with context %}
+{% from "_run_helpers.html" import render_diff_pills with context %}
 
 <div id="main">
   {{ primary_service_list(all_service_names, primary.service_name, primary.run_id ) }}
@@ -27,7 +28,7 @@
           </div>
           <div class="model-name">{{ primary.run_details.request.model }}</div>
           <div class="service-description">
-            {{ render_pills(primary.run_details.request.options.items()) }}
+            {{ render_diff_pills(primary.run_details.request.options, secondary.run_details.request.options) }}
           </div>    
         </div>
         <div>
@@ -36,7 +37,7 @@
           </div>
           <div class="model-name">{{ secondary.run_details.request.model }}</div>
           <div class="service-description">
-            {{ render_pills(secondary.run_details.request.options.items()) }}
+            {{ render_diff_pills(secondary.run_details.request.options, primary.run_details.request.options) }}
           </div>
         </div>
       </div>
@@ -64,10 +65,10 @@
     <section>
       <div class="run-comparison">
         <div class="response-description">
-          {{ render_pills(primary.run_details.response.items()) }}
+          {{ render_diff_pills(primary.run_details.response, secondary.run_details.response) }}
         </div>
         <div class="response-description">
-          {{ render_pills(secondary.run_details.response.items()) }}
+          {{ render_diff_pills(secondary.run_details.response, primary.run_details.response) }}
         </div>    
       </div>
     </section>

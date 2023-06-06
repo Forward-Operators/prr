@@ -10,7 +10,7 @@
 
         body {
             color: #050505;
-            background-color: rgba(255, 255, 255, 0.05);
+            background-color: rgba(0, 0, 0, 0.05);
             font-family: 'Courier New', Courier, monospace;
             margin: 0;
             height: 100%;
@@ -101,6 +101,10 @@
           background-color: rgba(255, 0, 0, 0.15);
         }
 
+        div.pill.difference {
+          border-bottom: 1px solid yellow;
+        }
+
         div.service-description, div.response-description {
           display: flex;
           justify-content: space-around;
@@ -168,8 +172,8 @@
         }
 
         div#run {
-          background-color: rgba(255, 255, 255, 0.05);
           width: 100%;
+          height: 100vw;
         }
 
         div.service-list#secondary-service-list {
@@ -186,7 +190,7 @@
         }
 
         div.run-list#secondary-run-list {
-          padding-top: 25px;
+          padding-top: 26px;
         }
 
         div.run-list div {
@@ -240,6 +244,7 @@
           padding-top: 10px;
           z-index: 1000;
           height: 20px;
+          box-shadow: 0px 1px grey;
         }
 
         div#menu a {
@@ -279,12 +284,31 @@
           padding-bottom: 30px;
         }
 
+        section#stats .value {
+          font-weight: bold;
+        }
+
         div.stats {
           text-align: center;
         }
 
         div#editor {
           width: 100vw;
+        }
+
+        div#primary-service-list {
+          box-shadow: 0px 1px rgba(148, 148, 148, 0.2);
+        }
+
+        section#response {
+          width: 100%;
+          display: flex;
+          justify-content: space-around;
+        }
+
+        div.response-description {
+          min-width: 800px;
+          width: 60vw;
         }
 </style>
 </head>

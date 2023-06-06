@@ -56,3 +56,14 @@
   <span class="value">{{ "%.2f"|format(items['elapsed_time'])  }}s</span>
 </div>
 {% endmacro %}
+
+{% macro render_diff_pills(items, items2) %}
+  <div class="pills">
+    {% for key in items %}
+      <div class="pill {{ key }} {{ 'difference' if items[key] != items2[key] }}">
+        <span class="key">{{ key }}</span>
+        <span class="value">{{ items[key] }}</span>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
