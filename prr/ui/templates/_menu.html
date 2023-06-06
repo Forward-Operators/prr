@@ -1,0 +1,11 @@
+<div id="menu">
+  {% if action != 'diff' %}
+    <a href="/compare">Compare</a>
+  {% endif %}
+  {% if action != 'edit' %}
+    <a href="/edit">Edit</a>
+  {% endif %}
+  {% if action != 'run' %}
+  <a href="/runs">Runs</a>
+  {% endif %}
+</div>
