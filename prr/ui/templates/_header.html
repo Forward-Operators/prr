@@ -102,7 +102,7 @@
         }
 
         div.pill.difference {
-          border-bottom: 1px solid yellow;
+          border-bottom: 1px dashed yellow;
         }
 
         div.service-description, div.response-description {
@@ -309,6 +309,20 @@
         div.response-description {
           min-width: 800px;
           width: 60vw;
+        }
+
+        @keyframes blinker {
+          0% {opacity: 1;}
+          50% {opacity: 0;}
+          100% {opacity: 1;}
+        }
+
+        div.in-progress {
+          animation: blinker 0.5s linear infinite;
+        }
+
+        div#menu div {
+          display: inline-block;
         }
 </style>
 </head>

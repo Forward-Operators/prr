@@ -57,39 +57,4 @@
     </div>
 </div>
 
-<script>
-  let currentState = ''
-
-  function state2str (data) {
-    return data['all_runs'].map((run) => [run['run_id'], run['state']].join('|')).join(':')
-  }
-
-  function checkState() {
-    console.log('checkState current state:', currentState)
-    fetch('/runs/state', {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/json'
-      }
-    })
-    .then(response => response.json()) // Parse the response as JSON
-    .then(data => {
-      if (currentState != ''){
-        if(currentState != state2str(data)) {
-          console.log('we need reload. current state', currentState)
-          console.log('data', state2str(data))
-          window.location.reload()
-        }
-      }
-
-      currentState = state2str(data)
-    })
-    .catch((error) => {
-      console.error('Error:', error); // Log any errors
-    });
-  }
-
-  setInterval(checkState, 1000)
-</script>
-
 {% include "_footer.html" %}

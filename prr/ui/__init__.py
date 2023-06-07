@@ -2,7 +2,7 @@ import os
 import sys
 import json
 import hashlib
-
+import threading
 import webbrowser
 
 from fastapi import FastAPI, Request, APIRouter, Response
@@ -15,8 +15,20 @@ import uvicorn
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
 from prr.runner.saved_run import SavedRunsCollection
-
+from prr.runner import Runner
+from prr.prompt.prompt_loader import PromptConfigLoader
 from prr.ui.prompt_files import PromptFiles
+
+def run_prompt():
+  loader = PromptConfigLoader()
+  prompt_config = loader.load_from_path(prompt_path())
+
+  runner = Runner(prompt_config)
+
+  print("------- run_all_configured_services start")
+  runner.run_all_configured_services({}, True)
+  print("------- run_all_configured_services done")
+
 
 
 def prompt_path():
@@ -37,7 +49,7 @@ def render_args_for_run(run, service):
   }
 
 def render_args(action, request, run, service, run2=None, service2=None):
-    all_runs = sorted(collection().all(), key=lambda run: run.id(), reverse=True)
+    all_runs = sorted(collection().all(), key=lambda run: int(run.id()), reverse=True)
 
     all_service_names = [_service.name() for _service in run.services()]
 
@@ -57,6 +69,11 @@ def render_args(action, request, run, service, run2=None, service2=None):
 
 def service_from_run(run, service_name):
     if not service_name:
+      _services = run.services()
+
+      if len(_services) == 0:
+        return None
+
       return run.services()[0]
 
     return run.service(service_name)
@@ -68,6 +85,10 @@ def run_from_collection(run_id):
     return collection().run(run_id)
 
 def render_run(request, run_id=None, service_name=None):
+    if collection().is_empty():
+      args = { "request": request }
+      return templates.TemplateResponse("no-runs-yet.html", args)
+
     run = run_from_collection(run_id)
     service = service_from_run(run, service_name)
 
@@ -91,12 +112,13 @@ def render_edit(request, file_id=None):
       "request": request,
       "files": prompt_files.files,
       "current_file_id": current_file_id,
-      "file_content": file_content
+      "file_content": file_content,
+      "all_runs": collection().all(),
     }
 
     return templates.TemplateResponse("edit.html", args)
 
-def render_runs_state(request):
+def render_state(request):
     all_runs = collection().all()
 
     runs = []
@@ -146,10 +168,17 @@ app.mount("/static", StaticFiles(directory=static_files_directory_path), name="s
 
 @app.on_event("startup")
 async def startup_event():
-    webbrowser.open('http://localhost:8400/', new=2)
+    webbrowser.open('http://localhost:8400/edit', new=2)
 
 @app.get("/", response_class=RedirectResponse)
 async def root(request: Request):
+    return RedirectResponse("/runs", status_code=302)
+
+@app.post("/run", response_class=RedirectResponse)
+async def trigger_run(request: Request):
+    thread = threading.Thread(target=run_prompt)
+    thread.start()
+    
     return RedirectResponse("/runs", status_code=302)
 
 @app.get("/runs", response_class=HTMLResponse)
@@ -160,9 +189,9 @@ async def get_latest_run(request: Request):
 async def get_run(request: Request, run_id: str, service_name: str):
     return render_run(request, run_id, service_name)
 
-@app.get("/runs/state", response_class=Response)
+@app.get("/state", response_class=Response)
 async def get_runs_state(request: Request):
-    return render_runs_state(request)
+    return render_state(request)
 
 @app.get("/edit", response_class=HTMLResponse)
 async def edit_index(request: Request):

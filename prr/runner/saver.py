@@ -10,6 +10,23 @@ class PromptRunSaver:
         self.run_time = datetime.now()
         self.runs_subdir = self.run_root_directory_path()
 
+        if not os.path.isdir(self.runs_subdir):
+          os.makedirs(self.runs_subdir, exist_ok=True)
+
+    def mark_run_as_in_progress(self):
+        in_progress_file = os.path.join(self.runs_subdir, ".in-progress")
+        print ("------ CREATING IN PROGRESS FILE -----")
+        # create file with python
+        open(in_progress_file, 'a').close()
+
+    def mark_run_as_done(self):
+        in_progress_file = os.path.join(self.runs_subdir, ".in-progress")
+        print ("------ REMOVING IN PROGRESS FILE -----")
+        # removing file
+
+        if os.path.exists(in_progress_file):
+          os.remove(in_progress_file)
+
     def run_root_directory_path_for_runs_dir(self, runs_dir):
         try:
             previous_runs = os.listdir(runs_dir)

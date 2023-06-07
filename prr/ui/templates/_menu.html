@@ -1,11 +1,16 @@
 <div id="menu">
-  {% if action != 'diff' %}
-    <a href="/compare/{{ primary.run_id + '/' + primary.service_name if primary }}">Compare</a>
-  {% endif %}
+  <div id="run-button">
+    <a href="#" onClick="triggerRun()">▶️</a>
+  </div>
   {% if action != 'edit' %}
     <a href="/edit">Edit</a>
   {% endif %}
-  {% if action != 'run' %}
-  <a href="/runs">Runs</a>
+  {% if all_runs|length > 0 %}
+    {% if action != 'run' %}
+      <a href="/runs">Runs</a>
+    {% endif %}
+    {% if action != 'diff' %}
+      <a href="/compare/{{ primary.run_id + '/' + primary.service_name if primary }}">Compare</a>
+    {% endif %}
   {% endif %}
 </div>

@@ -12,7 +12,10 @@ class Runner:
         self.prompt_config = prompt_config
         self.saver = PromptRunSaver(self.prompt_config)
 
-    def run_service(self, service_name, service_options_overrides, save_run=False):
+    def run_service(self, service_name, service_options_overrides, save_run=False, single=True):
+        if save_run and single:
+          self.saver.mark_run_as_in_progress()
+
         service_config = self.prompt_config.service_with_name(service_name)
 
         service_config.process_option_overrides(service_options_overrides)
@@ -26,15 +29,24 @@ class Runner:
         else:
             run_save_directory = None
 
+        if save_run and single:
+          self.saver.mark_run_as_done()
+
         return result, run_save_directory
 
     # runs all models defined for specified prompt
     def run_all_configured_services(self, service_options_overrides, save_run=False):
         results = {}
 
-        for service_name in self.configured_services():
+        if save_run:
+          self.saver.mark_run_as_in_progress()
+
+        for service_name in self.prompt_config.configured_services():
             results[service_name] = self.run_service(
-                service_name, service_options_overrides, save_run
+                service_name, service_options_overrides, save_run, False
             )
+
+        if save_run:
+          self.saver.mark_run_as_done()
 
         return results
