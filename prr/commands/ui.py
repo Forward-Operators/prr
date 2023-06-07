@@ -57,3 +57,14 @@ class UIPromptCommand:
         # uvicorn.run("prr.ui:app", host="localhost", port=8400, reload=True, access_log=False)
         uvicorn.run("prr.ui:app", host="localhost", port=8400, reload=True, access_log=True)
 
+        # from prr.runner.saved_run import SavedRunsCollection
+        # src = SavedRunsCollection(prompt_path)
+
+        # # print(src)
+        # # print(src.all())
+
+        # for run in src.all():
+        #   print("RUN", run)
+        #   print("SERVICES", run.services())
+
+

@@ -11,10 +11,18 @@
   </div>
 
   <script>
+    window.editor_contents = {{ file_content|tojson }};
+
     function onEdit() {
+
       var editor = monaco.editor.getModels()[0];
       // console.log('onEdit editor', editor)
       var config = editor.getValue();
+
+      if (window.editor_contents == config) {
+        return;
+      }
+
       // console.log(config)
       // var configJson = JSON.parse(config);
       // console.log('onEdit configJson', configJson)
@@ -44,7 +52,6 @@
   <div 
     id="editor" 
     style="width: 100vw;height: 100vh;resize: vertical;overflow: auto"
-    onkeyup="onEdit()"
   ></div>
 
   <script src="/static/monaco-editor/min/vs/loader.js"></script>
@@ -57,7 +64,9 @@
         minimap: {
           enabled: false,
         },
-        automaticLayout: true
+        automaticLayout: true,
+        fontSize: "16px",
+        theme: 'vs-dark'
       });
     });
 
@@ -70,6 +79,8 @@
     //   console.log('Window width:', window.innerWidth);
     //   console.log('Window height:', window.innerHeight);
     // }
+
+    setInterval(onEdit, 2000);
 
   </script>
 </div>

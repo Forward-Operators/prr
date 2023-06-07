@@ -58,6 +58,7 @@
     .then(response => response.json()) // Parse the response as JSON
     .then(data => {
       console.log(data)
+      window.location = '/runs'
     })
     .catch((error) => {
       console.error('Error:', error); // Log any errors

@@ -18,70 +18,75 @@
   <div id="run">
     {% include "_menu.html" %}
 
-    <h2>PROMPT RUN COMPARISON</h2>
+    {% if primary.state == 'in-progress' %}
+      <div id="full-screen-info">
+        this run is still in progress...
+      </div>
+    {% else %}
+      <h2>PROMPT RUN COMPARISON</h2>
 
-    <section>
-      <div class="run-comparison">
-        <div>
-          <div class="service-name">
-            {{ primary.service_name }} (run #{{ primary.run_id }})
+      <section>
+        <div class="run-comparison">
+          <div>
+            <div class="service-name">
+              {{ primary.service_name }} (run #{{ primary.run_id }})
+            </div>
+            <div class="model-name">{{ primary.run_details.request.model }}</div>
+            <div class="service-description">
+              {{ render_diff_pills(primary.run_details.request.options, secondary.run_details.request.options) }}
+            </div>    
           </div>
-          <div class="model-name">{{ primary.run_details.request.model }}</div>
-          <div class="service-description">
-            {{ render_diff_pills(primary.run_details.request.options, secondary.run_details.request.options) }}
+          <div>
+            <div class="service-name">
+              {{ secondary.service_name }} (run #{{ secondary.run_id }})
+            </div>
+            <div class="model-name">{{ secondary.run_details.request.model }}</div>
+            <div class="service-description">
+              {{ render_diff_pills(secondary.run_details.request.options, primary.run_details.request.options) }}
+            </div>
+          </div>
+        </div>
+      </section>
+
+      
+      <h2>PROMPT</h2>
+      
+      <div id="primary-prompt-text" class="hidden">{{ primary.prompt_content }} </div>
+      <div id="secondary-prompt-text" class="hidden">{{ secondary.prompt_content }} </div>
+      <div class="text-container">
+        <div id="prompt-text-diff"></div>
+      </div>
+    
+      <h2>OUTPUT</h2>
+    
+      <div id="primary-output-text" class="hidden">{{ primary.output_content }} </div>
+      <div id="secondary-output-text" class="hidden">{{ secondary.output_content }} </div>
+      <div class="text-container">
+        <div id="output-text-diff"></div>
+      </div>
+    
+      <h2>RESPONSE</h2> 
+    
+      <section>
+        <div class="run-comparison">
+          <div class="response-description">
+            {{ render_diff_pills(primary.run_details.response, secondary.run_details.response) }}
+          </div>
+          <div class="response-description">
+            {{ render_diff_pills(secondary.run_details.response, primary.run_details.response) }}
           </div>    
         </div>
-        <div>
-          <div class="service-name">
-            {{ secondary.service_name }} (run #{{ secondary.run_id }})
-          </div>
-          <div class="model-name">{{ secondary.run_details.request.model }}</div>
-          <div class="service-description">
-            {{ render_diff_pills(secondary.run_details.request.options, primary.run_details.request.options) }}
-          </div>
+      </section>
+      
+      <h2>STATS</h2> 
+      
+      <section id="stats">
+        <div class="run-comparison">
+          {{ render_stats(primary.run_details.stats) }}
+          {{ render_stats(secondary.run_details.stats) }}
         </div>
-      </div>
-    </section>
-
-    
-    <h2>PROMPT</h2>
-    
-    <div id="primary-prompt-text" class="hidden">{{ primary.prompt_content }} </div>
-    <div id="secondary-prompt-text" class="hidden">{{ secondary.prompt_content }} </div>
-    <div class="text-container">
-      <div id="prompt-text-diff"></div>
-    </div>
-  
-    <h2>OUTPUT</h2>
-  
-    <div id="primary-output-text" class="hidden">{{ primary.output_content }} </div>
-    <div id="secondary-output-text" class="hidden">{{ secondary.output_content }} </div>
-    <div class="text-container">
-      <div id="output-text-diff"></div>
-    </div>
-  
-    <h2>RESPONSE</h2> 
-  
-    <section>
-      <div class="run-comparison">
-        <div class="response-description">
-          {{ render_diff_pills(primary.run_details.response, secondary.run_details.response) }}
-        </div>
-        <div class="response-description">
-          {{ render_diff_pills(secondary.run_details.response, primary.run_details.response) }}
-        </div>    
-      </div>
-    </section>
-    
-    <h2>STATS</h2> 
-    
-    <section id="stats">
-      <div class="run-comparison">
-        {{ render_stats(primary.run_details.stats) }}
-        {{ render_stats(secondary.run_details.stats) }}
-      </div>
-    </section>
-    
+      </section>
+    {% endif %}
   </div>
 
   {{ secondary_run_list(all_runs, primary.service_name, primary.run_id, secondary.service_name, secondary.run_id) }}

@@ -38,14 +38,22 @@ def collection():
   return SavedRunsCollection(prompt_path())
 
 def render_args_for_run(run, service):
+  if run.state == 'done' and service:
+    return {
+      "run_id": str(run.id()), 
+      "service_name": service.name(), 
+      "service": service,
+      "prompt_content": service.prompt_content(),
+      "output_content": service.output_content(),
+      "run_details": service.run_details(),
+      "prompt_file": os.path.basename(prompt_path()),
+      "state": run.state,
+      "prompt_name": os.path.basename(prompt_path())
+    }
+
   return {
     "run_id": str(run.id()), 
-    "service_name": service.name(), 
-    "service": service,
-    "prompt_content": service.prompt_content(),
-    "output_content": service.output_content(),
-    "run_details": service.run_details(),
-    "prompt_file": os.path.basename(prompt_path())
+    "state": run.state,
   }
 
 def render_args(action, request, run, service, run2=None, service2=None):
@@ -114,6 +122,7 @@ def render_edit(request, file_id=None):
       "current_file_id": current_file_id,
       "file_content": file_content,
       "all_runs": collection().all(),
+      "prompt_name": os.path.basename(prompt_path()),
     }
 
     return templates.TemplateResponse("edit.html", args)

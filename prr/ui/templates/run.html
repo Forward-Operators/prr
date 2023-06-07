@@ -15,45 +15,54 @@
     <div id="run">
       {% include "_menu.html" %}
 
-      <h2>PROMPT RUN REPORT</h2>
-
-      <section>
-        <div class="service-name">
-          {{ primary.service_name }} (run #{{ primary.run_id }})
+      {% if primary.state == 'in-progress' %}
+        <div id="full-screen-info">
+          this run is still in progress...
         </div>
-        <div class="model-name">{{ primary.run_details.request.model }}</div>
-        <div class="service-description">
-          {{ render_pills(primary.run_details.request.options.items()) }}
-        </div>    
-      </section>
+      {% else %}
+        <h2>PROMPT RUN REPORT</h2>
 
-      
-      <h2>PROMPT</h2>
-      
-      <div class="text-container">
-        <div id="primary-prompt-text">{{ primary.prompt_content }}</div>
-      </div>
-    
-      <h2>OUTPUT</h2>
-    
-      <div class="text-container">
-        <div id="primary-output-text">{{ primary.output_content }}</div>
-      </div>
-    
-      <h2>RESPONSE</h2> 
-    
-      <section id="response">
-        <div class="response-description">
-          {{ render_pills(primary.run_details.response.items()) }}
+        {% if primary.run_details %}
+          <section>
+            <div class="service-name">
+              {{ primary.service_name }} (run #{{ primary.run_id }})
+            </div>
+            <div class="model-name">{{ primary.run_details.request.model }}</div>
+            <div class="service-description">
+              {{ render_pills(primary.run_details.request.options.items()) }}
+            </div>    
+          </section>
+        {% endif %}
+
+        
+        <h2>PROMPT</h2>
+        
+        <div class="text-container">
+          <div id="primary-prompt-text">{{ primary.prompt_content }}</div>
         </div>
-      </section>
       
-      <h2>STATS</h2> 
+        <h2>OUTPUT</h2>
       
-      <section id="stats">
-        {{ render_stats(primary.run_details.stats) }}
-      </section>
+        <div class="text-container">
+          <div id="primary-output-text">{{ primary.output_content }}</div>
+        </div>
       
+        {% if primary.run_details %}
+          <h2>RESPONSE</h2> 
+        
+          <section id="response">
+            <div class="response-description">
+              {{ render_pills(primary.run_details.response.items()) }}
+            </div>
+          </section>
+          
+          <h2>STATS</h2> 
+          
+          <section id="stats">
+            {{ render_stats(primary.run_details.stats) }}
+          </section>
+        {% endif %}  
+      {% endif %}  
     </div>
 </div>
 
