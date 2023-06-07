@@ -3,6 +3,8 @@ import sys
 import json
 import hashlib
 
+import webbrowser
+
 from fastapi import FastAPI, Request, APIRouter, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -141,6 +143,10 @@ templates = Jinja2Templates(directory=(os.path.dirname(__file__) + "/templates")
 
 static_files_directory_path = os.path.dirname(__file__) + "/static"
 app.mount("/static", StaticFiles(directory=static_files_directory_path), name="static")
+
+@app.on_event("startup")
+async def startup_event():
+    webbrowser.open('http://localhost:8400/', new=2)
 
 @app.get("/", response_class=RedirectResponse)
 async def root(request: Request):
