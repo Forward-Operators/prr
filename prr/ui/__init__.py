@@ -39,7 +39,7 @@ def run_prompt():
   )
 
   runner.run_all_configured_services({}, True)
-  
+
   console.log(
       "✅ Done running prompt: "
       + "[green]"
@@ -86,6 +86,7 @@ def render_args(action, request, run, service, run2=None, service2=None):
       "secondary": False,
       "all_runs": all_runs,
       "all_service_names": all_service_names,
+      "prompt_name": os.path.basename(prompt_path()),
     }
 
     if run2 and service2:
