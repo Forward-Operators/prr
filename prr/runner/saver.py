@@ -15,7 +15,6 @@ class PromptRunSaver:
 
     def mark_run_as_in_progress(self):
         in_progress_file = os.path.join(self.runs_subdir, ".in-progress")
-        print ("------ CREATING IN PROGRESS FILE -----")
         # create file with python
         open(in_progress_file, 'a').close()
 

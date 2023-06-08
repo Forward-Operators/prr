@@ -12,11 +12,8 @@ class SavedServiceRun:
     return self.read_file(["prompt.yaml", "prompt"])
 
   def read_file(self, filenames):
-    print("------------ read_file(" + str(filenames) + ")")
     for filename in filenames:
-      print("------------ " + filename)
       filename_path = os.path.join(self.saved_service_run_path, filename)
-      print("------------ " + filename_path)
 
       if os.path.isfile(filename_path) and os.access(filename_path, os.R_OK):
         return open(filename_path, "r").read()
@@ -28,17 +25,14 @@ class SavedServiceRun:
   def run_details(self):
     #  try-catch on yaml load here
     content = self.run_details_content()
-    print ("CONTENT", content)
 
     if content:
       yaml_content = yaml.safe_load(content)
-      print ("YAML CONTENT", yaml_content)
       return yaml_content
 
     return {}
 
   def run_details_content(self):
-    print ("*** run_details_content")
     return self.read_file(["run.yaml"])
 
 
@@ -96,7 +90,7 @@ class SavedRunsCollection:
 
     run_subdirs = os.listdir(self.runs_directory_path)
 
-    run_subdirs = sorted(run_subdirs, key=lambda x: x.split('.')[0])
+    run_subdirs = sorted(run_subdirs, key=lambda x: int(x.split('.')[0]))
 
     return [SavedRun(os.path.join(self.runs_directory_path, run_subdir)) for run_subdir in run_subdirs]
 

@@ -3,14 +3,14 @@
     <a href="#" onClick="triggerRun()">▶️</a>
   </div>
   {% if action != 'edit' %}
-    <a href="/edit">Edit &raquo;</a>
+    <a href="/edit">✍️</a>
   {% endif %}
   {% if all_runs|length > 0 %}
     {% if action == 'edit'  %}
       <a href="/runs">Runs &raquo;</a>
     {% endif %}
     {% if action == 'edit' or action == 'run' %}
-      <a href="/compare">Compare &raquo;</a>
+      <a href="/compare">📁</a>
     {% endif %}
   {% endif %}
 </div>

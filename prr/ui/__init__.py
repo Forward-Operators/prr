@@ -5,6 +5,10 @@ import hashlib
 import threading
 import webbrowser
 
+from rich import print
+from rich.console import Console
+from rich.panel import Panel
+
 from fastapi import FastAPI, Request, APIRouter, Response
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
@@ -19,15 +23,29 @@ from prr.runner import Runner
 from prr.prompt.prompt_loader import PromptConfigLoader
 from prr.ui.prompt_files import PromptFiles
 
+console = Console(log_time=True, log_path=False)
+
 def run_prompt():
   loader = PromptConfigLoader()
   prompt_config = loader.load_from_path(prompt_path())
 
   runner = Runner(prompt_config)
 
-  print("------- run_all_configured_services start")
+  console.log(
+      "Running prompt:  "
+      + "[green]"
+      + prompt_path()
+      + "[/green]"
+  )
+
   runner.run_all_configured_services({}, True)
-  print("------- run_all_configured_services done")
+  
+  console.log(
+      "✅ Done running prompt: "
+      + "[green]"
+      + prompt_path()
+      + "[/green]"
+  )
 
 
 

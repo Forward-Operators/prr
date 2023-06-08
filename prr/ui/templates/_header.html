@@ -6,14 +6,20 @@
     <title>{{ prompt_name }}#{{ primary.run_id if primary }}/{{ service_name if service_name}}</title>
     <script src="/static/diff_match_patch.js"></script>
     <style>
-        html { height: 100%; }
+        html {
+          height: 100%;
+          width: 100%;
+          padding: 0;
+          margin: 0;
+        }
 
         body {
-            color: #050505;
-            background-color: rgba(0, 0, 0, 0.05);
-            font-family: 'Courier New', Courier, monospace;
-            margin: 0;
-            height: 100%;
+          color: #050505;
+          background-color: rgba(0, 0, 0, 0.05);
+          font-family: 'Courier New', Courier, monospace;
+          margin: 0;
+          height: 100%;
+          width: 100%;
         }
 
         .hidden {
@@ -113,9 +119,9 @@
         div.run-list {
           background-color: rgba(148, 148, 148, 1);
           color: white;
-          width: 25px;
+          width: 29px;
           text-align: center;
-          padding: 0;
+          padding-right: 1px;
           margin: 0;
           display: flex;
           flex-direction: column;
@@ -132,11 +138,11 @@
           width: 100%;
           padding: 0;
           margin: 0;
-          color: rgba(0, 0, 0, 0.5);
+          background-color: rgba(110, 110, 110);
         }
 
         div.file-list div {
-          margin-left: 25px;
+          margin-left: 30px;
         }
 
         div.run-list a:hover, div.service-list a:hover, div.file-list a:hover {
@@ -153,17 +159,27 @@
           color: rgba(148, 148, 148, 1);
         }
 
+        div.service-list div {
+          box-shadow: 0px 0px 1px rgba(100, 100, 100);
+        }
+
         div.service-list, div.file-list {
           background-color: rgba(148, 148, 148, 1);
           width: 100%;
-          height: 25px;
+          height: 30px;
           display: flex;
         }
 
         div.service-list div, div.file-list div {
-          margin-left: 25px;
+          margin-left: 30px;
           padding-left: 5px;
           padding-right: 5px;
+        }
+
+        div#main {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
         }
 
         div#run-list-and-content {
@@ -172,8 +188,11 @@
         }
 
         div#run {
-          width: 100%;
-          height: 100vw;
+          {% if secondary %}
+            max-width: calc(100vw - 60px);
+          {% else %}
+            max-width: calc(100vw - 30px);
+          {% endif %}
         }
 
         div.service-list#secondary-service-list {
@@ -186,11 +205,11 @@
 
         div.service-list#secondary-service-list div {
           margin-right: 20px;
-          box-shadow: 0px 1px grey;
+          box-shadow: 0px 1px 0px 0px rgba(100, 100, 100);
         }
 
         div.run-list#secondary-run-list {
-          padding-top: 26px;
+          padding-top: 18px;
         }
 
         div.run-list div {
@@ -198,8 +217,9 @@
           border-bottom-left-radius: 5px;
           padding-top: 3px;
           padding-bottom: 3px;
-          margin-left: 2px;
-          box-shadow: 0px 1px grey;
+          margin-left: 1px;
+          margin-top: 1px;
+          box-shadow: 0px 1px rgba(100, 100, 100);
         }
 
         div.run-list#secondary-run-list div {
@@ -244,7 +264,7 @@
           padding-top: 10px;
           z-index: 1000;
           height: 20px;
-          box-shadow: 0px 1px grey;
+          box-shadow: 0px 1px rgba(100, 100, 100);
         }
 
         div#menu a {
@@ -297,7 +317,14 @@
         }
 
         div#primary-service-list {
-          box-shadow: 0px 1px rgba(148, 148, 148, 0.2);
+          /* box-shadow: 0px 1px rgba(100, 100, 100); */
+          padding-top: 1px;
+          padding-bottom: 0px;
+          height: 30px;
+        }
+
+        div.service-list div {
+          padding-top: 5px;
         }
 
         section#response {
@@ -331,6 +358,10 @@
           width: 100%;
           height: 100vh;
           text-align: center;
+        }
+
+        div.service-list#secondary-service-list div {
+          margin-right: 29px;
         }
 </style>
 </head>

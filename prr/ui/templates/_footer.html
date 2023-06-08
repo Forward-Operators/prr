@@ -15,15 +15,16 @@
     })
     .then(response => response.json()) // Parse the response as JSON
     .then(data => {
-      console.log(data)
+      // console.log(data)
 
       run_in_progress = false
 
       if (currentState != ''){
         if(currentState != state2str(data)) {
-          console.log('we need reload. current state', currentState)
-          console.log('data', state2str(data))
-          window.location.reload()
+          console.log('would reload', window.location.pathname)
+          if (!window.location.pathname.startsWith('/edit')) {
+            window.location.reload()
+          } 
         }
       }
 
