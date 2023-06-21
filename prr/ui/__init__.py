@@ -18,7 +18,7 @@ import uvicorn
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
-from prr.runner.saved_run import SavedRunsCollection
+from prr.runner.saved_prompt_run import SavedPromptRunsCollection
 from prr.runner import Runner
 from prr.prompt.prompt_loader import PromptConfigLoader
 from prr.ui.prompt_files import PromptFiles
@@ -53,7 +53,7 @@ def prompt_path():
   return os.environ["__PRR_WEB_UI_PROMPT_PATH"]
 
 def collection():
-  return SavedRunsCollection(prompt_path())
+  return SavedPromptRunsCollection(prompt_path())
 
 def render_args_for_run(run, service):
   if run.state == 'done' and service:

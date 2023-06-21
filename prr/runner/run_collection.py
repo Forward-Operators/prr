@@ -3,23 +3,65 @@ from datetime import datetime
 
 import yaml
 
+from prr.runner.saved_prompt_run import SavedPromptRun
 
-class PromptRunSaver:
+class PromptRunCollection:
     def __init__(self, prompt_config):
         self.prompt_config = prompt_config
         self.run_time = datetime.now()
-        self.runs_subdir = self.run_root_directory_path()
+        self.dot_runs_dir = self.run_root_directory_path()
 
-        if not os.path.isdir(self.runs_subdir):
-          os.makedirs(self.runs_subdir, exist_ok=True)
+        if not os.path.isdir(self.dot_runs_dir):
+          self.runs = []
+          os.makedirs(self.dot_runs_dir, exist_ok=True)
+        else:
+          self.read_runs()
+
+    def read_runs(self):
+      if not os.path.isdir(self.dot_runs_dir):
+        self.runs = []
+      else:
+        run_subdirs_unsorted = os.listdir(self.dot_runs_dir)
+        run_subdirs = sorted(run_subdirs_unsorted, key=lambda x: int(x))
+        self.runs = [SavedPromptRun(os.path.join(self.dot_runs_dir, run_dir)) for run_dir in run_subdirs]
+
+    def is_empty(self):
+      return self.runs == []
+
+    def has_done_runs(self):
+      done_runs = [run for run in self.runs if run.state == 'done']
+
+      if len(done_runs) == 0:
+        return False
+
+      return True
+
+    def latest_run(self):
+      if len(self.runs) == 0:
+        return None
+
+      return self.runs[-1]
+
+    def the_one_before(self, run_id):
+      if int(run_id) == "1":
+        return self.run(run_id)
+      else:
+        return self.run(str(int(run_id) - 1))
+
+    def run(self, run_id):
+      for run in self.runs:
+        if run.id() == run_id:
+          return run
+
+      return None
 
     def mark_run_as_in_progress(self):
-        in_progress_file = os.path.join(self.runs_subdir, ".in-progress")
+        in_progress_file = os.path.join(self.dot_runs_dir, ".in-progress")
         # create file with python
         open(in_progress_file, 'a').close()
 
     def mark_run_as_done(self):
-        in_progress_file = os.path.join(self.runs_subdir, ".in-progress")
+        in_progress_file = os.path.join(self.dot_runs_dir, ".in-progress")
         print ("------ REMOVING IN PROGRESS FILE -----")
         # removing file
 
@@ -61,7 +103,7 @@ class PromptRunSaver:
     def run_directory_path(self, service_or_model_name):
         model_name_part = service_or_model_name.replace("/", "-")
 
-        return os.path.join(self.runs_subdir, model_name_part)
+        return os.path.join(self.dot_runs_dir, model_name_part)
 
     def prepare_run_directory(self, service_or_model_name):
         run_dir = self.run_directory_path(service_or_model_name)

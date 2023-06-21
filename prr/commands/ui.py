@@ -11,7 +11,7 @@ from rich.panel import Panel
 from prr.prompt import Prompt
 from prr.prompt.prompt_loader import PromptConfigLoader
 from prr.runner import Runner
-from prr.runner.saved_run import SavedRunsCollection
+from prr.runner.saved_prompt_run import SavedPromptRunsCollection
 
 import uvicorn
 
@@ -40,7 +40,7 @@ class UIPromptCommand:
         with open(prompt_path, "w") as dst:
           with open(DEFAULT_TEMPLATE_PATH, "r") as src:
             dst.write(src.read())
-            
+
             self.prompt_path = prompt_path
       else:
         raise Exception(f"Cannot create prompt file {prompt_path}")
@@ -65,4 +65,4 @@ class UIPromptCommand:
         # a vital hack to pass the prompt path to the web ui
         os.environ["__PRR_WEB_UI_PROMPT_PATH"] = self.prompt_path
 
-        uvicorn.run("prr.ui:app", host="localhost", port=8400, reload=True, access_log=True)
+        uvicorn.run("prr.ui:app", host="localhost", port=8400, reload=True, access_log=False)
