@@ -14,7 +14,7 @@ class Runner:
 
     def run_service(self, service_name, service_options_overrides, save_run=False, single=True):
         if save_run and single:
-          self.run_collection.mark_run_as_in_progress()
+          self.current_run_in_collection = self.run_collection.start_new_run()
 
         service_config = self.prompt_config.service_with_name(service_name)
 
@@ -25,12 +25,12 @@ class Runner:
         result = PromptRun(self.prompt_config, service, service_config).run()
 
         if save_run:
-            run_save_directory = self.run_collection.save(service_name, result)
+            run_save_directory = self.run_collection.save_run(service_name, result)
         else:
             run_save_directory = None
 
         if save_run and single:
-          self.run_collection.mark_run_as_done()
+          self.run_collection.finish_current_run()
 
         return result, run_save_directory
 
@@ -39,7 +39,7 @@ class Runner:
         results = {}
 
         if save_run:
-          self.run_collection.mark_run_as_in_progress()
+          self.run_collection.start_new_run()
 
         for service_name in self.prompt_config.configured_services():
             results[service_name] = self.run_service(
@@ -47,6 +47,6 @@ class Runner:
             )
 
         if save_run:
-          self.run_collection.mark_run_as_done()
+          self.run_collection.finish_current_run()
 
         return results

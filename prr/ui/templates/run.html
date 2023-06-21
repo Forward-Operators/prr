@@ -6,30 +6,30 @@
 {% from "_run_helpers.html" import render_stats with context %}
 
 <div id="main">
-  {{ primary_service_list(all_service_names, primary.service_name, primary.run_id) }}
+  {{ primary_service_list(all_service_names, run.service_name, run.run_id) }}
 
   <div id="run-list-and-content">
 
-    {{ primary_run_list(all_runs, primary.service_name, primary.run_id) }}
+    {{ primary_run_list(all_runs, run.service_name, run.run_id) }}
 
     <div id="run">
       {% include "_menu.html" %}
 
-      {% if primary.state == 'in-progress' %}
+      {% if run.state == 'in-progress' %}
         <h2>
           this run is still in progress...
         </h2>
       {% else %}
         <h2>PROMPT RUN REPORT</h2>
 
-        {% if primary.run_details %}
+        {% if run.run_details %}
           <section>
             <div class="service-name">
-              {{ primary.service_name }} (run #{{ primary.run_id }})
+              {{ run.service_name }} (run #{{ run.run_id }})
             </div>
-            <div class="model-name">{{ primary.run_details.request.model }}</div>
+            <div class="model-name">{{ run.run_details.request.model }}</div>
             <div class="service-description">
-              {{ render_pills(primary.run_details.request.options.items()) }}
+              {{ render_pills(run.run_details.request.options.items()) }}
             </div>    
           </section>
         {% endif %}
@@ -38,28 +38,28 @@
         <h2>PROMPT</h2>
         
         <div class="text-container">
-          <div id="primary-prompt-text">{{ primary.prompt_content }}</div>
+          <div id="primary-prompt-text">{{ run.prompt_content }}</div>
         </div>
       
         <h2>OUTPUT</h2>
       
         <div class="text-container">
-          <div id="primary-output-text">{{ primary.output_content }}</div>
+          <div id="primary-output-text">{{ run.output_content }}</div>
         </div>
       
-        {% if primary.run_details %}
+        {% if run.run_details %}
           <h2>RESPONSE</h2> 
         
           <section id="response">
             <div class="response-description">
-              {{ render_pills(primary.run_details.response.items()) }}
+              {{ render_pills(run.run_details.response.items()) }}
             </div>
           </section>
           
           <h2>STATS</h2> 
           
           <section id="stats">
-            {{ render_stats(primary.run_details.stats) }}
+            {{ render_stats(run.run_details.stats) }}
           </section>
         {% endif %}  
       {% endif %}  

@@ -5,12 +5,10 @@
   {% if action != 'edit' %}
     <a href="/edit">✍️</a>
   {% endif %}
-  {% if all_runs|length > 0 %}
-    {% if action == 'edit'  %}
-      <a href="/runs">Runs &raquo;</a>
-    {% endif %}
-    {% if action == 'edit' or action == 'run' %}
-      <a href="/compare">📁</a>
-    {% endif %}
+  {% if action == 'edit'  %}
+    <a href="/runs">📁</a>
   {% endif %}
-</div>
+  {% if action == 'edit' or action == 'run' %}
+    <a href="/compare">↔️</a>
+  {% endif %}
+  </div>

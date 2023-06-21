@@ -11,6 +11,21 @@ class SavedPromptRun:
     self.read_state()
     self.read_service_runs()
 
+  def in_progress_file_path(self):
+    return os.path.join(self.run_subdir, ".in-progress")
+
+  def mark_as_in_progress(self):
+    if not os.path.exists(self.run_subdir):
+      os.makedirs(self.run_subdir)
+
+    open(self.in_progress_file_path(), 'a').close()
+
+  def mark_as_done(self):
+      in_progress_file = self.in_progress_file_path()
+
+      if os.path.exists(in_progress_file):
+          os.remove(in_progress_file)
+
   def read_state(self):
     self.state = 'done'
 
@@ -20,9 +35,10 @@ class SavedPromptRun:
   def read_service_runs(self):
     service_subdirs = []
 
-    for service_subdir in os.listdir(self.run_subdir):
-      if service_subdir.startswith('.'):
-        continue
+    if os.path.exists(self.run_subdir):
+      for service_subdir in os.listdir(self.run_subdir):
+        if service_subdir.startswith('.'):
+          continue
 
       service_subdirs.append(service_subdir)
       
@@ -35,3 +51,17 @@ class SavedPromptRun:
     for run in self.service_runs:
       if run.name() == service_name:
         return run
+
+  def last_service_run(self):
+    if len(self.service_runs) == 0:
+      return None
+
+    return self.service_runs[-1]
+
+  def save_service_run(self, service_name, result):
+      run_directory = os.path.join(self.run_subdir, service_name.replace('/', '-'))
+
+      new_saved_service_run = SavedServiceRun(run_directory)
+      new_saved_service_run.save(result)
+
+      return run_directory

@@ -11,7 +11,7 @@ from rich.panel import Panel
 from prr.prompt import Prompt
 from prr.prompt.prompt_loader import PromptConfigLoader
 from prr.runner import Runner
-from prr.runner.saved_prompt_run import SavedPromptRunsCollection
+from prr.runner.run_collection import PromptRunCollection
 
 import uvicorn
 
@@ -31,9 +31,6 @@ class UIPromptCommand:
             self.console = Console(log_time=False, log_path=False)
 
     def create_default_config(self, prompt_path):
-      if not prompt_path.endswith(".yaml"):
-        prompt_path = prompt_path + ".yaml"
-
       if os.access(os.path.dirname(prompt_path), os.W_OK):
         self.console.log(f":magnifying_glass_tilted_left: {prompt_path} not found, creating it from template")
 
@@ -48,6 +45,9 @@ class UIPromptCommand:
 
     def prepare_prompt_path(self):
         prompt_path = os.path.abspath(self.args["prompt_path"])
+
+        if not prompt_path.endswith(".yaml"):
+          prompt_path = prompt_path + ".yaml"
 
         if os.path.exists(prompt_path): 
           if os.access(prompt_path, os.R_OK):
@@ -65,4 +65,4 @@ class UIPromptCommand:
         # a vital hack to pass the prompt path to the web ui
         os.environ["__PRR_WEB_UI_PROMPT_PATH"] = self.prompt_path
 
-        uvicorn.run("prr.ui:app", host="localhost", port=8400, reload=True, access_log=False)
+        uvicorn.run("prr.ui:app", host="localhost", port=8400, reload=True, access_log=True)

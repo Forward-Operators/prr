@@ -9,13 +9,24 @@ class PromptRunCollection:
     def __init__(self, prompt_config):
         self.prompt_config = prompt_config
         self.run_time = datetime.now()
-        self.dot_runs_dir = self.run_root_directory_path()
+        self.dot_runs_dir = self.dot_runs_path()
+        self.current_run = None
 
         if not os.path.isdir(self.dot_runs_dir):
           self.runs = []
-          os.makedirs(self.dot_runs_dir, exist_ok=True)
         else:
           self.read_runs()
+
+    def start_new_run(self):
+        self.current_run = SavedPromptRun(self.new_run_path(self.dot_runs_dir))
+        self.current_run.mark_as_in_progress()
+
+    def finish_current_run(self):
+        self.current_run.mark_as_done()
+        self.current_run = None
+
+    def save_run(self, service_name, result):
+        self.current_run.save_service_run(service_name, result)
 
     def read_runs(self):
       if not os.path.isdir(self.dot_runs_dir):
@@ -50,25 +61,12 @@ class PromptRunCollection:
 
     def run(self, run_id):
       for run in self.runs:
-        if run.id() == run_id:
+        if run.id == run_id:
           return run
 
       return None
 
-    def mark_run_as_in_progress(self):
-        in_progress_file = os.path.join(self.dot_runs_dir, ".in-progress")
-        # create file with python
-        open(in_progress_file, 'a').close()
-
-    def mark_run_as_done(self):
-        in_progress_file = os.path.join(self.dot_runs_dir, ".in-progress")
-        print ("------ REMOVING IN PROGRESS FILE -----")
-        # removing file
-
-        if os.path.exists(in_progress_file):
-          os.remove(in_progress_file)
-
-    def run_root_directory_path_for_runs_dir(self, runs_dir):
+    def new_run_path(self, runs_dir):
         try:
             previous_runs = os.listdir(runs_dir)
         except FileNotFoundError:
@@ -83,7 +81,7 @@ class PromptRunCollection:
 
             run_id += 1
 
-    def run_root_directory_path(self):
+    def dot_runs_path(self):
         dirname = self.prompt_config.search_path
 
         if self.prompt_config.filename:
@@ -96,9 +94,7 @@ class PromptRunCollection:
         if extension == ".yaml":
             basename = root
 
-        runs_dir = os.path.join(dirname, f"{basename}.runs")
-
-        return self.run_root_directory_path_for_runs_dir(runs_dir)
+        return os.path.join(dirname, f"{basename}.runs")
 
     def run_directory_path(self, service_or_model_name):
         model_name_part = service_or_model_name.replace("/", "-")
@@ -111,40 +107,3 @@ class PromptRunCollection:
         os.makedirs(run_dir, exist_ok=True)
 
         return run_dir
-
-    def save_prompt(self, run_directory, request):
-        prompt_content = request.prompt_content
-
-        if prompt_content:
-            if isinstance(prompt_content, str):
-                prompt_file = os.path.join(run_directory, f"prompt")
-
-                with open(prompt_file, "w") as f:
-                    f.write(prompt_content)
-            else:
-                prompt_file = os.path.join(run_directory, f"prompt.yaml")
-
-                with open(prompt_file, "w") as f:
-                    yaml.dump(prompt_content, f, default_flow_style=False)
-
-    def save_completion(self, run_directory, response):
-        completion_file = os.path.join(run_directory, f"output")
-
-        with open(completion_file, "w") as f:
-            f.write(response.response_content)
-
-    def save_run(self, run_directory, result):
-        run_file = os.path.join(run_directory, f"run.yaml")
-        run_data = result.metrics()
-
-        with open(run_file, "w") as f:
-            yaml.dump(run_data, f, default_flow_style=False)
-
-    def save(self, service_or_model_name, result):
-        run_directory = self.prepare_run_directory(service_or_model_name)
-
-        self.save_prompt(run_directory, result.request)
-        self.save_completion(run_directory, result.response)
-        self.save_run(run_directory, result)
-
-        return run_directory

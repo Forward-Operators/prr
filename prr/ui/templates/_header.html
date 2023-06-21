@@ -4,15 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>
-      {% if primary %}
-        {% if primary.service_name %}
-          {{ prompt_name }}#{{ primary.run_id }}/{{ primary.service_name }}
-        {% else %}
-          {{ prompt_name }}#{{ primary.run_id }}
-        {% endif %}
-      {% else %}
-        {{ prompt_name }}
-      {% endif %}
+      {{ page_title }}
     </title>
     <script src="/static/diff_match_patch.js"></script>
     <style>
@@ -376,4 +368,3 @@
 </style>
 </head>
 <body>
-
