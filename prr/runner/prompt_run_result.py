@@ -21,7 +21,7 @@ class PromptRunResult:
 
     def update_with_response(self, response):
         self.response = response
-        self.tokens_generated = self.response.tokens_used()
+        self.tokens_generated = self.response.tokens_generated()
 
         if self.tokens_generated != None:
           self.tokens_per_second = self.tokens_generated / self.elapsed_time

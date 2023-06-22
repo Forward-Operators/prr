@@ -90,6 +90,8 @@ class DiffRenderer:
   def render_template_args(self, request, run, service, run2, service2):
     all_runs = sorted(self.collection.runs, key=lambda run: int(run.id), reverse=True)
     all_service_names = run.service_run_names()
+    requests_option_keys = sorted(set(service.run_details()['request']['options'].keys()) | set(service2.run_details()['request']['options'].keys()))
+    response_keys = sorted(set(service.run_details()['response'].keys()) | set(service2.run_details()['response'].keys()))
 
     return {
       "action": "diff",
@@ -100,6 +102,8 @@ class DiffRenderer:
       "all_service_names": all_service_names,
       "prompt_name": self.prompt_name(),
       "prompt_file": self.prompt_path,
+      "requests_option_keys": requests_option_keys, 
+      "response_keys": response_keys, 
       "page_title": f'{self.prompt_name()}/#{run.id}/{service.name()} vs #{run2.id}/{service2.name()}',
     }
 

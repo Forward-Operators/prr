@@ -70,9 +70,6 @@ class RunRenderer:
 
     args = self.render_args('run', request, run, service)
 
-    print("run args from")
-    print(args)
-
     return templates.TemplateResponse("run.html", args)
 
   def run_args(self, run, service):

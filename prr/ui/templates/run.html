@@ -1,9 +1,10 @@
 {% include "_header.html" %}
 
-{% from "_run_helpers.html" import render_pills with context %}
 {% from "_run_helpers.html" import primary_service_list with context %}
 {% from "_run_helpers.html" import primary_run_list with context %}
-{% from "_run_helpers.html" import render_stats with context %}
+{% from "_run_helpers.html" import render_request_table with context %}
+{% from "_run_helpers.html" import render_response_table with context %}
+{% from "_run_helpers.html" import render_response_stats_table with context %}
 
 <div id="main">
   {{ primary_service_list(all_service_names, run.service_name, run.run_id) }}
@@ -22,24 +23,20 @@
       {% else %}
         <h2>PROMPT RUN REPORT</h2>
 
-        {% if run.run_details %}
+        <div class="section-wrapper">
           <section>
-            <div class="service-name">
-              {{ run.service_name }} (run #{{ run.run_id }})
-            </div>
-            <div class="model-name">{{ run.run_details.request.model }}</div>
-            <div class="service-description">
-              {{ render_pills(run.run_details.request.options.items()) }}
-            </div>    
+            {{ render_request_table(run) }}
           </section>
-        {% endif %}
+        </div>
 
-        <h2>STATS</h2> 
-          
-        <section id="stats">
-          {{ render_stats(run.run_details.stats) }}
-        </section>
+        <h2>STATS</h2>
 
+        <div class="section-wrapper">
+          <section>
+            {{ render_response_stats_table(run) }}
+          </section>
+        </div>  
+  
         <h2>PROMPT</h2>
         
         <div class="text-container">
@@ -55,11 +52,11 @@
         {% if run.run_details %}
           <h2>RESPONSE DETAILS</h2> 
         
-          <section id="response">
-            <div class="response-description">
-              {{ render_pills(run.run_details.response.items()) }}
-            </div>
-          </section>          
+          <div class="section-wrapper">
+            <section>
+              {{ render_response_table(run.run_details.response) }}
+            </section>      
+          </div>
         {% endif %}  
       {% endif %}  
     </div>
