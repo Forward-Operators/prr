@@ -65,6 +65,9 @@ class RunRenderer:
     else:
       service = run.service_run(service_name)
 
+      if service == None:
+        service = run.last_service_run()
+
     args = self.render_args('run', request, run, service)
 
     print("run args from")

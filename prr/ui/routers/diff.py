@@ -41,6 +41,9 @@ class DiffRenderer:
         service2 = run2.last_service_run()
       else:
         service2 = run2.service_run(service_name2)
+
+        if service2 == None:
+          service2 = run2.last_service_run()
     else:
       run2 = run
       service2 = service
