@@ -1,17 +1,9 @@
 #!/usr/bin/env python
 
 import os
-import sys
 from io import StringIO
 
-from rich import print
 from rich.console import Console
-from rich.panel import Panel
-
-from prr.prompt import Prompt
-from prr.prompt.prompt_loader import PromptConfigLoader
-from prr.runner import Runner
-from prr.runner.run_collection import PromptRunCollection
 
 import uvicorn
 

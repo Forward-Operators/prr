@@ -67,6 +67,7 @@ class RunRenderer:
 
     args = self.render_args('run', request, run, service)
 
+    print("run args from")
     print(args)
 
     return templates.TemplateResponse("run.html", args)
@@ -93,8 +94,7 @@ class RunRenderer:
 
   def render_args(self, action, request, run, service):
     all_runs = sorted(self.collection.runs, key=lambda run: int(run.id), reverse=True)
-
-    all_service_names = [_service.name() for _service in run.service_runs]
+    all_service_names = run.service_run_names()
 
     return {
       "action": action,

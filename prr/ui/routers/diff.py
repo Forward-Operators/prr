@@ -1,5 +1,4 @@
 import os
-import threading
 
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
@@ -7,7 +6,6 @@ from fastapi.templating import Jinja2Templates
 
 from prr.runner.run_collection import PromptRunCollection
 from prr.prompt.prompt_loader import PromptConfigLoader
-from prr.runner import Runner
 
 diff_router = APIRouter()
 
@@ -22,17 +20,7 @@ class DiffRenderer:
 
     self.collection = PromptRunCollection(self.prompt_config)
 
-  def diff(self, request, run_id=None, service_name=None, run_id2=None, service_name2=None):
-    if self.collection.is_empty():
-      message = f"No runs for {self.prompt_name()} yet"
-      args = { 
-        "request": request,
-        "page_title": message,
-        "error_message": message
-      }
-
-      return templates.TemplateResponse("error.html", args)
-
+  def process_arguments(self, run_id, service_name, run_id2, service_name2):
     if run_id == None:
       run = self.collection.latest_run()
     else:
@@ -57,11 +45,26 @@ class DiffRenderer:
       run2 = run
       service2 = service
 
-    args = self.render_args(request, run, service, run2, service2)
+    return run, service, run2, service2
 
-    return templates.TemplateResponse("diff.html", args)
+  def diff(self, request, run_id=None, service_name=None, run_id2=None, service_name2=None):
+    if self.collection.is_empty():
+      message = f"No runs for {self.prompt_name()} yet"
+      template_args = { 
+        "request": request,
+        "page_title": message,
+        "error_message": message
+      }
 
-  def run_args(self, run, service):
+      return templates.TemplateResponse("error.html", template_args)
+
+    run, service, run2, service2 = self.process_arguments(run_id, service_name, run_id2, service_name2)
+
+    template_args = self.render_template_args(request, run, service, run2, service2)
+
+    return templates.TemplateResponse("diff.html", template_args)
+
+  def run_template_args(self, run, service):
     if run.state == 'done' and service:
       return {
         "run_id": str(run.id), 
@@ -81,16 +84,15 @@ class DiffRenderer:
   def prompt_name(self):
     return os.path.basename(self.prompt_path)
 
-  def render_args(self, request, run, service, run2, service2):
+  def render_template_args(self, request, run, service, run2, service2):
     all_runs = sorted(self.collection.runs, key=lambda run: int(run.id), reverse=True)
-
-    all_service_names = [_service.name() for _service in run.service_runs]
+    all_service_names = run.service_run_names()
 
     return {
       "action": "diff",
       "request": request,
-      "run": self.run_args(run, service),
-      "run2": self.run_args(run2, service2),
+      "run": self.run_template_args(run, service),
+      "run2": self.run_template_args(run2, service2),
       "all_runs": all_runs,
       "all_service_names": all_service_names,
       "prompt_name": self.prompt_name(),

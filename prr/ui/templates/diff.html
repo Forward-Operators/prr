@@ -9,16 +9,16 @@
 {% from "_run_helpers.html" import render_diff_pills with context %}
 
 <div id="main">
-  {{ primary_service_list(all_service_names, primary.service_name, primary.run_id ) }}
+  {{ primary_service_list(all_service_names, run.service_name, run.run_id ) }}
 
   <div id="run-list-and-content">
 
-  {{ primary_run_list(all_runs, primary.service_name, primary.run_id) }}
+  {{ primary_run_list(all_runs, run.service_name, run.run_id) }}
 
   <div id="run">
     {% include "_menu.html" %}
 
-    {% if primary.state == 'in-progress' %}
+    {% if run.state == 'in-progress' %}
       <h2>
         this run is still in progress...
       </h2>
@@ -29,20 +29,20 @@
         <div class="run-comparison">
           <div>
             <div class="service-name">
-              {{ primary.service_name }} (run #{{ primary.run_id }})
+              {{ run.service_name }} (run #{{ run.run_id }})
             </div>
-            <div class="model-name">{{ primary.run_details.request.model }}</div>
+            <div class="model-name">{{ run.run_details.request.model }}</div>
             <div class="service-description">
-              {{ render_diff_pills(primary.run_details.request.options, secondary.run_details.request.options) }}
+              {{ render_diff_pills(run.run_details.request.options, run2.run_details.request.options) }}
             </div>    
           </div>
           <div>
             <div class="service-name">
-              {{ secondary.service_name }} (run #{{ secondary.run_id }})
+              {{ run2.service_name }} (run #{{ run2.run_id }})
             </div>
-            <div class="model-name">{{ secondary.run_details.request.model }}</div>
+            <div class="model-name">{{ run2.run_details.request.model }}</div>
             <div class="service-description">
-              {{ render_diff_pills(secondary.run_details.request.options, primary.run_details.request.options) }}
+              {{ render_diff_pills(run2.run_details.request.options, run.run_details.request.options) }}
             </div>
           </div>
         </div>
@@ -51,16 +51,16 @@
       
       <h2>PROMPT</h2>
       
-      <div id="primary-prompt-text" class="hidden">{{ primary.prompt_content }} </div>
-      <div id="secondary-prompt-text" class="hidden">{{ secondary.prompt_content }} </div>
+      <div id="primary-prompt-text" class="hidden">{{ run.prompt_content }} </div>
+      <div id="secondary-prompt-text" class="hidden">{{ run2.prompt_content }} </div>
       <div class="text-container">
         <div id="prompt-text-diff"></div>
       </div>
     
       <h2>OUTPUT</h2>
     
-      <div id="primary-output-text" class="hidden">{{ primary.output_content }} </div>
-      <div id="secondary-output-text" class="hidden">{{ secondary.output_content }} </div>
+      <div id="primary-output-text" class="hidden">{{ run.output_content }} </div>
+      <div id="secondary-output-text" class="hidden">{{ run2.output_content }} </div>
       <div class="text-container">
         <div id="output-text-diff"></div>
       </div>
@@ -70,10 +70,10 @@
       <section>
         <div class="run-comparison">
           <div class="response-description">
-            {{ render_diff_pills(primary.run_details.response, secondary.run_details.response) }}
+            {{ render_diff_pills(run.run_details.response, run2.run_details.response) }}
           </div>
           <div class="response-description">
-            {{ render_diff_pills(secondary.run_details.response, primary.run_details.response) }}
+            {{ render_diff_pills(run2.run_details.response, run.run_details.response) }}
           </div>    
         </div>
       </section>
@@ -82,17 +82,17 @@
       
       <section id="stats">
         <div class="run-comparison">
-          {{ render_stats(primary.run_details.stats) }}
-          {{ render_stats(secondary.run_details.stats) }}
+          {{ render_stats(run.run_details.stats) }}
+          {{ render_stats(run2.run_details.stats) }}
         </div>
       </section>
     {% endif %}
   </div>
 
-  {{ secondary_run_list(all_runs, primary.service_name, primary.run_id, secondary.service_name, secondary.run_id) }}
+  {{ secondary_run_list(all_runs, run.service_name, run.run_id, run2.service_name, run2.run_id) }}
 </div>
 
-  {{ secondary_service_list(all_service_names, primary.service_name, primary.run_id, secondary.service_name, secondary.run_id) }}
+  {{ secondary_service_list(all_service_names, run.service_name, run.run_id, run2.service_name, run2.run_id) }}
 </div>
 
 <script>

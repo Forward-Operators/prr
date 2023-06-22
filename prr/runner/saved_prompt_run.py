@@ -33,16 +33,16 @@ class SavedPromptRun:
       self.state = 'in-progress'
 
   def read_service_runs(self):
-    service_subdirs = []
+    self.service_runs = []
 
     if os.path.exists(self.run_subdir):
-      for service_subdir in os.listdir(self.run_subdir):
+      service_subdirs = sorted(os.listdir(self.run_subdir))
+      for service_subdir in service_subdirs:
+        # ignore .in-progress and similar files
         if service_subdir.startswith('.'):
           continue
 
-      service_subdirs.append(service_subdir)
-      
-    self.service_runs = [SavedServiceRun(os.path.join(self.run_subdir, service_subdir)) for service_subdir in service_subdirs]
+        self.service_runs.append(SavedServiceRun(os.path.join(self.run_subdir, service_subdir)))
 
   def read_id(self):
     self.id = os.path.basename(self.run_subdir)
@@ -51,6 +51,16 @@ class SavedPromptRun:
     for run in self.service_runs:
       if run.name() == service_name:
         return run
+
+  def service_run_names(self):
+    all_service_run_names = []
+
+    for run in self.service_runs:
+      # only append if not already there
+      if run.name() not in all_service_run_names:
+        all_service_run_names.append(run.name())
+
+    return all_service_run_names
 
   def last_service_run(self):
     if len(self.service_runs) == 0:

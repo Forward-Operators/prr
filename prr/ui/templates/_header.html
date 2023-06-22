@@ -162,7 +162,7 @@
         }
 
         div.service-list div {
-          box-shadow: 0px 0px 1px rgba(100, 100, 100);
+          box-shadow: 1px 0px 0px rgba(100, 100, 100);
         }
 
         div.service-list, div.file-list {
@@ -173,11 +173,14 @@
         }
 
         div.service-list div, div.file-list div {
-          margin-left: 30px;
           padding-left: 5px;
           padding-right: 5px;
         }
 
+        div#primary-service-list div:first-child, div.file-list div:first-child {
+          margin-left: 30px;
+        }
+        
         div#main {
           display: flex;
           flex-direction: column;
@@ -190,7 +193,7 @@
         }
 
         div#run {
-          {% if secondary %}
+          {% if run2 %}
             max-width: calc(100vw - 60px);
           {% else %}
             max-width: calc(100vw - 30px);
@@ -318,7 +321,6 @@
         }
 
         div#primary-service-list {
-          box-shadow: 0px 1px rgba(100, 100, 100);
           padding-top: 1px;
           padding-bottom: 0px;
           height: 30px;
