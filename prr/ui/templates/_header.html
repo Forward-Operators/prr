@@ -17,7 +17,7 @@
 
         body {
           color: #050505;
-          background-color: rgba(0, 0, 0, 0.05);
+          /* background-color: rgba(0, 0, 0, 0.05); */
           font-family: 'Courier New', Courier, monospace;
           margin: 0;
           height: 100%;
@@ -38,7 +38,7 @@
           font-family: Courier;
           font-weight: 500;
           font-size: 20px;
-          background-color: rgba(0, 0, 0, 0.05);
+          /* background-color: rgba(0, 0, 0, 0.05); */
           color: rgba(96, 96, 96, 1);
           padding-right: 10px;
           padding-bottom: 3px;
@@ -50,7 +50,7 @@
 
         section {
           padding-top: 5px;
-          background-color: rgba(0, 0, 0, 0.05);
+          /* background-color: rgba(0, 0, 0, 0.05); */
         }
 
         div#primary-prompt-text, div#primary-output-text, div#output-text-diff, div#prompt-text-diff {
@@ -65,7 +65,7 @@
 
         div.text-container {
           padding: 10px 10px 10px 10px;
-          background-color: rgba(0, 0, 0, 0.05);
+          /* background-color: rgba(0, 0, 0, 0.05); */
         }
 
         div.pills {
@@ -79,7 +79,7 @@
           border-radius: 3px;
           padding-left: 4px;
           padding-right: 4px;
-          background-color: rgba(255, 255, 255, 0.4);
+          /* background-color: rgba(255, 255, 255, 0.4); */
           height: 21px;
           justify-items: center;
         }
@@ -119,7 +119,7 @@
         }
 
         div.run-list {
-          background-color: rgba(148, 148, 148, 1);
+          background-color: rgba(100, 100, 100, 1);
           color: white;
           width: 29px;
           text-align: center;
@@ -133,6 +133,7 @@
         div.run-list a, div.service-list a, div.file-list a {
           text-decoration: none;
           color: white;
+          text-shadow: 1px 1px 1px rgba(100, 100, 100, 0.6);
         }
 
         div.run-list > div {
@@ -148,25 +149,32 @@
         }
 
         div.run-list a:hover, div.service-list a:hover, div.file-list a:hover {
-          text-decoration: underline;
+          text-decoration: none;
+          text-shadow: 0px 0px 1px rgba(255, 255, 255, 0.5);
+        }
+
+        div.run-list div.current a:hover, div.service-list div.current  a:hover, div.file-list div.current  a:hover {
+          text-decoration: none;
         }
 
         div.run-list div.current, div.service-list div.current, div.file-list div.current {
           font-weight: bold;
-          background-color: white;
-          color: rgba(0, 0, 0, 0.5);
+          background-color: rgba(200, 200, 200, 1);
         }
 
         div.run-list div.current a, div.service-list div.current a, div.file-list div.current a {
-          color: rgba(148, 148, 148, 1);
+          color: black;
+          text-shadow: 1px 1px 1px rgba(100, 100, 100, 0.6);
         }
 
         div.service-list div {
           box-shadow: 1px 0px 0px rgba(100, 100, 100);
+          background-color: rgba(150, 150, 150, 1);
         }
 
         div.service-list, div.file-list {
-          background-color: rgba(148, 148, 148, 1);
+          /* background-color: rgba(148, 148, 148, 1); */
+          background-color: rgba(100, 100, 100, 1);
           width: 100%;
           height: 30px;
           display: flex;
@@ -189,7 +197,6 @@
 
         div#run-list-and-content {
           display: flex;
-          background-color: rgba(0, 0, 0, 0.05);
         }
 
         div#run {
@@ -198,6 +205,7 @@
           {% else %}
             max-width: calc(100vw - 30px);
           {% endif %}
+          background-color: rgba(200, 200, 200, 1);
         }
 
         div.service-list#secondary-service-list {
@@ -213,18 +221,15 @@
           box-shadow: 0px 1px 0px 0px rgba(100, 100, 100);
         }
 
-        div.run-list#secondary-run-list {
-          padding-top: 29px;
-        }
-
         div.run-list div {
           border-top-left-radius: 5px;
           border-bottom-left-radius: 5px;
           padding-top: 3px;
           padding-bottom: 3px;
           margin-left: 1px;
-          margin-top: 1px;
+          background-color: rgba(150, 150, 150, 1);
           box-shadow: 0px 1px rgba(100, 100, 100);
+          border-bottom: 1px solid rgba(100, 100, 100, 1);
         }
 
         div.run-list#secondary-run-list div {
@@ -232,8 +237,6 @@
           border-bottom-right-radius: 5px;
           border-top-left-radius: 0px;
           border-bottom-left-radius: 0px;
-          padding-top: 3px;
-          padding-bottom: 3px;
           margin-left: 0px;
           margin-right: 3px;
         }
@@ -260,15 +263,16 @@
           text-align: right;
           margin: 0px;
           padding-right: 30px;
-          background-color: rgba(148, 148, 148, 1);
           position: absolute;
-          top: 30px;
+          top: 0px;
           right: 0px;
           border-bottom-left-radius: 5px;
           padding-left: 20px;
           z-index: 1000;
           height: 30px;
+          /* background-color: rgba(100, 100, 100, 1);
           box-shadow: 0px 1px rgba(100, 100, 100);
+          border-bottom: 1px solid rgba(100, 100, 100, 1); */
         }
 
         div#menu a {
@@ -277,7 +281,7 @@
         }
 
         div#menu a:hover {
-          text-decoration: underline;
+          text-decoration: none;
         }
 
         div.run-comparison {
@@ -329,6 +333,9 @@
 
         div.service-list div {
           padding-top: 5px;
+          background-color: rgba(150, 150, 150, 1);
+          box-shadow: 1px 0px rgba(100, 100, 100);
+          border-right: 1px solid rgba(100, 100, 100, 1);
         }
 
         section#response {
