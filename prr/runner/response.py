@@ -21,6 +21,6 @@ class ServiceResponse:
     def tokens_used(self):
         if self.data:
             if self.data.get("tokens_used"):
-                return self.data.get("tokens_used")
+                return int(self.data.get("tokens_used"))
 
         return None

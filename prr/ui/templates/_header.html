@@ -16,7 +16,7 @@
         }
 
         body {
-          color: #050505;
+          background-color: rgba(200, 200, 200, 1);
           font-family: 'Courier New', Courier, monospace;
           margin: 0;
           padding: 0;
@@ -25,7 +25,7 @@
         }
 
         html, body {
-          max-width: 100%;
+          max-width: 100vw;
           overflow-x: hidden;
         }
 
@@ -55,6 +55,8 @@
 
         section {
           padding-top: 5px;
+          padding-left: 40px;
+          padding-right: 40px;
           /* background-color: rgba(0, 0, 0, 0.05); */
         }
 
@@ -82,15 +84,15 @@
         div.pill {
           margin: 3px;
           border-radius: 3px;
-          padding-left: 4px;
-          padding-right: 4px;
-          /* background-color: rgba(255, 255, 255, 0.4); */
-          height: 21px;
+          padding: 4px;
+          padding-top: 5px;
+          background-color: rgba(255, 255, 255, 0.2);
           justify-items: center;
         }
 
         div.pill .key {
           float: left;
+          color: rgba(100, 100, 100, 1);
         }
 
         div.pill .value {
@@ -114,8 +116,8 @@
           background-color: rgba(255, 0, 0, 0.15);
         }
 
-        div.pill.difference {
-          border-bottom: 1px dashed yellow;
+        div.pill.difference .value {
+          background-color: rgba(255, 255, 0, 0.3);
         }
 
         div.service-description, div.response-description {
@@ -207,12 +209,13 @@
         }
 
         div#run {
-          {% if run2 %}
-            max-width: calc(100vw - 60px);
-          {% else %}
-            max-width: calc(100vw - 30px);
-          {% endif %}
           background-color: rgba(200, 200, 200, 1);
+          min-height: calc(100vh + 550px);
+          {% if run2 %}
+            max-width: calc(100% - 60px);
+          {% else %}
+            max-width: calc(100% - 30px);
+          {% endif %}
         }
 
         div.service-list#secondary-service-list {
@@ -268,17 +271,18 @@
         }
 
         div#menu {
-          max-width: 30%;
           text-align: right;
+          width: 100px;
           margin: 0px;
-          padding-right: 30px;
           position: fixed;
+          display: flex;
           top: 0px;
           right: 0px;
           border-bottom-left-radius: 5px;
-          padding-left: 20px;
           z-index: 1000;
           height: 30px;
+          justify-content: space-around;
+          align-items: center;
           /* background-color: rgba(100, 100, 100, 1);
           box-shadow: 0px 1px rgba(100, 100, 100);
           border-bottom: 1px solid rgba(100, 100, 100, 1); */
@@ -321,8 +325,14 @@
           padding-bottom: 30px;
         }
 
+        section#stats .key {
+          font-weight: light;
+          font-size: 18px;
+        }
+
         section#stats .value {
           font-weight: bold;
+          font-size: 21px;
         }
 
         div.stats {
@@ -357,10 +367,10 @@
           justify-content: space-around;
         }
 
-        div.response-description {
+        /* div.response-description {
           min-width: 800px;
           width: 60vw;
-        }
+        } */
 
         @keyframes blinker {
           0% {opacity: 1;}

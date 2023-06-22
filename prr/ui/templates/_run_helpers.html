@@ -52,8 +52,22 @@
 
 {% macro render_stats(items) %}
 <div class="stats">
-  <span class="key">Elapsed time:</span>
-  <span class="value">{{ "%.2f"|format(items['elapsed_time'])  }}s</span>
+  <div class="stat">
+    <span class="key">Elapsed time</span>
+    <span class="value">{{ "%.2f"|format(items['elapsed_time'])  }}s</span>
+  </div>
+  {% if 'tokens_generated' in items %}
+    <div class="stat">
+      <span class="key">Tokens generated</span>
+      <span class="value">{{ "%.2f"|format(items['tokens_generated'])  }}</span>
+    </div>
+  {% endif %}
+  {% if 'tokens_per_second' in items %}
+    <div class="stat">
+      <span class="key">Response speed</span>
+      <span class="value">{{ "%.2f"|format(items['tokens_per_second'])  }} tokens/s</span>
+    </div>
+  {% endif %}
 </div>
 {% endmacro %}
 

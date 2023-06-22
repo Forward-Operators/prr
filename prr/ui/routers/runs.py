@@ -86,7 +86,7 @@ class RunRenderer:
         "run_details": service.run_details(),
         "state": run.state,
       }
-
+    
     return {
       "run_id": str(run.id), 
       "state": run.state,

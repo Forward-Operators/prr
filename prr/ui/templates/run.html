@@ -34,7 +34,12 @@
           </section>
         {% endif %}
 
-        
+        <h2>STATS</h2> 
+          
+        <section id="stats">
+          {{ render_stats(run.run_details.stats) }}
+        </section>
+
         <h2>PROMPT</h2>
         
         <div class="text-container">
@@ -48,19 +53,13 @@
         </div>
       
         {% if run.run_details %}
-          <h2>RESPONSE</h2> 
+          <h2>RESPONSE DETAILS</h2> 
         
           <section id="response">
             <div class="response-description">
               {{ render_pills(run.run_details.response.items()) }}
             </div>
-          </section>
-          
-          <h2>STATS</h2> 
-          
-          <section id="stats">
-            {{ render_stats(run.run_details.stats) }}
-          </section>
+          </section>          
         {% endif %}  
       {% endif %}  
     </div>

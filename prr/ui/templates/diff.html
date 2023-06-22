@@ -48,7 +48,15 @@
         </div>
       </section>
 
+      <h2>STATS</h2> 
       
+      <section id="stats">
+        <div class="run-comparison">
+          {{ render_stats(run.run_details.stats) }}
+          {{ render_stats(run2.run_details.stats) }}
+        </div>
+      </section>
+
       <h2>PROMPT</h2>
       
       <div id="primary-prompt-text" class="hidden">{{ run.prompt_content }} </div>
@@ -65,7 +73,7 @@
         <div id="output-text-diff"></div>
       </div>
     
-      <h2>RESPONSE</h2> 
+      <h2>RESPONSE DETAILS</h2> 
     
       <section>
         <div class="run-comparison">
@@ -76,16 +84,7 @@
             {{ render_diff_pills(run2.run_details.response, run.run_details.response) }}
           </div>    
         </div>
-      </section>
-      
-      <h2>STATS</h2> 
-      
-      <section id="stats">
-        <div class="run-comparison">
-          {{ render_stats(run.run_details.stats) }}
-          {{ render_stats(run2.run_details.stats) }}
-        </div>
-      </section>
+      </section>      
     {% endif %}
   </div>
 
