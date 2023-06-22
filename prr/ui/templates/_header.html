@@ -6,7 +6,6 @@
     <title>
       {{ page_title }}
     </title>
-    <script src="/static/diff_match_patch.js"></script>
     <style>
         html {
           height: 100%;
@@ -76,15 +75,13 @@
           display: flex;
         }
 
-        div#primary-prompt-text, div#primary-output-text, div#output-text-diff, div#prompt-text-diff {
-          white-space: pre-wrap;
-          font-family: 'Courier New', Courier, monospace;
-          box-shadow: 2px 2px rgba(128, 128, 128, 0.25);
-          background-color: white;
-          padding: 10px 10px 10px 10px;
+        section.diff-editor {
+          width: 90%;
+        }
+
+        div#prompt-comparison {
           font-size: 18px;
-          width: 98%;
-          min-width: 600px;
+          width: 100%;
         }
 
         div.text-container {
@@ -181,6 +178,7 @@
         }
 
         div#run {
+          width: 100%;
           background-color: rgba(200, 200, 200, 1);
           {% if run2 %}
             max-width: calc(100% - 60px);
@@ -395,6 +393,11 @@
           font-size: 11px;
         }
 
+        section.diff-editor {
+          padding: 0;
+          padding-top: 10px;
+          padding-bottom: 10px;
+        }
 </style>
 </head>
 <body>

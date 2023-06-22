@@ -42,17 +42,17 @@
       
       <div id="primary-prompt-text" class="hidden">{{ run.prompt_content }} </div>
       <div id="secondary-prompt-text" class="hidden">{{ run2.prompt_content }} </div>
-      <div class="text-container">
-        <div id="prompt-text-diff"></div>
+
+      <div class="section-wrapper">
+        <section class="diff-editor">
+          <div id="prompt-comparison" style="width: 100%;height: 300px;resize: both;"></div>
+        </section>
       </div>
-    
+  
       <h2>OUTPUT</h2>
     
       <div id="primary-output-text" class="hidden">{{ run.output_content }} </div>
       <div id="secondary-output-text" class="hidden">{{ run2.output_content }} </div>
-      <div class="text-container">
-        <div id="output-text-diff"></div>
-      </div>
     
       <h2>RESPONSE DETAILS</h2> 
     
@@ -70,20 +70,54 @@
   {{ secondary_service_list(all_service_names, run.service_name, run.run_id, run2.service_name, run2.run_id) }}
 </div>
 
+<script src="/static/monaco-editor/min/vs/loader.js"></script>
 <script>
-  function diff(primaryID, secondaryID, outputID) {
-    var dmp = new diff_match_patch();
-    var primaryText = document.getElementById(primaryID).innerText;
-    var secondaryText = document.getElementById(secondaryID).innerText;
+  require.config({ paths: { vs: '/static/monaco-editor/min/vs' } });
+    require(['vs/editor/editor.main'], function () {
 
-    var d = dmp.diff_main(secondaryText, primaryText);
-    dmp.diff_cleanupSemantic(d);
-    const diff = dmp.diff_prettyHtml(d);
-    document.getElementById(outputID).innerHTML = diff;
-  }
+    var originalModel = monaco.editor.createModel(
+      document.getElementById('primary-prompt-text').innerText,
+      "text/plain"
+    );
 
-  diff('primary-prompt-text', 'secondary-prompt-text', 'prompt-text-diff')
-  diff('primary-output-text', 'secondary-output-text', 'output-text-diff')
+    var modifiedModel = monaco.editor.createModel(
+      document.getElementById('secondary-prompt-text').innerText,
+      "text/plain"
+    );
+
+    var diffEditor = monaco.editor.createDiffEditor(
+      document.getElementById("prompt-comparison"),
+      {
+        enableSplitViewResizing: true,
+        renderSideBySide: false,
+        minimap: {
+          enabled: false,
+        },
+        automaticLayout: true,
+        fontSize: "14px",
+        theme: 'vs-light',
+        readOnly: true
+      }
+    );
+
+    diffEditor.setModel({
+      original: originalModel,
+      modified: modifiedModel,
+    });
+
+      
+      // var editor = monaco.editor.create(document.getElementById('prompt-comparison'), {
+      //   value:  ,
+      //   language: 'yaml',
+      //   minimap: {
+      //     enabled: false,
+      //   },
+      //   automaticLayout: true,
+      //   fontSize: "18px",
+      //   theme: 'vs-dark'
+      // });
+    });
+
 </script>
 
 {% include "_footer.html" %}
