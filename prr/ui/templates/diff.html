@@ -53,7 +53,13 @@
     
       <div id="primary-output-text" class="hidden">{{ run.output_content }} </div>
       <div id="secondary-output-text" class="hidden">{{ run2.output_content }} </div>
-    
+
+      <div class="section-wrapper">
+        <section class="diff-editor">
+          <div id="output-comparison" style="width: 100%;height: 300px;resize: both;"></div>
+        </section>
+      </div>
+
       <h2>RESPONSE DETAILS</h2> 
     
       <div class="section-wrapper">
@@ -75,17 +81,17 @@
   require.config({ paths: { vs: '/static/monaco-editor/min/vs' } });
     require(['vs/editor/editor.main'], function () {
 
-    var originalModel = monaco.editor.createModel(
+    var originalPromptModel = monaco.editor.createModel(
       document.getElementById('primary-prompt-text').innerText,
       "text/plain"
     );
 
-    var modifiedModel = monaco.editor.createModel(
+    var modifiedPromptModel = monaco.editor.createModel(
       document.getElementById('secondary-prompt-text').innerText,
       "text/plain"
     );
 
-    var diffEditor = monaco.editor.createDiffEditor(
+    var promptEditor = monaco.editor.createDiffEditor(
       document.getElementById("prompt-comparison"),
       {
         enableSplitViewResizing: true,
@@ -100,9 +106,40 @@
       }
     );
 
-    diffEditor.setModel({
-      original: originalModel,
-      modified: modifiedModel,
+    promptEditor.setModel({
+      original: modifiedPromptModel,
+      modified: originalPromptModel,
+    });
+
+
+    var originalOutputModel = monaco.editor.createModel(
+      document.getElementById('primary-output-text').innerText,
+      "text/plain"
+    );
+
+    var modifiedOutputModel = monaco.editor.createModel(
+      document.getElementById('secondary-output-text').innerText,
+      "text/plain"
+    );
+
+    var outputEditor = monaco.editor.createDiffEditor(
+      document.getElementById("output-comparison"),
+      {
+        enableSplitViewResizing: true,
+        renderSideBySide: false,
+        minimap: {
+          enabled: false,
+        },
+        automaticLayout: true,
+        fontSize: "14px",
+        theme: 'vs-light',
+        readOnly: true
+      }
+    );
+
+    outputEditor.setModel({
+      original: modifiedOutputModel,
+      modified: originalOutputModel,
     });
 
       

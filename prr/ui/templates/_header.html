@@ -79,13 +79,22 @@
           width: 90%;
         }
 
-        div#prompt-comparison {
+        div#prompt-comparison, div#output-comparison {
           font-size: 18px;
           width: 100%;
+        }
+        
+        div#primary-prompt-text, div#primary-output-text, div#output-text-diff, div#prompt-text-diff {
+           white-space: pre-wrap;
+           font-family: 'Courier New', Courier, monospace;
+           box-shadow: 2px 2px rgba(128, 128, 128, 0.25);
+           background-color: white;
+           padding: 10px 10px 10px 10px;
         }
 
         div.text-container {
           padding: 10px 10px 10px 10px;
+          
           /* background-color: rgba(0, 0, 0, 0.05); */
         }
 
@@ -374,7 +383,7 @@
 
         div.diff-table div.row div.value0 {
           width: 70%;
-          opacity: 0.3;
+          opacity: 0.4;
         }
 
         div.diff-table div.row.header.run-id div.value {
