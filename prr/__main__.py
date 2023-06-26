@@ -12,7 +12,9 @@ from prr.utils.config import load_config
 
 config = load_config()
 
-
+def check_if_prompt_exists(prompt_path):
+    return os.path.exists(prompt_path) or os.path.exists(prompt_path + ".yaml")
+    
 def main():
     parser = argparse.ArgumentParser(
         description="Run a prompt against configured models.",
@@ -111,9 +113,17 @@ def main():
     args, prompt_args = parser.parse_known_args()
     parsed_args = vars(args)
 
+    if parsed_args["command"] == "ui":
+        command = UIPromptCommand(parsed_args)
+        command.start()
+
+    if not check_if_prompt_exists(parsed_args["prompt_path"]):
+        raise Exception(f"Prompt file {parsed_args['prompt_path']} does not exist")
+
     if parsed_args["command"] == "script":
         parsed_args["quiet"] = True
         parsed_args["abbrev"] = False
+
         command = RunPromptCommand(parsed_args, prompt_args)
         command.run_prompt()
 
@@ -125,9 +135,6 @@ def main():
         command = WatchPromptCommand(parsed_args)
         command.watch_prompt()
 
-    if parsed_args["command"] == "ui":
-        command = UIPromptCommand(parsed_args)
-        command.start()
 
 
 if __name__ == "__main__":

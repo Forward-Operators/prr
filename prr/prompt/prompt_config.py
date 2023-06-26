@@ -23,7 +23,10 @@ class PromptConfig:
         self.version = None
 
     def template_text(self):
-        return self.template.render_text()
+        if self.template:
+          return self.template.render_text()
+        
+        return ''
 
     # raw YAML file
     def load_from_config_contents(self, raw_config_content):
@@ -75,7 +78,10 @@ class PromptConfig:
         return self.options_for_service(service_name).option(option_name)
 
     def file_dependencies(self):
-        return self.template.file_dependencies()
+        if self.template:
+          return self.template.file_dependencies()
+        
+        return []
 
     ####################################################
 

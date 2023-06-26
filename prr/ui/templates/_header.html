@@ -94,7 +94,12 @@
 
         div.text-container {
           padding: 10px 10px 10px 10px;
-          
+          {% if run2 %}
+            width: calc(100vh - 60px);
+          {% else %}
+            width: calc(100vh - 30px);
+          {% endif %}
+          border: 1px solid red;
           /* background-color: rgba(0, 0, 0, 0.05); */
         }
 
@@ -183,7 +188,11 @@
         div#run-list-and-content {
           display: flex;
           margin-top: 31px;
-          height: 100%;
+          {% if run2 %}
+            min-height: calc(100vh - 60px);
+          {% else %}
+            min-height: calc(100vh - 30px);
+          {% endif %}
         }
 
         div#run {
@@ -406,6 +415,13 @@
           padding: 0;
           padding-top: 10px;
           padding-bottom: 10px;
+        }
+
+        div#full-screen-error-message {
+          height: 100vh;
+          display: flex;
+          justify-content: center;
+          align-items: center;
         }
 </style>
 </head>

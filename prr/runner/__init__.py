@@ -10,6 +10,10 @@ service_registry.register_all_services()
 class Runner:
     def __init__(self, prompt_config):
         self.prompt_config = prompt_config
+
+        if self.prompt_config.template == None:
+           raise Exception("PromptConfig must have a template")
+
         self.run_collection = PromptRunCollection(self.prompt_config)
 
     def run_service(self, service_name, service_options_overrides, save_run=False, single=True):
