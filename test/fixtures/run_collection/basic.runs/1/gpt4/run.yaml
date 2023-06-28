@@ -1,0 +1,18 @@
+request:
+  model: openai/chat/gpt-4
+  options:
+    max_tokens: 128
+    temperature: 0
+response:
+  choices: 1
+  completion_tokens: 126
+  finish_reason: stop
+  prompt_tokens: 70
+  tokens_used: 196
+  total_tokens: 196
+stats:
+  elapsed_time: 13.700538873672485
+  end_time: 1687965006.7663784
+  start_time: 1687964993.0658395
+  tokens_generated: 126
+  tokens_per_second: 9.196718549671557
