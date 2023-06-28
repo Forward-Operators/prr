@@ -2,10 +2,11 @@ from google.cloud import aiplatform
 from vertexai.preview.language_models import TextGenerationModel
 
 from prr.services.service_base import ServiceBase
-from prr.utils.config import load_config, ensure_api_key
+from prr.utils.config import ensure_api_key, load_config
 from prr.utils.response import ServiceResponse
 
 config = load_config()
+
 
 class ServiceGoogleComplete(ServiceBase):
     provider = "google"

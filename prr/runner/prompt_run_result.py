@@ -1,5 +1,6 @@
 import time
 
+
 class PromptRunResult:
     def __init__(self, prompt, config):
         self.prompt = prompt
@@ -24,7 +25,7 @@ class PromptRunResult:
         self.tokens_generated = self.response.tokens_generated()
 
         if self.tokens_generated != None:
-          self.tokens_per_second = self.tokens_generated / self.elapsed_time
+            self.tokens_per_second = self.tokens_generated / self.elapsed_time
 
     def update_with_request(self, request):
         self.request = request

@@ -3,6 +3,7 @@ import os
 import jinja2
 from jinja2 import meta
 
+
 class PromptMessage:
     def __init__(
         self, content_template_string, search_path=".", role="user", name=None

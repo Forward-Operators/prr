@@ -3,15 +3,15 @@ import sys
 import webbrowser
 
 from fastapi import FastAPI, Request
-from fastapi.staticfiles import StaticFiles
 from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
 
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..")))
 
+from prr.ui.routers.diff import diff_router
+from prr.ui.routers.edit import edit_router
 from prr.ui.routers.runs import runs_router
 from prr.ui.routers.state import state_router
-from prr.ui.routers.edit import edit_router
-from prr.ui.routers.diff import diff_router
 
 app = FastAPI()
 
@@ -34,6 +34,7 @@ app.include_router(edit_router)
 # async def startup_event():
 #     # webbrowser.open('http://localhost:8400/', new=2)
 #     webbrowser.open('http://localhost:8400/')
+
 
 @app.get("/", response_class=RedirectResponse)
 async def root(request: Request):

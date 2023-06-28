@@ -5,6 +5,7 @@ import yaml
 
 from prr.runner.saved_prompt_run import SavedPromptRun
 
+
 class PromptRunCollection:
     def __init__(self, prompt_config):
         self.prompt_config = prompt_config
@@ -13,9 +14,9 @@ class PromptRunCollection:
         self.current_run = None
 
         if not os.path.isdir(self.dot_runs_dir):
-          self.runs = []
+            self.runs = []
         else:
-          self.read_runs()
+            self.read_runs()
 
     def start_new_run(self):
         self.current_run = SavedPromptRun(self.new_run_path(self.dot_runs_dir))
@@ -29,42 +30,45 @@ class PromptRunCollection:
         self.current_run.save_service_run(service_name, result)
 
     def read_runs(self):
-      if not os.path.isdir(self.dot_runs_dir):
-        self.runs = []
-      else:
-        run_subdirs_unsorted = os.listdir(self.dot_runs_dir)
-        run_subdirs = sorted(run_subdirs_unsorted, key=lambda x: int(x))
-        self.runs = [SavedPromptRun(os.path.join(self.dot_runs_dir, run_dir)) for run_dir in run_subdirs]
+        if not os.path.isdir(self.dot_runs_dir):
+            self.runs = []
+        else:
+            run_subdirs_unsorted = os.listdir(self.dot_runs_dir)
+            run_subdirs = sorted(run_subdirs_unsorted, key=lambda x: int(x))
+            self.runs = [
+                SavedPromptRun(os.path.join(self.dot_runs_dir, run_dir))
+                for run_dir in run_subdirs
+            ]
 
     def is_empty(self):
-      return self.runs == []
+        return self.runs == []
 
     def has_done_runs(self):
-      done_runs = [run for run in self.runs if run.state == 'done']
+        done_runs = [run for run in self.runs if run.state == "done"]
 
-      if len(done_runs) == 0:
-        return False
+        if len(done_runs) == 0:
+            return False
 
-      return True
+        return True
 
     def latest_run(self):
-      if len(self.runs) == 0:
-        return None
+        if len(self.runs) == 0:
+            return None
 
-      return self.runs[-1]
+        return self.runs[-1]
 
     def the_one_before(self, run_id):
-      if int(run_id) == "1":
-        return self.run(run_id)
-      else:
-        return self.run(str(int(run_id) - 1))
+        if int(run_id) == "1":
+            return self.run(run_id)
+        else:
+            return self.run(str(int(run_id) - 1))
 
     def run(self, run_id):
-      for run in self.runs:
-        if run.id == run_id:
-          return run
+        for run in self.runs:
+            if run.id == run_id:
+                return run
 
-      return None
+        return None
 
     def new_run_path(self, runs_dir):
         try:

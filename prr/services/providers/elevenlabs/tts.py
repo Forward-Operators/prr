@@ -1,8 +1,9 @@
 from elevenlabs import generate, set_api_key
 
 from prr.services.service_base import ServiceBase
-from prr.utils.config import load_config, ensure_api_key
+from prr.utils.config import ensure_api_key, load_config
 from prr.utils.response import ServiceResponse
+
 
 # Eleven Labs model provider class
 # models: "eleven_monolingual_v1", "eleven_multilingual_v1"

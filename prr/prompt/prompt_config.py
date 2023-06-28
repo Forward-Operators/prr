@@ -79,8 +79,8 @@ class PromptConfig:
 
     def file_dependencies(self):
         if self.template:
-          return self.template.file_dependencies()
-        
+            return self.template.file_dependencies()
+
         return []
 
     ####################################################

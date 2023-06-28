@@ -2,7 +2,7 @@ from huggingface_hub import Repository
 from text_generation import Client
 
 from prr.services.service_base import ServiceBase
-from prr.utils.config import load_config, ensure_api_key
+from prr.utils.config import ensure_api_key, load_config
 from prr.utils.request import ServiceRequest
 from prr.utils.response import ServiceResponse
 
@@ -15,6 +15,7 @@ FIM_MIDDLE = "<fim_middle>"
 FIM_SUFFIX = "<fim_suffix>"
 
 FIM_INDICATOR = "<FILL_HERE>"
+
 
 class ServiceBigcodeStarcoder(ServiceBase):
     provider = "bigcode"

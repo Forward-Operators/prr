@@ -13,11 +13,13 @@ class Runner:
         self.prompt_args = prompt_args
 
         if self.prompt_config.template == None:
-           raise Exception("PromptConfig must have a template")
+            raise Exception("PromptConfig must have a template")
 
         self.run_collection = PromptRunCollection(self.prompt_config)
 
-    def run_service(self, service_name, service_options_overrides, save_run=False, single=True):
+    def run_service(
+        self, service_name, service_options_overrides, save_run=False, single=True
+    ):
         service_config = self.prompt_config.service_with_name(service_name)
 
         service_config.process_option_overrides(service_options_overrides)
@@ -29,13 +31,13 @@ class Runner:
         )
 
         if save_run and single:
-          self.current_run_in_collection = self.run_collection.start_new_run()
+            self.current_run_in_collection = self.run_collection.start_new_run()
 
         result = self.current_run.run()
 
         if save_run and single:
-          self.run_collection.finish_current_run(save_run)
-          self.run_collection.save_current_run(service_name, result)
+            self.run_collection.finish_current_run(save_run)
+            self.run_collection.save_current_run(service_name, result)
 
         return result
 

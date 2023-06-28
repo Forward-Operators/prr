@@ -5,16 +5,18 @@ import os
 import sys
 
 from prr.commands.run import RunPromptCommand
-from prr.commands.watch import WatchPromptCommand
 from prr.commands.ui import UIPromptCommand
+from prr.commands.watch import WatchPromptCommand
 from prr.prompt.model_options import ModelOptions
 from prr.utils.config import load_config
 
 config = load_config()
 
+
 def check_if_prompt_exists(prompt_path):
     return os.path.exists(prompt_path) or os.path.exists(prompt_path + ".yaml")
-    
+
+
 def main():
     parser = argparse.ArgumentParser(
         description="Run a prompt against configured models.",
@@ -102,9 +104,7 @@ def main():
     add_common_args(watch_parser)
     add_common_args(script_parser)
 
-    ui_parser.add_argument(
-        "prompt_path", help="Path to prompt to analyze"
-    )
+    ui_parser.add_argument("prompt_path", help="Path to prompt to analyze")
 
     watch_parser.add_argument(
         "--cooldown", "-c", type=int, help="How much to wait after a re-run", default=5
@@ -134,7 +134,6 @@ def main():
     if parsed_args["command"] == "watch":
         command = WatchPromptCommand(parsed_args, prompt_args)
         command.watch_prompt()
-
 
 
 if __name__ == "__main__":
