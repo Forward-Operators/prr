@@ -29,3 +29,6 @@ class PromptRun:
         self.result.update_with_response(response)
 
         return self.result
+    
+    def __str__(self):
+        return f"PromptRun(prompt={self.prompt}, prompt_args={self.prompt_args}, service_class={self.service_class}, service_config={self.service_config}, result={self.result})"

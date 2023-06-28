@@ -1,11 +1,10 @@
 import openai
 
 from prr.services.service_base import ServiceBase
-from prr.utils.config import load_config
+from prr.utils.config import load_config, ensure_api_key
 from prr.utils.response import ServiceResponse
 
 config = load_config()
-openai.api_key = config.get("OPENAI_API_KEY", None)
 
 
 # OpenAI model provider class
@@ -17,6 +16,8 @@ class ServiceOpenAIChat(ServiceBase):
     options = ["max_tokens", "temperature"]
 
     def run(self):
+        openai.api_key = ensure_api_key(config, "OPENAI_API_KEY")
+
         completion = openai.ChatCompletion.create(
             model=self.service_config.model_name(),
             messages=self.request.prompt_content,

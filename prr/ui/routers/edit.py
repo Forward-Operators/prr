@@ -52,7 +52,7 @@ class EditRenderer:
         "page_title": message,
         "error_message": message
       }
-
+ 
       return templates.TemplateResponse("error.html", args)
 
 
@@ -66,8 +66,6 @@ class EditRenderer:
     self.prompt_files.update_file(file_id, content)
 
     return Response('lol', media_type='text/plain')
-
-
 
   def prompt_name(self):
     return os.path.basename(self.prompt_path)

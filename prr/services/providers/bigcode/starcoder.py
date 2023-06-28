@@ -2,13 +2,12 @@ from huggingface_hub import Repository
 from text_generation import Client
 
 from prr.services.service_base import ServiceBase
-from prr.utils.config import load_config
+from prr.utils.config import load_config, ensure_api_key
 from prr.utils.request import ServiceRequest
 from prr.utils.response import ServiceResponse
 
 config = load_config()
 
-HF_TOKEN = config.get("HF_TOKEN", None)
 API_URL = "https://api-inference.huggingface.co/models/bigcode/starcoder"
 
 FIM_PREFIX = "<fim_prefix>"
@@ -17,19 +16,19 @@ FIM_SUFFIX = "<fim_suffix>"
 
 FIM_INDICATOR = "<FILL_HERE>"
 
-
-client = Client(
-    API_URL,
-    headers={"Authorization": f"Bearer {HF_TOKEN}"},
-)
-
-
 class ServiceBigcodeStarcoder(ServiceBase):
     provider = "bigcode"
     service = "starcoder"
     options = ["temperature", "max_tokens", "top_p", "repetition_penalty"]
 
     def run(self):
+        HF_TOKEN = ensure_api_key(config, "HF_TOKEN")
+
+        client = Client(
+            API_URL,
+            headers={"Authorization": f"Bearer {HF_TOKEN}"},
+        )
+
         completion = client.generate(
             self.request.prompt_content,
             temperature=self.option("temperature"),

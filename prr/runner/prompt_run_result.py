@@ -41,3 +41,6 @@ class PromptRunResult:
             "request": self.request.to_dict(),
             "response": self.response.to_dict(),
         }
+
+    def __str__(self):
+        return f"PromptRunResult(prompt={self.prompt}, config={self.config}, start_time={self.start_time}, end_time={self.end_time}, elapsed_time={self.elapsed_time}, request={self.request}, response={self.response}, tokens_per_second={self.tokens_per_second}, tokens_generated={self.tokens_generated})"

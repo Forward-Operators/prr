@@ -57,4 +57,4 @@ class UIPromptCommand:
         # a vital hack to pass the prompt path to the web ui
         os.environ["__PRR_WEB_UI_PROMPT_PATH"] = self.prompt_path
 
-        uvicorn.run("prr.ui:app", host="localhost", port=8400, reload=True, access_log=True)
+        uvicorn.run("prr.ui:app", host="localhost", port=8400, reload=True, access_log=False)

@@ -28,11 +28,10 @@ class RunRenderer:
   def trigger_run(self):
     runner = Runner(self.prompt_config)
 
+    services = self.prompt_config.configured_services()
+
     console.log(
-        "Running prompt:  "
-        + "[green]"
-        + self.prompt_path
-        + "[/green]"
+        f"🚀 Running prompt: [green]{self.prompt_path}[/green] ({services})"
     )
 
     runner.run_all_configured_services({}, True)
@@ -48,6 +47,8 @@ class RunRenderer:
     if self.collection.is_empty():
       message = f"No runs for {self.prompt_name()} yet"
       args = { 
+        "run": None,
+        "run2": None,
         "request": request,
         "page_title": message,
         "error_message": message

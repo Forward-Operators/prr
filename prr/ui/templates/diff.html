@@ -66,7 +66,7 @@
     
       <div class="section-wrapper">
         <section>
-          {{ render_response_diff_table(run.run_details.response, run2.run_details.response, response_keys) }}
+          {{ render_response_diff_table(run, run2, response_keys) }}
         </section>      
       </div>
     {% endif %}
@@ -81,80 +81,71 @@
 <script src="/static/monaco-editor/min/vs/loader.js"></script>
 <script>
   require.config({ paths: { vs: '/static/monaco-editor/min/vs' } });
-    require(['vs/editor/editor.main'], function () {
+  
+  require(['vs/editor/editor.main'], function () {
 
-    var originalPromptModel = monaco.editor.createModel(
-      document.getElementById('primary-prompt-text').innerText,
-      "text/plain"
-    );
+  var originalPromptModel = monaco.editor.createModel(
+    document.getElementById('primary-prompt-text').innerText,
+    "text/plain"
+  );
 
-    var modifiedPromptModel = monaco.editor.createModel(
-      document.getElementById('secondary-prompt-text').innerText,
-      "text/plain"
-    );
+  var modifiedPromptModel = monaco.editor.createModel(
+    document.getElementById('secondary-prompt-text').innerText,
+    "text/plain"
+  );
 
-    var promptEditor = monaco.editor.createDiffEditor(
-      document.getElementById("prompt-comparison"),
-      {
-        enableSplitViewResizing: true,
-        renderSideBySide: false,
-        minimap: {
-          enabled: false,
-        },
-        automaticLayout: true,
-        fontSize: "14px",
-        theme: 'vs-light',
-        readOnly: true
-      }
-    );
+  var promptEditor = monaco.editor.createDiffEditor(
+    document.getElementById("prompt-comparison"),
+    {
+      enableSplitViewResizing: true,
+      renderSideBySide: false,
+      minimap: {
+        enabled: false,
+      },
+      automaticLayout: true,
+      fontSize: "18px",
+      theme: 'vs-light',
+      readOnly: true,
+      wordWrap: 'on'
+    }
+  );
 
-    promptEditor.setModel({
-      original: modifiedPromptModel,
-      modified: originalPromptModel,
-    });
+  promptEditor.setModel({
+    original: modifiedPromptModel,
+    modified: originalPromptModel,
+  });
 
 
-    var originalOutputModel = monaco.editor.createModel(
-      document.getElementById('primary-output-text').innerText,
-      "text/plain"
-    );
+  var originalOutputModel = monaco.editor.createModel(
+    document.getElementById('primary-output-text').innerText,
+    "text/plain"
+  );
 
-    var modifiedOutputModel = monaco.editor.createModel(
-      document.getElementById('secondary-output-text').innerText,
-      "text/plain"
-    );
+  var modifiedOutputModel = monaco.editor.createModel(
+    document.getElementById('secondary-output-text').innerText,
+    "text/plain"
+  );
 
-    var outputEditor = monaco.editor.createDiffEditor(
-      document.getElementById("output-comparison"),
-      {
-        enableSplitViewResizing: true,
-        renderSideBySide: false,
-        minimap: {
-          enabled: false,
-        },
-        automaticLayout: true,
-        fontSize: "14px",
-        theme: 'vs-light',
-        readOnly: true
-      }
-    );
+  var outputEditor = monaco.editor.createDiffEditor(
+    document.getElementById("output-comparison"),
+    {
+      enableSplitViewResizing: true,
+      renderSideBySide: false,
+      minimap: {
+        enabled: false,
+      },
+      automaticLayout: true,
+      fontSize: "18px",
+      theme: 'vs-light',
+      readOnly: true,
+      wordWrap: 'on'
+    }
+  );
 
-    outputEditor.setModel({
-      original: modifiedOutputModel,
-      modified: originalOutputModel,
-    });
-
-      
-      // var editor = monaco.editor.create(document.getElementById('prompt-comparison'), {
-      //   value:  ,
-      //   language: 'yaml',
-      //   minimap: {
-      //     enabled: false,
-      //   },
-      //   automaticLayout: true,
-      //   fontSize: "18px",
-      //   theme: 'vs-dark'
-      // });
+  outputEditor.setModel({
+    original: modifiedOutputModel,
+    modified: originalOutputModel,
+  });
     });
 
 </script>

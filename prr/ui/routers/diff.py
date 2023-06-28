@@ -104,7 +104,7 @@ class DiffRenderer:
       "prompt_file": self.prompt_path,
       "requests_option_keys": requests_option_keys, 
       "response_keys": response_keys, 
-      "page_title": f'{self.prompt_name()}/#{run.id}/{service.name()} vs #{run2.id}/{service2.name()}',
+      "page_title": f'{self.prompt_name()}: #{run.id}/{service.name()} vs #{run2.id}/{service2.name()}',
     }
 
 

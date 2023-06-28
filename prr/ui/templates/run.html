@@ -41,14 +41,28 @@
   
         <h2>PROMPT</h2>
         
-        <div class="text-container">
-          <div id="primary-prompt-text">{{ run.prompt_content }}</div>
+        <div id="primary-prompt-text" style="display: none">{{ run.prompt_content }}</div>
+
+        <div class="section-wrapper">
+          <section>
+            <div
+              id="run-prompt-text"
+              style="width: 100vw;height: 300px;resize: vertical;overflow: auto"
+              ></div>
+          </section>
         </div>
       
         <h2>OUTPUT</h2>
       
-        <div class="text-container">
-          <div id="primary-output-text">{{ run.output_content }}</div>
+        <div id="secondary-prompt-text" style="display: none">{{ run.output_content }}</div>
+
+        <div class="section-wrapper">
+          <section>
+            <div
+              id="run-output-text"
+              style="width: 100vw;height: 300px;resize: vertical;overflow: auto"
+              ></div>
+          </section>
         </div>
       
         {% if run.run_details %}
@@ -63,5 +77,39 @@
       {% endif %}  
     </div>
 </div>
+
+<script src="/static/monaco-editor/min/vs/loader.js"></script>
+<script>
+  require.config({ paths: { vs: '/static/monaco-editor/min/vs' } });
+  require(['vs/editor/editor.main'], function () {
+    var text = document.getElementById('primary-prompt-text').innerText;
+    var editor = monaco.editor.create(document.getElementById('run-prompt-text'), {
+      value: text,
+      language: 'yaml',
+      minimap: {
+        enabled: false,
+      },
+      automaticLayout: true,
+      fontSize: "18px",
+      theme: 'vs-light',
+      readOnly: true
+    });
+
+    var text2 = document.getElementById('secondary-prompt-text').innerText;
+    var editor2 = monaco.editor.create(document.getElementById('run-output-text'), {
+      value: text2,
+      language: 'yaml',
+      minimap: {
+        enabled: false,
+      },
+      automaticLayout: true,
+      fontSize: "18px",
+      theme: 'vs-light',
+      readOnly: true,
+      wordWrap: 'on'
+    });
+});
+</script>
+
 
 {% include "_footer.html" %}
