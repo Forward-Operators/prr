@@ -91,20 +91,36 @@ class DiffRenderer:
 
     def prompt_name(self):
         return os.path.basename(self.prompt_path)
-
-    def render_template_args(self, request, run, service, run2, service2):
-        all_runs = sorted(
+    
+    def all_runs_sorted(self):
+        return sorted(
             self.collection.runs, key=lambda run: int(run.id), reverse=True
         )
+    
+    def request_option_keys_for_services(self, services):
+        option_keys = []
+
+        for service in services:
+            if service != None:
+              option_keys += service.run_details()["request"]["options"].keys()
+
+        return sorted(set(option_keys))
+
+    def response_keys_for_services(self, services):
+        response_keys = []
+
+        for service in services:
+            if service != None:
+              response_keys += service.run_details()["response"].keys()
+
+        return sorted(set(response_keys))
+
+    def render_template_args(self, request, run, service, run2, service2):
+        all_runs = self.all_runs_sorted()
         all_service_names = run.service_run_names()
-        requests_option_keys = sorted(
-            set(service.run_details()["request"]["options"].keys())
-            | set(service2.run_details()["request"]["options"].keys())
-        )
-        response_keys = sorted(
-            set(service.run_details()["response"].keys())
-            | set(service2.run_details()["response"].keys())
-        )
+
+        requests_option_keys = self.request_option_keys_for_services([service, service2])
+        response_keys = self.response_keys_for_services([service, service2])
 
         return {
             "action": "diff",
