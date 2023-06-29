@@ -6,6 +6,7 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
 from rich.console import Console
 
+from prr.commands.run import RunPromptCommand
 from prr.prompt.prompt_loader import PromptConfigLoader
 from prr.runner import Runner
 from prr.runner.run_collection import PromptRunCollection
@@ -27,17 +28,16 @@ class RunRenderer:
         self.collection = PromptRunCollection(self.prompt_config)
 
     def trigger_run(self):
-        runner = Runner(self.prompt_config)
+        args = {
+            "command": "run",
+            "abbrev": False,
+            "quiet": False,
+            "log": True,
+            "prompt_path": self.prompt_path,
+        }
 
-        services = self.prompt_config.configured_services()
-
-        console.log(f"🚀 Running prompt: [green]{self.prompt_path}[/green] ({services})")
-
-        runner.run_all_configured_services({}, True)
-
-        console.log(
-            "✅ Done running prompt: " + "[green]" + self.prompt_path + "[/green]"
-        )
+        command = RunPromptCommand(args)
+        command.run_prompt()
 
     def run(self, request, run_id=None, service_name=None):
         if self.collection.is_empty():

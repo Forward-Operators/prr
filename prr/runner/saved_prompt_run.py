@@ -1,7 +1,5 @@
 import os
 
-import yaml
-
 from prr.runner.saved_service_run import SavedServiceRun
 
 

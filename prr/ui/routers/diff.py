@@ -91,18 +91,16 @@ class DiffRenderer:
 
     def prompt_name(self):
         return os.path.basename(self.prompt_path)
-    
+
     def all_runs_sorted(self):
-        return sorted(
-            self.collection.runs, key=lambda run: int(run.id), reverse=True
-        )
-    
+        return sorted(self.collection.runs, key=lambda run: int(run.id), reverse=True)
+
     def request_option_keys_for_services(self, services):
         option_keys = []
 
         for service in services:
             if service != None:
-              option_keys += service.run_details()["request"]["options"].keys()
+                option_keys += service.run_details()["request"]["options"].keys()
 
         return sorted(set(option_keys))
 
@@ -111,7 +109,7 @@ class DiffRenderer:
 
         for service in services:
             if service != None:
-              response_keys += service.run_details()["response"].keys()
+                response_keys += service.run_details()["response"].keys()
 
         return sorted(set(response_keys))
 
@@ -119,7 +117,9 @@ class DiffRenderer:
         all_runs = self.all_runs_sorted()
         all_service_names = run.service_run_names()
 
-        requests_option_keys = self.request_option_keys_for_services([service, service2])
+        requests_option_keys = self.request_option_keys_for_services(
+            [service, service2]
+        )
         response_keys = self.response_keys_for_services([service, service2])
 
         return {

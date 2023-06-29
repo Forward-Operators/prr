@@ -30,9 +30,10 @@ app.include_router(diff_router)
 # enables editing prompt files
 app.include_router(edit_router)
 
+
 @app.on_event("startup")
 async def startup_event():
-    webbrowser.open('http://localhost:8400/', new=2)
+    webbrowser.open("http://localhost:8400/", new=2)
 
 
 @app.get("/", response_class=RedirectResponse)

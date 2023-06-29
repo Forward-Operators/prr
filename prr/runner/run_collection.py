@@ -1,8 +1,6 @@
 import os
 from datetime import datetime
 
-import yaml
-
 from prr.runner.saved_prompt_run import SavedPromptRun
 
 
@@ -22,12 +20,12 @@ class PromptRunCollection:
         self.current_run = SavedPromptRun(self.new_run_path(self.dot_runs_dir))
         self.current_run.mark_as_in_progress()
 
-    def finish_current_run(self, save=True):
-        self.current_run.mark_as_done()
-        # self.current_run = None
+    def save_current_service_run(self, service_name, result):
+        return self.current_run.save_service_run(service_name, result)
 
-    def save_current_run(self, service_name, result):
-        self.current_run.save_service_run(service_name, result)
+    def finish_current_run(self):
+        self.current_run.mark_as_done()
+        self.current_run = None
 
     def read_runs(self):
         if not os.path.isdir(self.dot_runs_dir):
