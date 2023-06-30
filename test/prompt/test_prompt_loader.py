@@ -19,3 +19,5 @@ class TestPromptConfigLoader:
         prompt = loader.load_from_path(prompt_template_file_path)
 
         assert prompt
+
+        remove_temp_file(prompt_template_file_path)

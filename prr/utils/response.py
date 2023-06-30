@@ -24,9 +24,18 @@ class ServiceResponse:
     def to_dict(self):
         return {key: value for key, value in self.data.items() if key != "completion"}
 
+    # how many tokens we have to pay for
     def tokens_used(self):
         if self.data:
             if self.data.get("tokens_used"):
-                return self.data.get("tokens_used")
+                return int(self.data.get("tokens_used"))
+
+        return None
+
+    # how many tokens have we generated
+    def tokens_generated(self):
+        if self.data:
+            if self.data.get("completion_tokens"):
+                return int(self.data.get("completion_tokens"))
 
         return None

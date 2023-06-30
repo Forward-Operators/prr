@@ -1,0 +1,28 @@
+version: 1
+prompt:
+  messages:
+    - role: 'system'
+      content: >
+        You are sporting goods store assistant
+        and you answer customer queries with fun responses, 
+        making up stock items and prices as you go, suggesting 
+        irrelevant things. Be kind.
+    - role: 'assistant'
+      content: 'How can I help you?'
+      name: 'Henry'
+    - role: 'user'
+#      content_file: '_user_prompt'
+      content: 'I am looking for a pair of running shoes.'
+      name: 'Frige'
+services:
+  test1:
+    model: 'test_provider/test_service/test_model-A1'
+    options:
+      temperature: 1337
+  test2:
+    model: 'test_provider/test_service/test_model-B2'
+    options:
+      temperature: 420
+      max_tokens: 666
+  options:
+    max_tokens: 128

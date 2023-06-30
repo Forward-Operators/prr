@@ -1,0 +1,14 @@
+<div id="menu">
+  <div id="run-button">
+    <a href="#" onClick="triggerRun()" title="Run all services">🚀</a>
+  </div>
+  {% if action != 'edit' %}
+    <a href="/edit" title="Edit prompt">✍️</a>
+  {% endif %}
+  {% if action == 'edit'  %}
+    <a href="/runs" title="Review runs">📁</a>
+  {% endif %}
+  {% if action == 'edit' or action == 'run' %}
+    <a href="/diff" title="Compare runs">🔍</a>
+  {% endif %}
+  </div>

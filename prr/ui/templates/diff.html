@@ -1,0 +1,153 @@
+{% include "_header.html" %}
+
+{% from "_run_helpers.html" import render_pills with context %}
+{% from "_run_helpers.html" import primary_service_list with context %}
+{% from "_run_helpers.html" import primary_run_list with context %}
+{% from "_run_helpers.html" import secondary_service_list with context %}
+{% from "_run_helpers.html" import secondary_run_list with context %}
+{% from "_run_helpers.html" import render_response_diff_table, render_request_diff_table, render_response_stats_diff_table with context %}
+
+<div id="main">
+  {{ primary_service_list(all_service_names, run.service_name, run.run_id ) }}
+
+  <div id="run-list-and-content">
+
+  {{ primary_run_list(all_runs, run.service_name, run.run_id) }}
+
+  <div id="run">
+    {% include "_menu.html" %}
+
+    {% if run.state == 'in-progress' %}
+      <div id="full-screen-error-message">
+        <h2>
+          this run is still in progress...
+        </h2>
+      </div>
+    {% else %}
+      <h2>PROMPT RUN COMPARISON</h2>
+
+      <div class="section-wrapper">
+        <section>
+          {{ render_request_diff_table(run, run2, requests_option_keys) }}
+        </section>
+      </div>
+
+      <h2>STATS</h2> 
+      
+      <div class="section-wrapper">
+        <section>
+          {{ render_response_stats_diff_table(run, run2) }}
+        </section>
+      </div>
+
+      <h2>PROMPT</h2>
+      
+      <div id="primary-prompt-text" class="hidden">{{ run.prompt_content }} </div>
+      <div id="secondary-prompt-text" class="hidden">{{ run2.prompt_content }} </div>
+
+      <div class="section-wrapper">
+        <section class="diff-editor">
+          <div id="prompt-comparison" style="width: 100%;height: 300px;resize: both;"></div>
+        </section>
+      </div>
+  
+      <h2>OUTPUT</h2>
+    
+      <div id="primary-output-text" class="hidden">{{ run.output_content }} </div>
+      <div id="secondary-output-text" class="hidden">{{ run2.output_content }} </div>
+
+      <div class="section-wrapper">
+        <section class="diff-editor">
+          <div id="output-comparison" style="width: 100%;height: 300px;resize: both;"></div>
+        </section>
+      </div>
+
+      <h2>RESPONSE DETAILS</h2> 
+    
+      <div class="section-wrapper">
+        <section>
+          {{ render_response_diff_table(run, run2, response_keys) }}
+        </section>      
+      </div>
+    {% endif %}
+  </div>
+
+  {{ secondary_run_list(all_runs, run.service_name, run.run_id, run2.service_name, run2.run_id) }}
+</div>
+
+  {{ secondary_service_list(all_service_names, run.service_name, run.run_id, run2.service_name, run2.run_id) }}
+</div>
+
+<script src="/static/monaco-editor/min/vs/loader.js"></script>
+<script>
+  require.config({ paths: { vs: '/static/monaco-editor/min/vs' } });
+  
+  require(['vs/editor/editor.main'], function () {
+
+  var originalPromptModel = monaco.editor.createModel(
+    document.getElementById('primary-prompt-text').innerText,
+    "text/plain"
+  );
+
+  var modifiedPromptModel = monaco.editor.createModel(
+    document.getElementById('secondary-prompt-text').innerText,
+    "text/plain"
+  );
+
+  var promptEditor = monaco.editor.createDiffEditor(
+    document.getElementById("prompt-comparison"),
+    {
+      enableSplitViewResizing: true,
+      renderSideBySide: false,
+      minimap: {
+        enabled: false,
+      },
+      automaticLayout: true,
+      fontSize: "18px",
+      theme: 'vs-light',
+      readOnly: true,
+      wordWrap: 'on'
+    }
+  );
+
+  promptEditor.setModel({
+    original: modifiedPromptModel,
+    modified: originalPromptModel,
+  });
+
+
+  var originalOutputModel = monaco.editor.createModel(
+    document.getElementById('primary-output-text').innerText,
+    "text/plain"
+  );
+
+  var modifiedOutputModel = monaco.editor.createModel(
+    document.getElementById('secondary-output-text').innerText,
+    "text/plain"
+  );
+
+  var outputEditor = monaco.editor.createDiffEditor(
+    document.getElementById("output-comparison"),
+    {
+      enableSplitViewResizing: true,
+      renderSideBySide: false,
+      minimap: {
+        enabled: false,
+      },
+      automaticLayout: true,
+      fontSize: "18px",
+      theme: 'vs-light',
+      readOnly: true,
+      wordWrap: 'on'
+    }
+  );
+
+  outputEditor.setModel({
+    original: modifiedOutputModel,
+    modified: originalOutputModel,
+  });
+    });
+
+</script>
+
+{% include "_footer.html" %}

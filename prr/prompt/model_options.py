@@ -26,6 +26,9 @@ class ModelOptions:
         return ModelOptions(_options, False)
 
     def update_options(self, options):
+        if options == None:
+            return
+
         for key in options.keys():
             if options[key] != None:
                 if key not in self.options_set:

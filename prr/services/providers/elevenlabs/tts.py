@@ -1,11 +1,8 @@
 from elevenlabs import generate, set_api_key
 
 from prr.services.service_base import ServiceBase
-from prr.utils.config import load_config
+from prr.utils.config import ensure_api_key, load_config
 from prr.utils.response import ServiceResponse
-
-config = load_config()
-set_api_key(config.get("ELEVENLABS_API_KEY", None))
 
 
 # Eleven Labs model provider class
@@ -16,6 +13,9 @@ class ServiceElevenLabsTTS(ServiceBase):
     options = ["voice"]
 
     def run(self):
+        api_key = ensure_api_key(load_config(), "ELEVENLABS_API_KEY")
+        set_api_key(api_key)
+
         audio = generate(
             text=self.request.prompt_content,
             voice=self.option("voice"),

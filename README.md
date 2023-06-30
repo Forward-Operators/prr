@@ -16,7 +16,7 @@ Everyone is welcome to contribute!
 
 ## Features
 
-- Command-line execution of prompts
+- Command-line execution of prompts (now with web UI!)
 - Quick iteration on prompt design and paramter refinement with `watch` command
 - YAML configuration ties prompts to models and their configurations
 - Write prompt-scripts with #!/usr/bin/prr shebang and execute them directly
@@ -107,6 +107,16 @@ ELEVEN_LABS_API_KEY="9db0...."
 
 DEFAULT_SERVICE="openai/chat/gpt-3.5-turbo"
 ```
+
+### Running web user interface
+
+Simply run prr with 'ui' command and your prompt path (if it doesn't exist, it will be created), like so:
+
+```sh
+$ prr ui ~/Desktop/my-prompt
+```
+
+Web browser will be launched with the UI connected to your command that you will use to launch the runs.
 
 #### For Google PaLM, you need to install the following dependencies:
 You need to install [Google Cloud SDK](https://cloud.google.com/sdk/docs/install) and you need to have access to a Vertex AI with Generative AI enabled.

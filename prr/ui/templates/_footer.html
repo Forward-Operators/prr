@@ -1,0 +1,79 @@
+<script>
+  let currentState = ''
+
+  function state2str (data) {
+    return data['all_runs'].map((run) => [run['run_id'], run['state']].join('|')).join(':')
+  }
+
+  async function checkState() {
+    console.log('checkState current state:', currentState)
+    fetch('/state', {
+      method: 'GET',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => response.json()) // Parse the response as JSON
+    .then(data => {
+      // console.log(data)
+
+      run_in_progress = false
+
+      if (currentState != ''){
+        if(currentState != state2str(data)) {
+          console.log('would reload', window.location.pathname)
+          if (!window.location.pathname.startsWith('/edit')) {
+            window.location.reload()
+          } 
+        }
+      }
+
+      currentState = state2str(data)
+
+      // check if any of the runs is in-progress
+      data['all_runs'].forEach((run) => {
+        if (run['state'] == 'in-progress') {
+          run_in_progress = true
+        }
+      })
+
+      if (run_in_progress) {
+        document.getElementById('run-button').classList.add('in-progress')
+      } else {
+        document.getElementById('run-button').classList.remove('in-progress')
+      }
+    })
+    .catch((error) => {
+      console.error('Error:', error); // Log any errors
+    });
+  }
+
+  function triggerRun() {
+    console.log('triggering run...')
+    fetch('/', {
+      method: 'POST',
+      headers: {
+        'Accept': 'application/json'
+      }
+    })
+    .then(response => response.json()) // Parse the response as JSON
+    .then(data => {
+      console.log(data)
+      window.location = '/runs'
+    })
+    .catch((error) => {
+      console.error('Error:', error); // Log any errors
+    });
+  }
+
+  function checkStateTick() {
+    checkState().then(() => {
+      setTimeout(checkStateTick, 2000)
+    })
+  }
+
+  setTimeout(checkStateTick, 2000)
+</script>
+
+</body>
+</html>
