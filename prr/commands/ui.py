@@ -63,5 +63,5 @@ class UIPromptCommand:
         os.environ["__PRR_WEB_UI_PROMPT_PATH"] = self.prompt_path
 
         uvicorn.run(
-            "prr.ui:app", host="localhost", port=8400, reload=True, access_log=False
+            "prr.ui:app", host="localhost", port=8400, reload=False, access_log=False
         )
