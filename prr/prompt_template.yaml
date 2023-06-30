@@ -13,7 +13,7 @@ prompt:
     - role: 'user'
 #      content_file: '_user_prompt'
       content: 'I am looking for a pair of running shoes.'
-      name: 'Frige'
+      name: 'Jane'
 services:
   gpt35:
     model: 'openai/chat/gpt-3.5-turbo'

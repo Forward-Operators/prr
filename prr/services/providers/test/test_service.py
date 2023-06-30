@@ -11,8 +11,7 @@ class ServiceTest(ServiceBase):
     options = ["max_tokens", "temperature"]
 
     def run(self):
-        completion_content = f"""
-TEST COMPLETION. INPUT RECEIVED:
+        completion_content = f"""TEST COMPLETION. INPUT RECEIVED:
 model: {self.service_config.model_name()}
 messages: {self.request.prompt_content}
 temperature: {self.option("temperature")}

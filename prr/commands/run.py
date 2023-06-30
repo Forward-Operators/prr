@@ -93,6 +93,7 @@ class RunPromptCommand:
 
             if run_save_directory:
                 self.console.log(f"💾 {run_save_directory}")
+                self.console.log("")
 
     def on_request(self, service_name, request):
         self.print_run_parameters(service_name, request)
