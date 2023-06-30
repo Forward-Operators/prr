@@ -26,17 +26,24 @@ class PromptFiles:
     def get_file_contents(self, file_id):
         file_path = self.get_file_path(file_id)
 
-        with open(file_path, "r") as f:
-            file_contents = f.read()
-            return file_contents
+        if file_path:
+            with open(file_path, "r") as f:
+                file_contents = f.read()
+                return file_contents
 
     def get_file_path(self, file_id):
-        file_path = self.files[file_id]["path"]
+        _path = self.files.get(file_id)
 
-        return file_path
+        if _path:
+            file_path = self.files[file_id]["path"]
+
+            return file_path
+
+        return None
 
     def update_file(self, file_id, new_file_contents):
-        file_path = self.files[file_id]["path"]
+        file_path = self.get_file_path(file_id)
 
-        with open(file_path, "w") as f:
-            f.write(new_file_contents)
+        if file_path:
+            with open(file_path, "w") as f:
+                f.write(new_file_contents)

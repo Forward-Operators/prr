@@ -4,14 +4,11 @@ import threading
 from fastapi import APIRouter, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
 from fastapi.templating import Jinja2Templates
-from rich.console import Console
 
 from prr.commands.run import RunPromptCommand
 from prr.prompt.prompt_loader import PromptConfigLoader
 from prr.runner import Runner
 from prr.runner.run_collection import PromptRunCollection
-
-console = Console(log_time=True, log_path=False)
 
 runs_router = APIRouter()
 

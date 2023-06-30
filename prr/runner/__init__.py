@@ -30,13 +30,10 @@ class Runner:
             self.prompt_config, self.prompt_args, service, service_config
         )
 
-    def run_service(self, service_name, service_options_overrides):
+    def run_service(self, service_name):
         run_save_directory = None
 
-        if self.current_run == None:
-            self.prepare_service_run(service_name, service_options_overrides)
-
-        if self.save_runs:
+        if self.save_runs == None:
             self.current_run_in_collection = self.run_collection.start_new_run()
 
         result = self.current_run.run()
@@ -65,10 +62,10 @@ class Runner:
     def run_services(
         self,
         services,
-        service_options_overrides,
+        service_options_overrides={},
         callbacks={
-            "on_request": lambda request: None,
-            "on_result": lambda result, run_save_directory: None,
+            "on_request": lambda service_name, request: None,
+            "on_result": lambda service_name, result, run_save_directory: None,
         },
     ):
         if self.save_runs:
@@ -79,14 +76,12 @@ class Runner:
             request = self.current_run_request()
 
             if callbacks["on_request"]:
-                callbacks["on_request"](request)
+                callbacks["on_request"](service_name, request)
 
-            result, save_directory = self.run_service(
-                service_name, service_options_overrides
-            )
+            result, save_directory = self.run_service(service_name)
 
             if callbacks["on_result"]:
-                callbacks["on_result"](result, save_directory)
+                callbacks["on_result"](service_name, result, save_directory)
 
         if self.save_runs:
             self.run_collection.finish_current_run()

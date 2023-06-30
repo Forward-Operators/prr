@@ -98,29 +98,6 @@ class RunPromptCommand:
         self.print_run_parameters(service_name, request)
         self.print_prompt(request)
 
-    def run_prompt_on_service(self, service_name, single=False):
-        service_config = self.prompt_config.service_with_name(service_name)
-        service_config.process_option_overrides(self.args)
-
-        with self.console.status(
-            f":robot: [bold green]{service_name}[/bold green]"
-        ) as status:
-            # prepare the request so we can show it before running the service
-            status.update(status="running model", spinner="dots8Bit")
-
-            self.runner.run_services(
-                [service_name],
-                self.args,
-                {
-                    "on_request": lambda request: self.on_request(
-                        service_name, request
-                    ),
-                    "on_result": lambda result, run_save_directory: self.print_run_results(
-                        result, run_save_directory
-                    ),
-                },
-            )
-
     def load_prompt_for_path(self):
         prompt_path = self.args["prompt_path"]
 
@@ -151,8 +128,15 @@ class RunPromptCommand:
     def run_prompt(self):
         services = self.services_to_run()
 
-        for service_name in services:
-            self.run_prompt_on_service(service_name, False)
-
-            if len(services) > 1:
-                self.console.log("")
+        self.runner.run_services(
+            services,
+            self.args,
+            {
+                "on_request": lambda service_name, request: self.on_request(
+                    service_name, request
+                ),
+                "on_result": lambda service_name, result, run_save_directory: self.print_run_results(
+                    result, run_save_directory
+                ),
+            },
+        )

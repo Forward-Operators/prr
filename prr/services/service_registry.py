@@ -15,6 +15,7 @@ class ServiceRegistry:
         from prr.services.providers.google.chat import ServiceGoogleChat
         from prr.services.providers.google.complete import ServiceGoogleComplete
         from prr.services.providers.openai.chat import ServiceOpenAIChat
+        from prr.services.providers.test.test_service import ServiceTest
 
         self.register(ServiceOpenAIChat)
         self.register(ServiceAnthropicComplete)
@@ -22,6 +23,7 @@ class ServiceRegistry:
         self.register(ServiceGoogleComplete)
         self.register(ServiceGoogleChat)
         self.register(ServiceElevenLabsTTS)
+        self.register(ServiceTest)
 
     def service_for_service_config(self, service_config):
         key = service_config.service_key()
