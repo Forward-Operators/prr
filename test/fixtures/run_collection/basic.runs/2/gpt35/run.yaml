@@ -1,0 +1,18 @@
+request:
+  model: openai/chat/gpt-3.5-turbo
+  options:
+    max_tokens: 128
+    temperature: 0
+response:
+  choices: 1
+  completion_tokens: 128
+  finish_reason: length
+  prompt_tokens: 70
+  tokens_used: 198
+  total_tokens: 198
+stats:
+  elapsed_time: 5.441236972808838
+  end_time: 1687965111.7171688
+  start_time: 1687965106.2759318
+  tokens_generated: 128
+  tokens_per_second: 23.52406275257751
