@@ -2,12 +2,10 @@
 
 import argparse
 import os
-import sys
 
 from prr.commands.run import RunPromptCommand
 from prr.commands.ui import UIPromptCommand
 from prr.commands.watch import WatchPromptCommand
-from prr.prompt.model_options import ModelOptions
 from prr.utils.config import load_config
 
 config = load_config()
@@ -114,11 +112,12 @@ def main():
     parsed_args = vars(args)
 
     if parsed_args["command"] == "ui":
+        if not check_if_prompt_exists(parsed_args["prompt_path"]):
+            raise Exception(f"Prompt file {parsed_args['prompt_path']} does not exist")
         command = UIPromptCommand(parsed_args)
         command.start()
 
-    if not check_if_prompt_exists(parsed_args["prompt_path"]):
-        raise Exception(f"Prompt file {parsed_args['prompt_path']} does not exist")
+
 
     if parsed_args["command"] == "script":
         parsed_args["quiet"] = True
