@@ -117,8 +117,6 @@ def main():
         command = UIPromptCommand(parsed_args)
         command.start()
 
-
-
     if parsed_args["command"] == "script":
         parsed_args["quiet"] = True
         parsed_args["abbrev"] = False
