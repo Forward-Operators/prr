@@ -1,0 +1,123 @@
+{% macro primary_service_list(all_service_names, current_service_name, current_run_id) %}
+  <div class="service-list" id="primary-service-list">
+    {% for _service_name in all_service_names %}
+      <div class="{{'current' if current_service_name == _service_name }}">
+        <a href="/runs/{{ current_run_id }}/{{ _service_name }}">{{ _service_name }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro primary_run_list(all_runs, current_service_name, current_run_id) %}
+  <div class="run-list" id="primary-run-list">
+    {% for this_run in all_runs %}
+      <div class="{{'current' if this_run.id == current_run_id }} {{ 'in-progress' if this_run.state == 'in-progress' }}">
+        <a href="/runs/{{ this_run.id }}/{{ current_service_name }}">{{ this_run.id }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro secondary_service_list(all_service_names, primary_service_name, primary_run_id, secondary_service_name, secondary_run_id) %}
+  <div class="service-list" id="secondary-service-list">
+    {% for _service_name in all_service_names %}
+      <div class="{{'current' if secondary_service_name == _service_name }}">
+        <a href="/diff/{{ primary_run_id }}/{{ primary_service_name }}/{{ secondary_run_id }}/{{ _service_name }}">{{ _service_name }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro secondary_run_list(all_runs, primary_service_name, primary_run_id, secondary_service_name, secondary_run_id) %}
+  <div class="run-list" id="secondary-run-list">
+    {% for this_run in all_runs %}
+      <div class="{{'current' if this_run.id == secondary_run_id }} {{ 'in-progress' if this_run.state == 'in-progress' }}">
+        <a href="/diff/{{ primary_run_id }}/{{ primary_service_name }}/{{ this_run.id }}/{{ secondary_service_name }}">{{ this_run.id }}</a>
+      </div>
+    {% endfor %}
+  </div>
+{% endmacro %}
+
+{% macro render_request_diff_table_row(classes, name, value, value2) %}
+<div class="row {{ classes }}">
+  <div class="key">{{ name }}</div>
+  {% if value != value2 %}
+    <div class="value value1">{{ value }}</div>
+    <div class="value value2">{{ value2 }}</div>
+  {% else %}
+    <div class="value value0">{{ value2 }}</div>
+  {% endif %}
+</div>
+{% endmacro %}
+
+{% macro render_request_table_row(classes, name, value) %}
+<div class="row {{ classes }}">
+  <div class="key">{{ name }}</div>
+  <div class="value value0">{{ value }}</div>
+</div>
+{% endmacro %}
+
+{% macro render_response_stats_diff_table(run, run2) %}
+  {% if run.run_details and run2.run_details %}
+    <div class="diff-table stats">
+      {{ render_request_diff_table_row('header tokens', 'Tokens generated', run.run_details.stats.tokens_generated, run2.run_details.stats.tokens_generated) }}
+      {{ render_request_diff_table_row('header speed', 'Speed (tokens/s)', "%.2f"|format(run.run_details.stats.tokens_per_second|float), "%.2f"|format(run2.run_details.stats.tokens_per_second|float)) }}
+      {{ render_request_diff_table_row('header elapsed-time', 'Request duration', "%.2f"|format(run.run_details.stats.elapsed_time|float), "%.2f"|format(run2.run_details.stats.elapsed_time|float)) }}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_response_stats_table(run) %}
+  {% if run.run_details %}
+    <div class="diff-table stats">
+      {{ render_request_table_row('header tokens', 'Tokens generated', run.run_details.stats.tokens_generated) }}
+      {{ render_request_table_row('header speed', 'Speed (tokens/s)', "%.2f"|format(run.run_details.stats.tokens_per_second|float)) }}
+      {{ render_request_table_row('header elapsed-time', 'Request duration', "%.2f"|format(run.run_details.stats.elapsed_time|float)) }}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_request_diff_table(run, run2, all_option_keys) %}
+  {% if run and run.run_details and run2 and run2.run_details %}
+    <div class="diff-table">
+      {{ render_request_diff_table_row('header run-id', 'run', '#' + run.run_id, '#' + run2.run_id) }}
+      {{ render_request_diff_table_row('header service-name', 'service', run.service_name, run2.service_name) }}
+      {{ render_request_diff_table_row('header model-name', 'model', run.run_details.request.model, run2.run_details.request.model) }}
+      {% for key in all_option_keys %}
+        {{ render_request_diff_table_row(key, key, run.run_details.request.options[key], run2.run_details.request.options[key]) }}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_request_table(run) %}
+  {% if run and run.run_details %}
+    <div class="diff-table">
+      {{ render_request_table_row('header run-id', 'run', '#' + run.run_id) }}
+      {{ render_request_table_row('header service-name', 'service', run.service_name) }}
+      {{ render_request_table_row('header model-name', 'model', run.run_details.request.model) }}
+      {% for key in run.run_details.request.options %}
+        {{ render_request_table_row(key, key, run.run_details.request.options[key]) }}
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_response_diff_table(run, run2, keys) %}
+  {% if run and run2 %}
+  <div class="diff-table">
+    {% for key in keys %}
+      {{ render_request_diff_table_row(key, key, run.run_details.response[key], run2.run_details.response[key]) }}
+    {% endfor %}
+  </div>
+  {% endif %}
+{% endmacro %}
+
+{% macro render_response_table(items) %}
+  <div class="diff-table">
+    {% for key in items %}
+      {{ render_request_table_row(key, key, items[key]) }}
+    {% endfor %}
+  </div>
+{% endmacro %}
+

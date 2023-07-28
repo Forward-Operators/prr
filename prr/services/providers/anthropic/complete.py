@@ -6,11 +6,10 @@ import os
 import anthropic
 
 from prr.services.service_base import ServiceBase
-from prr.utils.config import load_config
+from prr.utils.config import ensure_api_key, load_config
 from prr.utils.response import ServiceResponse
 
 config = load_config()
-client = anthropic.Client(config.get("ANTHROPIC_API_KEY", None))
 
 
 # Anthropic model provider class
@@ -20,6 +19,8 @@ class ServiceAnthropicComplete(ServiceBase):
     options = ["max_tokens", "temperature", "top_k", "top_p"]
 
     def run(self):
+        client = anthropic.Client(ensure_api_key(config, "ANTHROPIC_API_KEY"))
+
         result = client.completion(
             prompt=self.request.prompt_content,
             stop_sequences=[anthropic.HUMAN_PROMPT],

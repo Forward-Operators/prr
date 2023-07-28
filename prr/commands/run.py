@@ -26,8 +26,13 @@ class RunPromptCommand:
         else:
             self.console = Console(log_time=False, log_path=False)
 
+        if self.args["log"]:
+            self.save_run = True
+        else:
+            self.save_run = False
+
         self.load_prompt_for_path()
-        self.runner = Runner(self.prompt_config, self.prompt_args)
+        self.runner = Runner(self.prompt_config, self.save_run, self.prompt_args)
 
     def print_prompt(self, request):
         if self.args["abbrev"]:
@@ -88,26 +93,11 @@ class RunPromptCommand:
 
             if run_save_directory:
                 self.console.log(f"💾 {run_save_directory}")
+                self.console.log("")
 
-    def run_prompt_on_service(self, service_name, save=False):
-        service_config = self.prompt_config.service_with_name(service_name)
-        service_config.process_option_overrides(self.args)
-        options = service_config.options
-
-        with self.console.status(
-            f":robot: [bold green]{service_name}[/bold green]"
-        ) as status:
-            self.runner.prepare_service_run(service_name, self.args)
-
-            request = self.runner.current_run_request()
-
-            self.print_run_parameters(service_name, request)
-            self.print_prompt(request)
-
-            status.update(status="running model", spinner="dots8Bit")
-            result, run_save_directory = self.runner.run(service_name, save)
-
-            self.print_run_results(result, run_save_directory)
+    def on_request(self, service_name, request):
+        self.print_run_parameters(service_name, request)
+        self.print_prompt(request)
 
     def load_prompt_for_path(self):
         prompt_path = self.args["prompt_path"]
@@ -117,12 +107,12 @@ class RunPromptCommand:
         loader = PromptConfigLoader()
         self.prompt_config = loader.load_from_path(prompt_path)
 
-    def run_prompt(self):
-        services_to_run = self.prompt_config.configured_services()
+    def services_to_run(self):
+        _services = self.prompt_config.configured_services()
 
-        if services_to_run == []:
+        if _services == []:
             if self.args["service"]:
-                services_to_run = [self.args["service"]]
+                _services = [self.args["service"]]
                 self.console.log(
                     f":racing_car:  Running service {self.args['service']}."
                 )
@@ -132,10 +122,22 @@ class RunPromptCommand:
                 )
                 exit(-1)
         else:
-            self.console.log(f":racing_car:  Running services: {services_to_run}")
+            self.console.log(f":racing_car:  Running services: {_services}")
 
-        for service_name in services_to_run:
-            if len(services_to_run) > 1:
-                self.console.log("")
+        return _services
 
-            self.run_prompt_on_service(service_name, self.args["log"])
+    def run_prompt(self):
+        services = self.services_to_run()
+
+        self.runner.run_services(
+            services,
+            self.args,
+            {
+                "on_request": lambda service_name, request: self.on_request(
+                    service_name, request
+                ),
+                "on_result": lambda service_name, result, run_save_directory: self.print_run_results(
+                    result, run_save_directory
+                ),
+            },
+        )
